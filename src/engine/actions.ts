@@ -34,14 +34,15 @@ export type Action =
   | { type: 'drawRegion'; player: PlayerId } // pop region stack → new region in the principality
   // cards
   | { type: 'drawToHand'; player: PlayerId; stackIndex: number }
-  | { type: 'playCard'; player: PlayerId; cardId: string; slot?: string }
+  | { type: 'playCard'; player: PlayerId; cardId: string; slot?: string; pay?: boolean } // pay defaults true: spend the card's cost (best-effort)
   | { type: 'returnToHand'; player: PlayerId; placedIndex: number }
-  | { type: 'discardToStack'; player: PlayerId; cardId: string; stackIndex: number }
+  | { type: 'discardToStack'; player: PlayerId; cardId: string; stackIndex: number } // end-of-turn exchange: tuck a card under a draw stack
+  | { type: 'discardCard'; player: PlayerId; from: 'hand' | 'placed'; cardId?: string; placedIndex?: number } // route a card to the shared discard pile (or back to a face-up supply)
   | { type: 'drawEvent' } // reveal top event card (logged); resolution is manual
   // spine
-  | { type: 'upgradeCity'; player: PlayerId; seat: number } // settlement → city in place
+  | { type: 'upgradeCity'; player: PlayerId; seat: number; pay?: boolean } // settlement → city in place
   | { type: 'expandSpine'; player: PlayerId } // +settlement +road, draw 2 regions
-  | { type: 'buildPiece'; player: PlayerId; piece: 'road' | 'settlement'; end?: 'left' | 'right'; slot?: number } // manual placement; road `slot` = road-slot index
+  | { type: 'buildPiece'; player: PlayerId; piece: 'road' | 'settlement'; end?: 'left' | 'right'; slot?: number; pay?: boolean } // manual placement; road `slot` = road-slot index
   | { type: 'placeLandscape'; player: PlayerId; regionIndex: number } // fill an empty landscape slot from the region stack
   | { type: 'removePlaced'; player: PlayerId; placedIndex: number } // drag a placed road/building back off the board
   // misc
@@ -58,6 +59,7 @@ export type Action =
   | { type: 'setDice'; production?: number; event?: EventFace } // override the roll WITHOUT changing phase
   | { type: 'markUsed'; player: PlayerId; key: string } // once-per-turn marker
   | { type: 'logNote'; player: PlayerId; text: string } // free-form table note
+  | { type: 'setWinThreshold'; value: number } // configurable VP target (7/12/13/15 or custom)
   // flow
   | { type: 'nextPhase' }
   | { type: 'endTurn' }
@@ -176,15 +178,48 @@ function other(id: PlayerId): PlayerId {
   return id === 'p0' ? 'p1' : 'p0'
 }
 
+// ---- audit log + cost/lifecycle helpers ----
+
+/** Display label for a resource in the log. `grain` reads as "wheat" (rebrand). */
+function resLabel(r: ResourceType): string {
+  return r === 'grain' ? 'wheat' : r
+}
+
+/** Format a cost list as a signed delta string, e.g. "-1 wood, -1 brick". */
+function fmtCost(cost: { resource: ResourceType; count: number }[]): string {
+  return cost.map((c) => `-${c.count} ${resLabel(c.resource)}`).join(', ')
+}
+
+/** Spend a card's cost best-effort across the player's regions (never goes negative). */
+function spendCost(p: PlayerState, cost?: { resource: ResourceType; count: number }[]): void {
+  for (const c of cost ?? []) distributeResource(p, c.resource, -c.count)
+}
+
+/** Where a card goes when it leaves play: face-up expansions + structural pieces return
+ *  to the supply (no discard entry); everything else (actions/buildings/units) is discarded. */
+function discardHome(cardId: string): 'discard' | 'supply' {
+  const c = getCard(cardId)
+  if (!c) return 'discard'
+  if (c.tag === 'Face-up Expansion') return 'supply'
+  if (['settlement', 'city', 'road', 'region'].includes(c.category)) return 'supply'
+  return 'discard'
+}
+
+/** Append an audit-log entry attributed to a player. */
+function logged(s: GameState, player: PlayerId, text: string): GameState {
+  return { ...s, log: [...s.log, { turn: s.turn, player, text }] }
+}
+
 /** Recompute both players' VP from the board and flag game over at the win threshold. */
-function finalize(s: GameState): GameState {
+export function finalize(s: GameState): GameState {
   const players = { ...s.players }
   let winner = s.winner
   let phase: Phase = s.phase
+  const threshold = s.winThreshold ?? WIN_VP
   for (const id of ['p0', 'p1'] as PlayerId[]) {
     const vp = computeVP(players[id])
     if (vp !== players[id].victoryPoints) players[id] = { ...players[id], victoryPoints: vp }
-    if (vp >= WIN_VP && !winner) {
+    if (vp >= threshold && !winner) {
       winner = id
       phase = 'gameover'
     }
@@ -229,7 +264,37 @@ const PHASE_ORDER: Phase[] = ['roll', 'action', 'replenish', 'exchange']
  */
 export function applyAction(state: GameState, action: Action): GameState {
   const next = reduce(state, action)
-  return { ...next, seq: state.seq + 1 }
+  // Bump the per-seat version for whichever player sub-state actually changed
+  // (immutable reducers create a new player object only for touched seats).
+  const seatSeq = { ...state.seatSeq }
+  for (const id of ['p0', 'p1'] as PlayerId[]) {
+    if (next.players[id] !== state.players[id]) seatSeq[id] = (seatSeq[id] ?? 0) + 1
+  }
+  return { ...next, seq: state.seq + 1, seatSeq }
+}
+
+/**
+ * Seat-authority merge of two snapshots (a peer's + ours). Each player's own
+ * sub-state is kept from whichever snapshot has the higher per-seat version, so
+ * simultaneous edits to DIFFERENT seats never clobber each other (the fix for
+ * "resource tokens randomly vanish"). Shared zones take the higher global seq;
+ * the log keeps the longer history. Then VP/winner are recomputed. The result
+ * is a join — running it on both clients converges deterministically.
+ */
+export function mergeSnapshots(local: GameState, incoming: GameState): GameState {
+  const seatVer = (s: GameState, id: PlayerId) => s.seatSeq?.[id] ?? 0
+  const players = {} as GameState['players']
+  for (const id of ['p0', 'p1'] as PlayerId[]) {
+    players[id] = seatVer(incoming, id) >= seatVer(local, id) ? incoming.players[id] : local.players[id]
+  }
+  const base = incoming.seq >= local.seq ? incoming : local
+  const log = incoming.log.length >= local.log.length ? incoming.log : local.log
+  const seatSeq = {
+    p0: Math.max(seatVer(local, 'p0'), seatVer(incoming, 'p0')),
+    p1: Math.max(seatVer(local, 'p1'), seatVer(incoming, 'p1')),
+  }
+  const seq = Math.max(local.seq, incoming.seq)
+  return finalize({ ...base, players, log, seatSeq, seq })
 }
 
 function reduce(s: GameState, a: Action): GameState {
@@ -273,22 +338,30 @@ function reduce(s: GameState, a: Action): GameState {
       return { ...out, regionStack }
     }
 
-    case 'upgradeCity':
-      return finalize(
-        withPlayer(s, a.player, (p) => {
-          let seen = -1
-          p.placed = p.placed.map((pc) => {
-            const c = getCard(pc.cardId)
-            if (c && (c.category === 'settlement' || c.category === 'city')) {
-              seen++
-              if (seen === a.seat && c.category === 'settlement') {
-                return { ...pc, cardId: 'base-city' } // upgrade in place, keep slot
+    case 'upgradeCity': {
+      const pay = a.pay !== false
+      const cityCost = getCard('base-city')?.cost ?? []
+      return logged(
+        finalize(
+          withPlayer(s, a.player, (p) => {
+            if (pay) spendCost(p, cityCost)
+            let seen = -1
+            p.placed = p.placed.map((pc) => {
+              const c = getCard(pc.cardId)
+              if (c && (c.category === 'settlement' || c.category === 'city')) {
+                seen++
+                if (seen === a.seat && c.category === 'settlement') {
+                  return { ...pc, cardId: 'base-city' } // upgrade in place, keep slot
+                }
               }
-            }
-            return pc
-          })
-        }),
+              return pc
+            })
+          }),
+        ),
+        a.player,
+        `Upgraded to city${pay && cityCost.length ? ` (${fmtCost(cityCost)})` : ''}`,
       )
+    }
 
     case 'expandSpine': {
       if (s.regionStack.length < 2) return s
@@ -313,21 +386,31 @@ function reduce(s: GameState, a: Action): GameState {
 
     case 'buildPiece': {
       const end = a.end ?? 'right'
+      const pay = a.pay !== false
       if (a.piece === 'road') {
         const N0 = countCategory(s.players[a.player], ['settlement', 'city'])
         const slot = a.slot ?? (end === 'left' ? 0 : N0) // default to the chosen end slot
-        return finalize(
-          withPlayer(s, a.player, (p) => {
-            p.placed = [...p.placed, { cardId: 'base-road', slot: `road-${slot}` }]
-          }),
+        const roadCost = getCard('base-road')?.cost ?? []
+        return logged(
+          finalize(
+            withPlayer(s, a.player, (p) => {
+              if (pay) spendCost(p, roadCost)
+              p.placed = [...p.placed, { cardId: 'base-road', slot: `road-${slot}` }]
+            }),
+          ),
+          a.player,
+          `Built road${pay && roadCost.length ? ` (${fmtCost(roadCost)})` : ''}`,
         )
       }
       // settlement: add it plus 2 OPEN landscape slots (1 top, 1 bottom) — the
       // player fills those with Landscape cards (manual). 'right' appends; 'left'
       // prepends (shifting building-site slots s{i}→s{i+1} AND road slots +1).
       const N = countCategory(s.players[a.player], ['settlement', 'city'])
-      return finalize(
-        withPlayer(s, a.player, (p) => {
+      const settleCost = getCard('base-settlement')?.cost ?? []
+      return logged(
+        finalize(
+          withPlayer(s, a.player, (p) => {
+          if (pay) spendCost(p, settleCost)
           if (end === 'left') {
             p.placed = p.placed.map((pc) => {
               const sm = /^s(\d+)-(up|down)$/.exec(pc.slot ?? '')
@@ -345,7 +428,10 @@ function reduce(s: GameState, a: Action): GameState {
             regions.push(emptyRegionSlot())
             p.regions = regions
           }
-        }),
+          }),
+        ),
+        a.player,
+        `Built settlement${pay && settleCost.length ? ` (${fmtCost(settleCost)})` : ''}`,
       )
     }
 
@@ -363,13 +449,17 @@ function reduce(s: GameState, a: Action): GameState {
     case 'removePlaced': {
       const pc = s.players[a.player].placed[a.placedIndex]
       if (!pc) return s
-      const c = getCard(pc.cardId)
-      const isBuilding = !!c && !['settlement', 'city', 'road'].includes(c.category)
-      return finalize(
-        withPlayer(s, a.player, (p) => {
-          const [removed] = p.placed.splice(a.placedIndex, 1)
-          if (isBuilding && removed) p.hand.push(removed.cardId) // buildings return to hand; roads just clear
-        }),
+      const cardId = pc.cardId
+      const home = discardHome(cardId)
+      const out = withPlayer(s, a.player, (p) => {
+        p.placed.splice(a.placedIndex, 1)
+      })
+      const discard = home === 'discard' ? [...out.discard, cardId] : out.discard
+      const name = getCard(cardId)?.name ?? cardId
+      return logged(
+        finalize({ ...out, discard }),
+        a.player,
+        home === 'discard' ? `Removed ${name} → discard` : `Removed ${name}`,
       )
     }
 
@@ -381,17 +471,27 @@ function reduce(s: GameState, a: Action): GameState {
       const out = withPlayer(s, a.player, (p) => {
         p.hand.push(card)
       })
-      return { ...out, drawStacks }
+      return logged({ ...out, drawStacks }, a.player, `Drew a card from stack ${a.stackIndex + 1}`)
     }
 
-    case 'playCard':
-      return finalize(
-        withPlayer(s, a.player, (p) => {
-          const i = p.hand.indexOf(a.cardId)
-          if (i >= 0) p.hand.splice(i, 1)
-          p.placed.push({ cardId: a.cardId, slot: a.slot })
-        }),
+    case 'playCard': {
+      const pay = a.pay !== false
+      const card = getCard(a.cardId)
+      const cost = card?.cost ?? []
+      const name = card?.name ?? a.cardId
+      return logged(
+        finalize(
+          withPlayer(s, a.player, (p) => {
+            const i = p.hand.indexOf(a.cardId)
+            if (i >= 0) p.hand.splice(i, 1)
+            if (pay) spendCost(p, cost)
+            p.placed.push({ cardId: a.cardId, slot: a.slot })
+          }),
+        ),
+        a.player,
+        `Played ${name}${pay && cost.length ? ` (${fmtCost(cost)})` : ''}`,
       )
+    }
 
     case 'returnToHand':
       return finalize(
@@ -409,7 +509,36 @@ function reduce(s: GameState, a: Action): GameState {
       const drawStacks = out.drawStacks.map((st, i) =>
         i === a.stackIndex ? [a.cardId, ...st] : st,
       )
-      return { ...out, drawStacks }
+      return logged({ ...out, drawStacks }, a.player, `Tucked a card under stack ${a.stackIndex + 1}`)
+    }
+
+    case 'discardCard': {
+      let cardId = a.cardId
+      let out = s
+      if (a.from === 'hand') {
+        if (!cardId) return s
+        const id = cardId
+        out = withPlayer(s, a.player, (p) => {
+          const i = p.hand.indexOf(id)
+          if (i >= 0) p.hand.splice(i, 1)
+        })
+      } else {
+        const pc = s.players[a.player].placed[a.placedIndex ?? -1]
+        if (!pc) return s
+        cardId = pc.cardId
+        out = withPlayer(s, a.player, (p) => {
+          p.placed.splice(a.placedIndex!, 1)
+        })
+      }
+      if (!cardId) return s
+      const home = discardHome(cardId)
+      const discard = home === 'discard' ? [...out.discard, cardId] : out.discard
+      const name = getCard(cardId)?.name ?? cardId
+      return logged(
+        finalize({ ...out, discard }),
+        a.player,
+        home === 'discard' ? `Discarded ${name}` : `Returned ${name} to supply`,
+      )
     }
 
     case 'drawEvent': {
@@ -448,7 +577,11 @@ function reduce(s: GameState, a: Action): GameState {
     }
 
     case 'addResource':
-      return withPlayer(s, a.player, (p) => distributeResource(p, a.resource, a.count))
+      return logged(
+        withPlayer(s, a.player, (p) => distributeResource(p, a.resource, a.count)),
+        a.player,
+        `${a.count >= 0 ? '+' : ''}${a.count} ${resLabel(a.resource)}`,
+      )
 
     case 'transferResource': {
       const players = { ...s.players }
@@ -512,6 +645,9 @@ function reduce(s: GameState, a: Action): GameState {
         ...s,
         log: [...s.log, { turn: s.turn, player: a.player, text: a.text, manual: true }],
       }
+
+    case 'setWinThreshold':
+      return finalize({ ...s, winThreshold: a.value })
 
     case 'nextPhase': {
       const i = PHASE_ORDER.indexOf(s.phase)

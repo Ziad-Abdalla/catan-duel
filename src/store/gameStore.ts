@@ -7,7 +7,7 @@
 import { create } from 'zustand'
 import type { GameState, PlayerId, SetId } from '../types'
 import { newGame } from '../engine/newGame'
-import { applyAction, type Action } from '../engine/actions'
+import { applyAction, mergeSnapshots, type Action } from '../engine/actions'
 import { makeRng, type Rng } from '../engine/rng'
 import { rollDice } from '../engine/dice'
 import type { ConnStatus, NetMessage, Transport } from '../net/transport'
@@ -93,8 +93,24 @@ export const useGame = create<GameStore>((set, get) => {
     const st = get()
     switch (m.t) {
       case 'snapshot':
-        // adopt newer snapshots (or forced ones: new-game resets / sync replies)
-        if (m.force || m.state.seq > st.state.seq) set({ state: m.state })
+        // Forced snapshots (new-game resets / sync replies) are adopted wholesale.
+        if (m.force) {
+          set({ state: m.state })
+          break
+        }
+        // Otherwise seat-authority MERGE: keep each seat's own latest edits so a
+        // peer's snapshot can never clobber our local resources (vanishing-token fix).
+        set((s) => {
+          const merged = mergeSnapshots(s.state, m.state)
+          // If our merge carries info the sender lacked, echo it back so both converge.
+          const contributed =
+            merged.seq !== m.state.seq ||
+            merged.log.length !== m.state.log.length ||
+            merged.seatSeq.p0 !== (m.state.seatSeq?.p0 ?? 0) ||
+            merged.seatSeq.p1 !== (m.state.seatSeq?.p1 ?? 0)
+          if (contributed) broadcast(merged)
+          return { state: merged }
+        })
         break
       case 'hello':
         set((s) => ({ peers: { ...s.peers, [m.from]: { name: m.name, seat: m.seat } } }))
@@ -130,7 +146,12 @@ export const useGame = create<GameStore>((set, get) => {
       set((s) => {
         if (s.history.length === 0) return {}
         const prev = s.history[s.history.length - 1]
-        const restored = { ...prev, seq: s.state.seq + 1 }
+        // Keep seq + both seat versions ahead of current so the restore wins everywhere.
+        const restored = {
+          ...prev,
+          seq: s.state.seq + 1,
+          seatSeq: { p0: s.state.seatSeq.p0 + 1, p1: s.state.seatSeq.p1 + 1 },
+        }
         broadcast(restored, true)
         return { state: restored, history: s.history.slice(0, -1) }
       })

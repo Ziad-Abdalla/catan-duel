@@ -106,6 +106,7 @@ export function newGame({ seed, p0Name = 'Player 1', p1Name = 'Player 2', enable
   return {
     gameId: `g${seed}`,
     seq: 0,
+    seatSeq: { p0: 0, p1: 0 },
     turn: 1,
     activePlayer: 'p0',
     phase: 'roll',
@@ -113,6 +114,7 @@ export function newGame({ seed, p0Name = 'Player 1', p1Name = 'Player 2', enable
     drawStacks,
     regionStack,
     eventDeck,
+    discard: [],
     log: [
       {
         turn: 1,
@@ -121,5 +123,7 @@ export function newGame({ seed, p0Name = 'Player 1', p1Name = 'Player 2', enable
       },
     ],
     enabledSets: sets,
+    // Official targets: 7 intro · 12 single theme · 13 all themes (Duel of the Princes).
+    winThreshold: eras.length === 0 ? 7 : eras.length >= 3 ? 13 : 12,
   }
 }

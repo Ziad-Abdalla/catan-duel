@@ -214,13 +214,14 @@ describe('spine: city upgrade & expansion', () => {
     expect(s.regionStack).toHaveLength(11) // one drawn
   })
 
-  it('removePlaced returns a building to hand and clears a road', () => {
+  it('removePlaced sends a building to the discard pile and clears a road', () => {
     const s0 = fresh()
     const card = s0.players.p0.hand[0]
-    let s = applyAction(s0, { type: 'playCard', player: 'p0', cardId: card, slot: 's0-up' })
+    let s = applyAction(s0, { type: 'playCard', player: 'p0', cardId: card, slot: 's0-up', pay: false })
     const bIdx = s.players.p0.placed.findIndex((c) => c.cardId === card)
     s = applyAction(s, { type: 'removePlaced', player: 'p0', placedIndex: bIdx })
-    expect(s.players.p0.hand).toContain(card) // building back in hand
+    expect(s.players.p0.hand).not.toContain(card) // no longer bounces to hand
+    expect(s.discard).toContain(card) // removed building goes to the discard pile
     const roadIdx = s.players.p0.placed.findIndex((c) => c.cardId === 'base-road')
     const roadsBefore = s.players.p0.placed.filter((c) => c.cardId === 'base-road').length
     s = applyAction(s, { type: 'removePlaced', player: 'p0', placedIndex: roadIdx })

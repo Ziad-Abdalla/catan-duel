@@ -117,8 +117,10 @@ export interface PlayerState {
 
 export interface GameState {
   gameId: string
-  /** monotonic version for sync ordering */
+  /** monotonic version for sync ordering (global last-write-wins on shared zones) */
   seq: number
+  /** per-seat monotonic version → seat-authority merge keeps each player's own edits */
+  seatSeq: Record<PlayerId, number>
   turn: number
   activePlayer: PlayerId
   phase: Phase
@@ -127,9 +129,13 @@ export interface GameState {
   drawStacks: string[][]
   regionStack: string[]
   eventDeck: string[]
+  /** shared discard pile (top = last). Action cards + removed buildings/units land here. */
+  discard: string[]
   lastRoll?: { production: number; event: string }
   log: LogEntry[]
   enabledSets: SetId[]
+  /** VP needed to win: 7 intro · 12 single theme · 13 Duel of the Princes · adjustable. */
+  winThreshold: number
   winner?: PlayerId
 }
 

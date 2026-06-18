@@ -1,0 +1,49 @@
+import { useEffect, useRef } from 'react'
+import { useGame } from '../../store/gameStore'
+import { useUI } from '../../store/uiStore'
+import './audit.css'
+
+/**
+ * Collapsible action-history ledger. Every engine action is logged with its
+ * acting player, so this shows the full chronological trail: raw dice rolls,
+ * +/- resource updates, builds, card plays/discards and hand swaps. Newest last,
+ * auto-scrolled. Read-only — it never mutates game state.
+ */
+export function AuditLog() {
+  const open = useUI((s) => s.auditOpen)
+  const toggle = useUI((s) => s.toggleAudit)
+  const log = useGame((s) => s.state.log)
+  const names = {
+    p0: useGame((s) => s.state.players.p0.name),
+    p1: useGame((s) => s.state.players.p1.name),
+  }
+  const endRef = useRef<HTMLLIElement>(null)
+  // Keep the newest entry in view as the log grows.
+  useEffect(() => {
+    if (open) endRef.current?.scrollIntoView({ block: 'end' })
+  }, [open, log.length])
+
+  if (!open) return null
+
+  return (
+    <aside className="audit" aria-label="Action history">
+      <header className="audit-head">
+        <span className="audit-title">Action Log</span>
+        <button className="audit-x" onClick={toggle} aria-label="Close action log">✕</button>
+      </header>
+      <ol className="audit-list">
+        {log.length === 0 && <li className="audit-empty">No actions yet.</li>}
+        {log.map((e, i) => (
+          <li key={i} className={`audit-row seat-${e.player}${e.manual ? ' manual' : ''}`}>
+            <span className="audit-turn">T{e.turn}</span>
+            <span className="audit-who" style={{ color: e.player === 'p0' ? 'var(--p1-red, #c75c54)' : 'var(--p2-blue, #5a86c4)' }}>
+              {names[e.player]}
+            </span>
+            <span className="audit-text">{e.text}</span>
+          </li>
+        ))}
+        <li ref={endRef} aria-hidden className="audit-end" />
+      </ol>
+    </aside>
+  )
+}

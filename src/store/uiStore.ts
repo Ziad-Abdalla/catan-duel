@@ -54,6 +54,9 @@ interface UIState {
   revealedRoll: { production: number; event: string; turn: number } | null
   /** Two physical dice tumbling at a random spot on the felt (viewport %). */
   dice: { id: number; x: number; y: number; prod: number; event: string; phase: 'tumble' | 'settle' | 'fade' } | null
+  /** The collapsible action-history ledger (audit log) sidebar. */
+  auditOpen: boolean
+  toggleAudit: () => void
   rollDice: (production: number, event: string, turn: number) => void
   setDrag: (id: string | null) => void
   setDragBuild: (b: BuildKind | null) => void
@@ -83,6 +86,8 @@ export const useUI = create<UIState>((set) => ({
   resolve: null,
   revealedRoll: null,
   dice: null,
+  auditOpen: false,
+  toggleAudit: () => set((s) => ({ auditOpen: !s.auditOpen })),
   /**
    * Kick off the dice cinematic for one roll. The timers live here in the store
    * singleton (not a React effect), so React StrictMode's mount/unmount/mount in

@@ -29,7 +29,9 @@ export function HandView({ player }: { player: PlayerId }) {
             <button
               className="btn"
               onClick={() => {
-                dispatch({ type: 'playCard', player, cardId: sel! })
+                // Place from hand without auto-charging — pay via the card detail's
+                // "Play & pay cost" or the resolution panel (manual sandbox).
+                dispatch({ type: 'playCard', player, cardId: sel!, pay: false })
                 clear()
               }}
             >

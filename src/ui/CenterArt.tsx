@@ -106,8 +106,9 @@ function Fields() {
     <svg {...SVG_PROPS}>
       <defs>
         <linearGradient id="g-sky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#f4e0a0" />
-          <stop offset="1" stopColor="#d8a93a" />
+          <stop offset="0" stopColor="#efdca6" />
+          <stop offset="0.55" stopColor="#cf9f3e" />
+          <stop offset="1" stopColor="#9a7d35" />
         </linearGradient>
       </defs>
       <rect width="100" height="100" fill="url(#g-sky)" />
@@ -267,15 +268,21 @@ export function ResourceIcon({ resource }: { resource: ResourceType }) {
         </svg>
       )
     case 'grain':
+      // Wheat: a warm amber-tan head of grain with kernels — deliberately NOT a
+      // round yellow coin, so it never reads as Gold.
       return (
         <svg viewBox="0 0 20 20" className="res-ic">
-          <g stroke="#c79a24" strokeWidth="1.3" strokeLinecap="round">
-            <line x1="10" y1="17" x2="10" y2="5" />
-            <line x1="10" y1="9" x2="6" y2="5.5" />
-            <line x1="10" y1="9" x2="14" y2="5.5" />
-            <line x1="10" y1="12.5" x2="6.5" y2="9" />
-            <line x1="10" y1="12.5" x2="13.5" y2="9" />
-          </g>
+          <line x1="10" y1="18" x2="10" y2="9" stroke="#8a6418" strokeWidth="1.2" strokeLinecap="round" />
+          {[0, 1, 2, 3].map((i) => {
+            const y = 4 + i * 2.6
+            return (
+              <g key={i} fill="#d9a637" stroke="#a9781b" strokeWidth="0.5">
+                <ellipse cx={10 - 2.6} cy={y + 1} rx="1.7" ry="2.5" transform={`rotate(-28 ${10 - 2.6} ${y + 1})`} />
+                <ellipse cx={10 + 2.6} cy={y + 1} rx="1.7" ry="2.5" transform={`rotate(28 ${10 + 2.6} ${y + 1})`} />
+              </g>
+            )
+          })}
+          <ellipse cx="10" cy="4.5" rx="1.6" ry="2.6" fill="#e6b94d" stroke="#a9781b" strokeWidth="0.5" />
         </svg>
       )
     case 'ore':

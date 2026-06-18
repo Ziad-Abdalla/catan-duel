@@ -11,6 +11,7 @@ import { FlightLayer } from './FlightLayer'
 import { DiceLayer } from './DiceLayer'
 import { CardZoom } from './CardZoom'
 import { ResolutionPanel } from './ResolutionPanel'
+import { AuditLog } from './AuditLog'
 import { ConnectionBar } from '../net/ConnectionBar'
 import { NetToasts } from '../net/NetToasts'
 import './board.css'
@@ -63,6 +64,7 @@ export function TableBoard({ mode, setMode }: { mode: AppMode; setMode: (m: AppM
       <DiceLayer />
       <CardZoom />
       <ResolutionPanel />
+      <AuditLog />
       <TurnBanner />
       {online && <NetToasts />}
       {online && <ConnectionBar />}

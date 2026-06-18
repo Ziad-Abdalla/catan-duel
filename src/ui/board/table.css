@@ -732,3 +732,18 @@
   display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;
   min-height: 30px; color: #f0e2c2; font-size: clamp(11px, 1.4vh, 14px);
 }
+
+/* victory-point target control in the table HUD */
+.hud-vp { display: inline-flex; align-items: center; gap: 6px; margin-right: 4px; }
+.hud-vp-label { font-size: 11px; letter-spacing: 0.05em; color: #cdbf9d; text-transform: uppercase; }
+.hud-vp-sel {
+  background: rgba(0, 0, 0, 0.35);
+  color: #f3d79a;
+  border: 1px solid rgba(243, 215, 154, 0.4);
+  border-radius: 6px;
+  padding: 3px 6px;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 12px;
+  cursor: pointer;
+}
+.hud-vp-sel:hover { border-color: rgba(243, 215, 154, 0.7); }

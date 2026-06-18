@@ -210,20 +210,27 @@ function logged(s: GameState, player: PlayerId, text: string): GameState {
   return { ...s, log: [...s.log, { turn: s.turn, player, text }] }
 }
 
-/** Recompute both players' VP from the board and flag game over at the win threshold. */
+/**
+ * Recompute both players' VP from the board and derive the winner FRESH each time
+ * (not sticky): the leader at/above the threshold wins; if a later correction
+ * (undo, removing a building, raising the threshold) drops everyone back below it,
+ * the winner clears and the frozen game-over phase is released. Keeps the manual
+ * sandbox honest — nothing stays "won" once the board no longer says so.
+ */
 export function finalize(s: GameState): GameState {
   const players = { ...s.players }
-  let winner = s.winner
-  let phase: Phase = s.phase
   const threshold = s.winThreshold ?? WIN_VP
+  let winner: PlayerId | undefined
+  let bestVp = -Infinity
   for (const id of ['p0', 'p1'] as PlayerId[]) {
     const vp = computeVP(players[id])
     if (vp !== players[id].victoryPoints) players[id] = { ...players[id], victoryPoints: vp }
-    if (vp >= threshold && !winner) {
+    if (vp >= threshold && vp > bestVp) {
       winner = id
-      phase = 'gameover'
+      bestVp = vp
     }
   }
+  const phase: Phase = winner ? 'gameover' : s.phase === 'gameover' ? 'action' : s.phase
   return { ...s, players, winner, phase }
 }
 
@@ -278,17 +285,37 @@ export function applyAction(state: GameState, action: Action): GameState {
  * sub-state is kept from whichever snapshot has the higher per-seat version, so
  * simultaneous edits to DIFFERENT seats never clobber each other (the fix for
  * "resource tokens randomly vanish"). Shared zones take the higher global seq;
- * the log keeps the longer history. Then VP/winner are recomputed. The result
- * is a join — running it on both clients converges deterministically.
+ * the log keeps the longer history; VP/winner are recomputed.
+ *
+ * Every choice is broken by a stable, order-independent comparator, so the merge
+ * is COMMUTATIVE: merge(a,b) === merge(b,a). That makes it a true join — once two
+ * clients have exchanged snapshots they converge to a byte-identical state, so the
+ * "did I contribute?" rebroadcast reaches a fixed point and can't ping-pong.
+ *
+ * Residual (documented): shared decks/discard are taken whole from one lineage, so
+ * two players drawing/discarding in the SAME network tick resolve to one lineage
+ * (consistently on both screens). Turn-based play — only the active player touches
+ * the shared decks — avoids it; cross-player effects touch the other seat's player
+ * sub-state, which IS conflict-free. Full deck-level concurrency would need an
+ * event-sourced relay (future work).
  */
+function stableGt(a: unknown, b: unknown): boolean {
+  // deterministic + symmetric: exactly one of stableGt(a,b)/stableGt(b,a) is true
+  // unless the values serialize identically (then it doesn't matter which we keep).
+  return JSON.stringify(a) > JSON.stringify(b)
+}
 export function mergeSnapshots(local: GameState, incoming: GameState): GameState {
   const seatVer = (s: GameState, id: PlayerId) => s.seatSeq?.[id] ?? 0
   const players = {} as GameState['players']
   for (const id of ['p0', 'p1'] as PlayerId[]) {
-    players[id] = seatVer(incoming, id) >= seatVer(local, id) ? incoming.players[id] : local.players[id]
+    const vl = seatVer(local, id)
+    const vi = seatVer(incoming, id)
+    players[id] =
+      vl > vi ? local.players[id] : vi > vl ? incoming.players[id] : stableGt(local.players[id], incoming.players[id]) ? local.players[id] : incoming.players[id]
   }
-  const base = incoming.seq >= local.seq ? incoming : local
-  const log = incoming.log.length >= local.log.length ? incoming.log : local.log
+  const base = local.seq > incoming.seq ? local : incoming.seq > local.seq ? incoming : stableGt(local, incoming) ? local : incoming
+  const log =
+    local.log.length > incoming.log.length ? local.log : incoming.log.length > local.log.length ? incoming.log : stableGt(local.log, incoming.log) ? local.log : incoming.log
   const seatSeq = {
     p0: Math.max(seatVer(local, 'p0'), seatVer(incoming, 'p0')),
     p1: Math.max(seatVer(local, 'p1'), seatVer(incoming, 'p1')),

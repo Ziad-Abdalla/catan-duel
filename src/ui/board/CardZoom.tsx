@@ -54,16 +54,30 @@ export function CardZoom() {
 
   const play = (pay: boolean) => {
     const slot = firstOpenSlot(placed ?? [])
-    dispatch({ type: 'playCard', player: zoom.player, cardId: zoom.cardId, slot })
-    if (pay && card.cost) {
-      for (const c of card.cost) dispatch({ type: 'addResource', player: zoom.player, resource: c.resource, count: -c.count })
-    }
+    // The engine spends the cost when pay=true (no manual subtraction here — that
+    // would double-charge). pay=false just places it (manual "show your friend").
+    dispatch({ type: 'playCard', player: zoom.player, cardId: zoom.cardId, slot, pay })
     playSfx('place')
     closeZoom()
   }
   const exchange = (stackIndex: number) => {
     dispatch({ type: 'discardToStack', player: zoom.player, cardId: zoom.cardId, stackIndex })
     playSfx('flip')
+    closeZoom()
+  }
+  // One-click discard — replaces the old return-to-hand-then-tuck-under-deck dance.
+  // The engine routes action cards + buildings to the shared discard pile and
+  // sends face-up expansions back to their supply automatically.
+  const discardFromHand = () => {
+    dispatch({ type: 'discardCard', player: zoom.player, from: 'hand', cardId: zoom.cardId })
+    playSfx('flip')
+    closeZoom()
+  }
+  const discardFromPlay = () => {
+    if (zoom.placedIndex != null) {
+      dispatch({ type: 'discardCard', player: zoom.player, from: 'placed', placedIndex: zoom.placedIndex })
+      playSfx('flip')
+    }
     closeZoom()
   }
   const returnToHand = () => {
@@ -89,7 +103,7 @@ export function CardZoom() {
               <p className="cz-hint">Drag this onto the board to place it. Settlements go at either end,
                 roads on an open road slot, a city onto one of your settlements, and a landscape onto an
                 open landscape slot.</p>
-              {hasCost && <p className="cz-hint">Pay its cost with the resource counters after placing, or open the resolution panel.</p>}
+              {hasCost && <p className="cz-hint">Roads, settlements and cities spend their cost from your regions automatically when built. Adjust the counters anytime.</p>}
             </>
           ) : zoom.from === 'hand' ? (
             <>
@@ -100,6 +114,7 @@ export function CardZoom() {
                 </button>
               )}
               <button className="cz-btn cz-resolve" onClick={() => resolve('hand')}>Resolve effect…</button>
+              <button className="cz-btn cz-discard" onClick={discardFromHand}>Discard</button>
               <div className="cz-exchange">
                 <span>Exchange under stack</span>
                 {[0, 1, 2, 3].map((i) => (
@@ -111,7 +126,8 @@ export function CardZoom() {
           ) : (
             <>
               <button className="cz-btn cz-resolve" onClick={() => resolve('play')}>Activate / resolve…</button>
-              <button className="cz-btn" onClick={returnToHand}>Return to hand</button>
+              <button className="cz-btn cz-discard" onClick={discardFromPlay}>Discard</button>
+              <button className="cz-btn cz-ghost" onClick={returnToHand}>Return to hand</button>
             </>
           )}
         </div>

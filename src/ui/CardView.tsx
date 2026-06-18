@@ -7,7 +7,7 @@ const RES_LABEL: Record<ResourceType, string> = {
   lumber: 'Lumber',
   brick: 'Brick',
   wool: 'Wool',
-  grain: 'Grain',
+  grain: 'Wheat',
   ore: 'Ore',
   gold: 'Gold',
 }

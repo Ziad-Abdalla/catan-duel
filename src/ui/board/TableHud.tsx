@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react'
 import type { SetId } from '../../types'
 import { useGame } from '../../store/gameStore'
+import { useUI } from '../../store/uiStore'
 import { isMuted, toggleMute, onMuteChange, playSfx } from '../../audio/sfx'
+
+/** Official victory targets per mode + a common tournament value. */
+const VP_TARGETS = [7, 12, 13, 15]
 
 export type AppMode = 'local' | 'online' | 'gallery'
 
@@ -25,8 +29,11 @@ export function TableHud({ mode, setMode }: { mode: AppMode; setMode: (m: AppMod
     p1: useGame((s) => s.state.players.p1.name),
   }
   const newHotseat = useGame((s) => s.newHotseat)
+  const dispatch = useGame((s) => s.dispatch)
   const online = useGame((s) => s.online)
   const enabledSets = useGame((s) => s.state.enabledSets)
+  const winThreshold = useGame((s) => s.state.winThreshold)
+  const toggleAudit = useUI((s) => s.toggleAudit)
   const muted = useMuted()
 
   // Toggling an era starts a fresh game with that card set folded into the decks.
@@ -54,6 +61,24 @@ export function TableHud({ mode, setMode }: { mode: AppMode; setMode: (m: AppMod
         ))}
       </div>
       <div className="hud-spacer" />
+      <label className="hud-vp" title="Victory points needed to win — 7 intro · 12 single theme · 13 Duel of the Princes · 15 tournament">
+        <span className="hud-vp-label">Win @</span>
+        <select
+          className="hud-vp-sel"
+          value={winThreshold}
+          onChange={(e) => {
+            dispatch({ type: 'setWinThreshold', value: Number(e.target.value) })
+            playSfx('ui')
+          }}
+        >
+          {(VP_TARGETS.includes(winThreshold) ? VP_TARGETS : [winThreshold, ...VP_TARGETS]).map((v) => (
+            <option key={v} value={v}>{v} VP</option>
+          ))}
+        </select>
+      </label>
+      <button className="hud-btn" onClick={() => { toggleAudit(); playSfx('ui') }} title="Action history log">
+        ☰ Log
+      </button>
       <button
         className="hud-btn hud-mute"
         aria-pressed={muted}

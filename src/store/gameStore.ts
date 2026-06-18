@@ -102,12 +102,14 @@ export const useGame = create<GameStore>((set, get) => {
         // peer's snapshot can never clobber our local resources (vanishing-token fix).
         set((s) => {
           const merged = mergeSnapshots(s.state, m.state)
-          // If our merge carries info the sender lacked, echo it back so both converge.
+          // Echo back only when our merge carries strictly-newer MONOTONIC state
+          // (higher global seq or per-seat version) than the sender had. Log length
+          // is deliberately excluded so equal-length/divergent logs can't cause an
+          // infinite rebroadcast ping-pong; seq/seatSeq are a converging join.
           const contributed =
-            merged.seq !== m.state.seq ||
-            merged.log.length !== m.state.log.length ||
-            merged.seatSeq.p0 !== (m.state.seatSeq?.p0 ?? 0) ||
-            merged.seatSeq.p1 !== (m.state.seatSeq?.p1 ?? 0)
+            merged.seq > m.state.seq ||
+            merged.seatSeq.p0 > (m.state.seatSeq?.p0 ?? 0) ||
+            merged.seatSeq.p1 > (m.state.seatSeq?.p1 ?? 0)
           if (contributed) broadcast(merged)
           return { state: merged }
         })

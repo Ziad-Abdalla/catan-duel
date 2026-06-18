@@ -91,3 +91,9 @@
 @media (prefers-reduced-motion: reduce) {
   .cardzoom-scrim, .cardzoom { animation: none; }
 }
+
+/* one-click discard + secondary actions (added with the clean card lifecycle) */
+.cz-discard { background: rgba(150, 60, 48, 0.26); color: #f2c6bd; border-color: rgba(214, 120, 104, 0.5); }
+.cz-discard:hover { background: rgba(170, 64, 50, 0.42); }
+.cz-ghost { opacity: 0.78; }
+.cz-ghost:hover { opacity: 1; }

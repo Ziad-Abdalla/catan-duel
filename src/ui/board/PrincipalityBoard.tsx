@@ -170,7 +170,9 @@ function Site({
 
   const place = (cardId: string | null) => {
     if (!cardId) return
-    dispatch({ type: 'playCard', player, cardId, slot })
+    // Dropping a card onto a site places it without auto-charging (manual sandbox);
+    // structural road/settlement/city builds DO auto-charge in the engine.
+    dispatch({ type: 'playCard', player, cardId, slot, pay: false })
     playSfx('place')
     clear()
   }

@@ -7,7 +7,7 @@ ASSISTS (cost math, routing, logging, juice) but never rigidly enforces turn flo
 ## Locked architectural decisions (owner-approved)
 1. **Networking:** keep PartyKit (already real-time WS, free, tested). Do NOT migrate to Socket.io/Render/Railway.
 2. **Race fix (vanishing tokens):** seat-authority merge — each client authoritative for its own half; merge not overwrite.
-3. **Starting setup:** verified vs official rulebook (docs/research/OFFICIAL_SETUP_VERIFICATION.md). See "Open data confirmations".
+3. **Starting setup:** verified vs official rulebook (docs/OFFICIAL_SETUP_VERIFICATION.md). See "Open data confirmations".
 4. **Victory music:** pluggable hook; owner supplies any file they have rights to (NOT the copyrighted track, which cannot ship).
 
 ## Verified rules corrections

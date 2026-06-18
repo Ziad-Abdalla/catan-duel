@@ -1,0 +1,215 @@
+/* ===== Region tile — a physical card you rotate (board-only; built over the
+   final terrain webp, independent of CenterArt) ===== */
+
+.rtile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(3px, 0.7vh, 8px);
+  width: var(--reg);
+}
+
+.rt-stage {
+  position: relative;
+  width: var(--reg);
+  aspect-ratio: 1 / 1;
+  display: grid;
+  place-items: center;
+}
+/* −/+ affordance: left half takes a resource, right half adds one */
+.rt-stage::before,
+.rt-stage::after {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-head);
+  font-size: calc(var(--reg) * 0.3);
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
+  opacity: 0;
+  transition: opacity 0.14s ease;
+  pointer-events: none;
+  z-index: 6;
+}
+.rt-stage::before { content: '−'; left: 0; border-radius: 12px 0 0 12px; background: linear-gradient(90deg, rgba(120, 30, 30, 0.55), transparent); }
+.rt-stage::after { content: '+'; right: 0; border-radius: 0 12px 12px 0; background: linear-gradient(270deg, rgba(40, 100, 50, 0.55), transparent); }
+.rt-stage:hover::before,
+.rt-stage:hover::after { opacity: 0.92; }
+
+.rt-card {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  background: #2a1a0c;
+  box-shadow:
+    0 9px 12px rgba(0, 0, 0, 0.5),
+    inset 0 0 0 2px rgba(0, 0, 0, 0.45),
+    inset 0 0 0 3.5px rgba(243, 215, 154, 0.3);
+  transition: transform 0.44s var(--ease-spring), box-shadow 0.15s ease;
+  transform-origin: center center;
+  will-change: transform;
+}
+.rt-card:hover { box-shadow: 0 12px 18px rgba(0, 0, 0, 0.55), inset 0 0 0 2px rgba(0, 0, 0, 0.45), inset 0 0 0 3.5px var(--gold); }
+.rt-card:active { transition-duration: 0.3s; }
+
+.rt-terrain {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.rt-terrain-fallback { opacity: 0.9; }
+/* candle-lit glaze so every tile reads as one lacquered piece */
+.rt-glaze {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 80% at 50% 0%, rgba(255, 240, 200, 0.18), transparent 55%),
+    linear-gradient(180deg, transparent 55%, rgba(0, 0, 0, 0.28));
+}
+
+/* production number as a die face, centred on the tile */
+.rt-die {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 42%;
+  aspect-ratio: 1 / 1;
+  transform: translate(-50%, -50%);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  place-items: center;
+  padding: 9%;
+  border-radius: 22%;
+  background: linear-gradient(160deg, #fbf6e8, #e9dcc0);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.45), inset 0 1px 2px rgba(255, 255, 255, 0.8), inset 0 -2px 3px rgba(0, 0, 0, 0.18);
+}
+.rt-die .pip {
+  width: 60%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background: transparent;
+}
+.rt-die .pip.on {
+  background: radial-gradient(circle at 35% 30%, #5b3f22, #2c1c0e);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.6);
+}
+
+/* the four edges carrying 0 · 1 · 2 · 3 produced-resource icons */
+.rt-edge {
+  position: absolute;
+  display: flex;
+  gap: 4%;
+  pointer-events: none;
+}
+.rt-edge-top { top: 4%; left: 0; right: 0; flex-direction: row; justify-content: center; align-items: flex-start; }
+.rt-edge-bottom { bottom: 4%; left: 0; right: 0; flex-direction: row; justify-content: center; align-items: flex-end; }
+.rt-edge-left { left: 4%; top: 0; bottom: 0; flex-direction: column; justify-content: center; align-items: flex-start; }
+.rt-edge-right { right: 4%; top: 0; bottom: 0; flex-direction: column; justify-content: center; align-items: flex-end; }
+.rt-edge-ic {
+  width: 22%;
+  aspect-ratio: 1 / 1;
+  display: grid;
+  place-items: center;
+  background: rgba(250, 245, 230, 0.92);
+  border-radius: 28%;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+.rt-edge-ic .res-ic { width: 78%; height: 78%; }
+
+/* fixed reading bracket at the bottom (toward the viewer) */
+.rt-reading {
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 56%;
+  height: 5px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, transparent, rgba(243, 215, 154, 0.7), transparent);
+  opacity: 0.7;
+}
+
+/* an open landscape slot (drop target for a Landscape) */
+.rt-empty {
+  width: var(--reg);
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  border: 2px dashed rgba(243, 222, 178, 0.22);
+  background: rgba(0, 0, 0, 0.14);
+  display: grid;
+  place-items: center;
+  color: rgba(243, 215, 154, 0.4);
+  font-size: calc(var(--reg) * 0.34);
+  transition: background 0.14s ease, border-color 0.14s ease, transform 0.12s var(--ease-snap);
+}
+.rt-empty.armed { border-color: rgba(243, 215, 154, 0.7); background: rgba(243, 215, 154, 0.08); cursor: pointer; }
+.rt-empty.over { border-color: var(--gold); background: rgba(200, 146, 42, 0.28); transform: scale(1.05); }
+
+/* upright nameplate — never rotates with the tile */
+.rt-nameplate {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: calc(var(--reg) + 24px);
+  padding: 2px 4px;
+}
+.rt-name {
+  font-family: var(--font-head);
+  font-size: clamp(10px, 1.45vh, 16px);
+  color: #f3e6c6;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.rt-count {
+  display: inline-flex;
+  align-items: baseline;
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: clamp(11px, 1.6vh, 18px);
+  color: #2a1c08;
+  background: var(--gold);
+  padding: 1px 7px;
+  border-radius: 9px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+.rt-count i { font-style: normal; font-size: 0.66em; opacity: 0.7; margin-left: 1px; }
+
+/* this region just produced (its number matched the roll) */
+.rtile.produces .rt-card {
+  box-shadow: 0 0 0 3px var(--gold), 0 0 22px 2px rgba(200, 146, 42, 0.6), 0 9px 12px rgba(0, 0, 0, 0.5);
+  animation: rt-produce 0.9s var(--ease-out);
+}
+@keyframes rt-produce {
+  0%, 100% { filter: brightness(1); }
+  40% { filter: brightness(1.35) saturate(1.2); }
+}
+
+/* tactile pulse on store change — brightness/glow only, never transform (which
+ * would clobber the inline rotate the tile is mid-turn with) */
+.rt-card.flash { animation: rt-flash 0.36s var(--ease-out); }
+@keyframes rt-flash {
+  40% { filter: brightness(1.28) saturate(1.15); box-shadow: 0 0 0 3px rgba(243, 215, 154, 0.8), 0 9px 12px rgba(0, 0, 0, 0.5); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rt-card { transition: none; }
+  .rtile.produces .rt-card, .rt-card.flash { animation: none; }
+}

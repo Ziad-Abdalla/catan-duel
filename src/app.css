@@ -1,0 +1,90 @@
+.app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 24px 20px 60px;
+}
+
+.app-header {
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.app-title {
+  font-size: 46px;
+  margin: 0;
+  color: var(--wood);
+  text-shadow: 0 1px 0 rgba(200, 146, 42, 0.5);
+}
+
+.app-sub {
+  font-style: italic;
+  color: rgba(59, 42, 26, 0.7);
+  margin: 2px 0 0;
+}
+
+.mode-tabs {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 12px;
+}
+.mode-tab {
+  font-family: var(--font-head);
+  font-size: 15px;
+  padding: 8px 22px;
+  border-radius: 10px 10px 0 0;
+  border: 1px solid var(--wood);
+  border-bottom: none;
+  background: var(--parchment-dark);
+  color: var(--wood);
+  opacity: 0.7;
+}
+.mode-tab.active {
+  opacity: 1;
+  background: var(--wood);
+  color: var(--parchment);
+}
+
+.app-tabs {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.app-tab {
+  font-size: 14px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--wood);
+  background: var(--parchment);
+  color: var(--wood);
+  transition: background 0.15s var(--ease-snap), transform 0.1s var(--ease-snap);
+}
+.app-tab:hover { transform: translateY(-1px); }
+.app-tab.active {
+  background: var(--wood);
+  color: var(--parchment);
+}
+
+.app-status {
+  text-align: center;
+  font-size: 13px;
+  color: rgba(59, 42, 26, 0.75);
+  margin-bottom: 18px;
+}
+.app-flag { color: var(--red); }
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.app-foot {
+  text-align: center;
+  font-size: 11px;
+  color: rgba(59, 42, 26, 0.55);
+  margin-top: 40px;
+}

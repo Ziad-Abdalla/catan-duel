@@ -1,0 +1,123 @@
+.ctr {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 6px;
+  border: 1px solid var(--wood);
+  overflow: hidden;
+  box-shadow:
+    inset 0 0 0 1px rgba(200, 146, 42, 0.25),
+    inset 0 -18px 26px rgba(0, 0, 0, 0.16);
+}
+
+.ctr-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.ctr-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* production-number die badge (top-left) */
+.ctr-die {
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  width: 27px;
+  height: 27px;
+  border-radius: 6px;
+  background: #f7f1e0;
+  color: var(--ink);
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 15px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(59, 42, 26, 0.5);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+/* 0–3 storage shown as the produced resource, on the right edge */
+.ctr-store {
+  position: absolute;
+  top: 50%;
+  right: 5px;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.res-slot {
+  width: 25px;
+  height: 25px;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  background: rgba(247, 241, 224, 0.55);
+  border: 1px solid rgba(59, 42, 26, 0.35);
+  opacity: 0.4;
+  filter: grayscale(0.5);
+  transition: opacity 0.15s ease, transform 0.15s var(--ease-snap);
+}
+.res-slot.on {
+  opacity: 1;
+  filter: none;
+  background: rgba(247, 241, 224, 0.92);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  transform: scale(1.04);
+}
+.res-ic {
+  width: 19px;
+  height: 19px;
+  display: block;
+}
+
+.ctr-vp {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  font-family: var(--font-head);
+  font-size: 12px;
+  background: rgba(247, 241, 224, 0.92);
+  color: var(--ink);
+  padding: 1px 7px;
+  border-radius: 8px;
+}
+
+.ctr-label {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-head);
+  font-size: 12px;
+  white-space: nowrap;
+  background: rgba(247, 241, 224, 0.9);
+  color: var(--ink);
+  padding: 1px 9px;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+.ctr-road-graphic {
+  width: 70%;
+  height: 26px;
+  background: repeating-linear-gradient(
+    90deg,
+    #5a3a20 0 14px,
+    #7a5230 14px 20px
+  );
+  border: 2px solid #4a2f1a;
+  border-radius: 5px;
+  transform: rotate(-8deg);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.35);
+}

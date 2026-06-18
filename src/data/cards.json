@@ -1,0 +1,2202 @@
+[
+  {
+    "id": "base-region-forest",
+    "set": "base",
+    "category": "region",
+    "name": "Forest",
+    "region_resource": "lumber",
+    "region_number": null,
+    "note": "die-number TODO from physical cards; starts with 1 stored (gold field starts 0)",
+    "copies": 4
+  },
+  {
+    "id": "base-region-hills",
+    "set": "base",
+    "category": "region",
+    "name": "Hills",
+    "region_resource": "brick",
+    "region_number": null,
+    "note": "die-number TODO from physical cards; starts with 1 stored (gold field starts 0)",
+    "copies": 4
+  },
+  {
+    "id": "base-region-pasture",
+    "set": "base",
+    "category": "region",
+    "name": "Pasture",
+    "region_resource": "wool",
+    "region_number": null,
+    "note": "die-number TODO from physical cards; starts with 1 stored (gold field starts 0)",
+    "copies": 4
+  },
+  {
+    "id": "base-region-fields",
+    "set": "base",
+    "category": "region",
+    "name": "Fields",
+    "region_resource": "grain",
+    "region_number": null,
+    "note": "die-number TODO from physical cards; starts with 1 stored (gold field starts 0)",
+    "copies": 4
+  },
+  {
+    "id": "base-region-mountains",
+    "set": "base",
+    "category": "region",
+    "name": "Mountains",
+    "region_resource": "ore",
+    "region_number": null,
+    "note": "die-number TODO from physical cards; starts with 1 stored (gold field starts 0)",
+    "copies": 4
+  },
+  {
+    "id": "base-region-gold-field",
+    "set": "base",
+    "category": "region",
+    "name": "Gold Field",
+    "region_resource": "gold",
+    "region_number": null,
+    "note": "die-number TODO from physical cards; starts with 1 stored (gold field starts 0)",
+    "copies": 4
+  },
+  {
+    "id": "base-settlement",
+    "set": "base",
+    "category": "settlement",
+    "name": "Settlement",
+    "cost": [
+      {
+        "resource": "lumber",
+        "count": 1
+      },
+      {
+        "resource": "brick",
+        "count": 1
+      },
+      {
+        "resource": "wool",
+        "count": 1
+      },
+      {
+        "resource": "grain",
+        "count": 1
+      }
+    ],
+    "values": {
+      "victory_points": 1
+    },
+    "rules_text": "Worth 1 victory point. Provides 2 building sites (above and below). Can be upgraded to a city.",
+    "copies": 9,
+    "confidence": "high",
+    "unclear": [
+      "cost is the canonical Catan/Rivals build cost — confirm against the physical card"
+    ]
+  },
+  {
+    "id": "base-city",
+    "set": "base",
+    "category": "city",
+    "name": "City",
+    "cost": [
+      {
+        "resource": "grain",
+        "count": 2
+      },
+      {
+        "resource": "ore",
+        "count": 3
+      }
+    ],
+    "rules_text": "Upgrade of a settlement. Worth 2 victory points.",
+    "copies": 7,
+    "confidence": "high",
+    "unclear": [
+      "cost is the canonical Catan/Rivals city-upgrade cost — confirm against the physical card"
+    ]
+  },
+  {
+    "id": "base-road",
+    "set": "base",
+    "category": "road",
+    "name": "Road",
+    "cost": [
+      {
+        "resource": "lumber",
+        "count": 1
+      },
+      {
+        "resource": "brick",
+        "count": 1
+      }
+    ],
+    "rules_text": "Connects settlements and lets you build an additional settlement. That is its only function.",
+    "copies": 9,
+    "confidence": "high",
+    "unclear": [
+      "cost is the canonical Catan/Rivals build cost — confirm against the physical card"
+    ]
+  },
+  {
+    "id": "base-toll-bridge",
+    "set": "base",
+    "category": "building",
+    "tag": "Building",
+    "name": "Toll Bridge",
+    "cost": [
+      {
+        "resource": "lumber",
+        "count": 1
+      },
+      {
+        "resource": "brick",
+        "count": 1
+      }
+    ],
+    "values": {
+      "commerce": 1
+    },
+    "rules_text": "Event Plentiful Harvest: You receive 2 gold.",
+    "flavor_text": "",
+    "image": "p01_c2.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "base-storehouse",
+    "set": "base",
+    "category": "building",
+    "tag": "Building",
+    "name": "Storehouse",
+    "cost": [
+      {
+        "resource": "lumber",
+        "count": 1
+      },
+      {
+        "resource": "wool",
+        "count": 1
+      }
+    ],
+    "values": {},
+    "rules_text": "Do not count the resources on the 2 neighboring regions when the event Brigand Attack is rolled.",
+    "flavor_text": "",
+    "image": "p01_c3.png",
+    "copies": 2,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "base-iron-foundry",
+    "set": "base",
+    "category": "building",
+    "tag": "Building",
+    "name": "Iron Foundry",
+    "cost": [
+      {
+        "resource": "brick",
+        "count": 1
+      },
+      {
+        "resource": "ore",
+        "count": 1
+      }
+    ],
+    "values": {
+      "other": "2x (green flags on both lower corners)"
+    },
+    "rules_text": "Doubles the ore production of the neighboring mountains.",
+    "flavor_text": "",
+    "image": "p01_c5.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "base-grain-mill",
+    "set": "base",
+    "category": "building",
+    "tag": "Building",
+    "name": "Grain Mill",
+    "cost": [
+      {
+        "resource": "lumber",
+        "count": 1
+      },
+      {
+        "resource": "grain",
+        "count": 1
+      }
+    ],
+    "values": {
+      "other": "2x (green flags on both lower corners)"
+    },
+    "rules_text": "Doubles the grain production of the neighboring fields.",
+    "flavor_text": "",
+    "image": "p01_c6.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "base-lumber-camp",
+    "set": "base",
+    "category": "building",
+    "tag": "Building",
+    "name": "Lumber Camp",
+    "cost": [
+      {
+        "resource": "lumber",
+        "count": 1
+      },
+      {
+        "resource": "ore",
+        "count": 1
+      }
+    ],
+    "values": {
+      "other": "2x (green flags on both lower corners)"
+    },
+    "rules_text": "Doubles the lumber production of the neighboring forests.",
+    "flavor_text": "",
+    "image": "p01_c7.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "base-brick-factory",
+    "set": "base",
+    "category": "building",
+    "tag": "Building",
+    "name": "Brick Factory",
+    "cost": [
+      {
+        "resource": "brick",
+        "count": 1
+      },
+      {
+        "resource": "ore",
+        "count": 1
+      }
+    ],
+    "values": {
+      "other": "2x (green flags on both lower corners)"
+    },
+    "rules_text": "Doubles the brick production of the neighboring hills.",
+    "flavor_text": "",
+    "image": "p01_c8.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "base-weaver-s-shop",
+    "set": "base",
+    "category": "building",
+    "tag": "Building",
+    "name": "Weaver's Shop",
+    "cost": [
+      {
+        "resource": "lumber",
+        "count": 1
+      },
+      {
+        "resource": "wool",
+        "count": 1
+      }
+    ],
+    "values": {
+      "other": "2x (green flags on both lower corners)"
+    },
+    "rules_text": "Doubles the wool production of the neighboring pastures.",
+    "flavor_text": "",
+    "image": "p01_c9.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "base-abbey",
+    "set": "base",
+    "category": "building",
+    "tag": "Building",
+    "name": "ABBEY",
+    "cost": [
+      {
+        "resource": "brick",
+        "count": 1
+      },
+      {
+        "resource": "grain",
+        "count": 1
+      },
+      {
+        "resource": "ore",
+        "count": 1
+      }
+    ],
+    "values": {},
+    "rules_text": "",
+    "flavor_text": "Progress is not the only thing here; you also get red wine and lots of dark beer.",
+    "image": "p02_c1.png",
+    "copies": 2,
+    "confidence": "high",
+    "unclear": [
+      "No effect text transcribed — confirm against the physical card whether it has printed rules or is a prerequisite-only card"
+    ]
+  },
+  {
+    "id": "base-marketplace",
+    "set": "base",
+    "category": "building",
+    "tag": "Building",
+    "name": "MARKETPLACE",
+    "cost": [
+      {
+        "resource": "grain",
+        "count": 1
+      },
+      {
+        "resource": "wool",
+        "count": 1
+      }
+    ],
+    "values": {},
+    "rules_text": "If a production number is rolled that appears more frequently on your opponent's regions than on yours, you receive 1 resource. Choose a resource your opponent can normally receive.",
+    "flavor_text": "",
+    "image": "p02_c3.png",
+    "copies": 2,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "base-parish-hall",
+    "set": "base",
+    "category": "building",
+    "tag": "Building",
+    "name": "PARISH HALL",
+    "cost": [
+      {
+        "resource": "brick",
+        "count": 1
+      },
+      {
+        "resource": "grain",
+        "count": 1
+      }
+    ],
+    "values": {},
+    "rules_text": "You pay only 1 resource for choosing a card from a draw stack.",
+    "flavor_text": "",
+    "image": "p02_c5.png",
+    "copies": 2,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "base-large-trade-ship",
+    "set": "base",
+    "category": "hero-or-unit",
+    "tag": "Unit - Trade Ship",
+    "name": "LARGE TRADE SHIP",
+    "cost": [
+      {
+        "resource": "lumber",
+        "count": 1
+      },
+      {
+        "resource": "wool",
+        "count": 1
+      }
+    ],
+    "values": {
+      "other": "2:1 (left arrow) and 2:1 (right arrow)"
+    },
+    "rules_text": "You may trade 2 resources of the left or right neighboring region for any 1 other resource of your choice.",
+    "flavor_text": "",
+    "image": "p02_c7.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "base-gold-ship",
+    "set": "base",
+    "category": "hero-or-unit",
+    "tag": "Unit - Trade Ship",
+    "name": "GOLD SHIP",
+    "cost": [
+      {
+        "resource": "lumber",
+        "count": 1
+      },
+      {
+        "resource": "wool",
+        "count": 1
+      }
+    ],
+    "values": {
+      "other": "2:1"
+    },
+    "rules_text": "During your turn, you may trade 2 gold for any 1 other resource as often as you wish.",
+    "flavor_text": "",
+    "image": "p02_c8.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "base-ore-ship",
+    "set": "base",
+    "category": "hero-or-unit",
+    "tag": "Unit - Trade Ship",
+    "name": "ORE SHIP",
+    "cost": [
+      {
+        "resource": "lumber",
+        "count": 1
+      },
+      {
+        "resource": "wool",
+        "count": 1
+      }
+    ],
+    "values": {
+      "other": "2:1"
+    },
+    "rules_text": "During your turn, you may trade 2 ore for any 1 other resource as often as you wish.",
+    "flavor_text": "",
+    "image": "p02_c9.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "base-grain-ship",
+    "set": "base",
+    "category": "hero-or-unit",
+    "tag": "Unit - Trade Ship",
+    "name": "Grain Ship",
+    "cost": [
+      {
+        "resource": "lumber",
+        "count": 1
+      },
+      {
+        "resource": "wool",
+        "count": 1
+      }
+    ],
+    "values": {
+      "other": "2:1"
+    },
+    "rules_text": "During your turn, you may trade 2 grain for any 1 other resource as often as you wish.",
+    "flavor_text": "",
+    "image": "p03_c1.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "base-lumber-ship",
+    "set": "base",
+    "category": "hero-or-unit",
+    "tag": "Unit - Trade Ship",
+    "name": "Lumber Ship",
+    "cost": [
+      {
+        "resource": "lumber",
+        "count": 1
+      },
+      {
+        "resource": "wool",
+        "count": 1
+      }
+    ],
+    "values": {
+      "other": "2:1"
+    },
+    "rules_text": "During your turn, you may trade 2 lumber for any 1 other resource as often as you wish.",
+    "flavor_text": "",
+    "image": "p03_c2.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "base-brick-ship",
+    "set": "base",
+    "category": "hero-or-unit",
+    "tag": "Unit - Trade Ship",
+    "name": "Brick Ship",
+    "cost": [
+      {
+        "resource": "lumber",
+        "count": 1
+      },
+      {
+        "resource": "wool",
+        "count": 1
+      }
+    ],
+    "values": {
+      "other": "2:1"
+    },
+    "rules_text": "During your turn, you may trade 2 brick for any 1 other resource as often as you wish.",
+    "flavor_text": "",
+    "image": "p03_c3.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "base-wool-ship",
+    "set": "base",
+    "category": "hero-or-unit",
+    "tag": "Unit - Trade Ship",
+    "name": "Wool Ship",
+    "cost": [
+      {
+        "resource": "lumber",
+        "count": 1
+      },
+      {
+        "resource": "wool",
+        "count": 1
+      }
+    ],
+    "values": {
+      "other": "2:1"
+    },
+    "rules_text": "During your turn, you may trade 2 wool for any 1 other resource as often as you wish.",
+    "flavor_text": "",
+    "image": "p03_c4.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "base-austin",
+    "set": "base",
+    "category": "hero-or-unit",
+    "tag": "Unit - Hero",
+    "name": "Austin",
+    "cost": [
+      {
+        "resource": "grain",
+        "count": 1
+      },
+      {
+        "resource": "ore",
+        "count": 1
+      }
+    ],
+    "values": {
+      "strength": 1,
+      "skill": 2
+    },
+    "rules_text": "",
+    "flavor_text": "If you hit my left cheek, don't even think you'll have time to hit the right one too.",
+    "image": "p03_c5.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "base-harald",
+    "set": "base",
+    "category": "hero-or-unit",
+    "tag": "Unit - Hero",
+    "name": "Harald",
+    "cost": [
+      {
+        "resource": "grain",
+        "count": 1
+      },
+      {
+        "resource": "ore",
+        "count": 1
+      }
+    ],
+    "values": {
+      "strength": 2,
+      "skill": 1
+    },
+    "rules_text": "",
+    "flavor_text": "I knock you out faster than you can carve the word \"strategy\" in this stone.",
+    "image": "p03_c6.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "base-inga",
+    "set": "base",
+    "category": "hero-or-unit",
+    "tag": "Unit - Hero",
+    "name": "Inga",
+    "cost": [
+      {
+        "resource": "grain",
+        "count": 1
+      },
+      {
+        "resource": "wool",
+        "count": 1
+      },
+      {
+        "resource": "ore",
+        "count": 1
+      }
+    ],
+    "values": {
+      "strength": 1,
+      "skill": 3
+    },
+    "rules_text": "",
+    "flavor_text": "The gods are expecting more offerings. And they expect you to hand them over to me!",
+    "image": "p03_c7.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "base-osmund",
+    "set": "base",
+    "category": "hero-or-unit",
+    "tag": "Unit - Hero",
+    "name": "Osmund",
+    "cost": [
+      {
+        "resource": "grain",
+        "count": 1
+      },
+      {
+        "resource": "wool",
+        "count": 1
+      },
+      {
+        "resource": "ore",
+        "count": 1
+      }
+    ],
+    "values": {
+      "strength": 2,
+      "skill": 2
+    },
+    "rules_text": "",
+    "flavor_text": "When it comes to gold and women, friendship stops. And it also stops when it comes to power. Actually, friendship never lasts very long.",
+    "image": "p03_c8.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "base-candamir",
+    "set": "base",
+    "category": "hero-or-unit",
+    "tag": "Unit - Hero",
+    "name": "Candamir",
+    "cost": [
+      {
+        "resource": "wool",
+        "count": 1
+      },
+      {
+        "resource": "grain",
+        "count": 1
+      },
+      {
+        "resource": "ore",
+        "count": 1
+      }
+    ],
+    "values": {
+      "strength": 4,
+      "skill": 1
+    },
+    "rules_text": "",
+    "flavor_text": "A well-sharpened axe is a tried and tested starting position for a successful conversation.",
+    "image": "p03_c9.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "base-siglind",
+    "set": "base",
+    "category": "hero-or-unit",
+    "tag": "Unit – Hero",
+    "name": "Siglind",
+    "cost": [],
+    "values": {
+      "strength": 2,
+      "skill": 3
+    },
+    "rules_text": "",
+    "flavor_text": "Turning men into heroes belittles the importance of being a hero.",
+    "image": "p04_c1.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "base-brigitta-the-wise-woman",
+    "set": "base",
+    "category": "action",
+    "tag": "Action – Neutral",
+    "name": "Brigitta, the Wise Woman",
+    "cost": [],
+    "values": {},
+    "rules_text": "Play this card before rolling the dice. Choose the result of the production die roll.",
+    "flavor_text": "",
+    "image": "p04_c2.png",
+    "copies": 2,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "base-relocation",
+    "set": "base",
+    "category": "action",
+    "tag": "Action – Neutral",
+    "name": "Relocation",
+    "cost": [],
+    "values": {},
+    "rules_text": "You may exchange 2 of your own regions or 2 of your own expansion cards. Resources stored on regions may not be changed and card placement rules must be followed.",
+    "flavor_text": "",
+    "image": "p04_c4.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "base-scout",
+    "set": "base",
+    "category": "action",
+    "tag": "Action – Neutral",
+    "name": "Scout",
+    "cost": [],
+    "values": {},
+    "rules_text": "Play this card when building a settlement. Take 2 cards of your choice from the region card stack. Reshuffle the region card stack.",
+    "flavor_text": "",
+    "image": "p04_c5.png",
+    "copies": 2,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "base-merchant-caravan",
+    "set": "base",
+    "category": "action",
+    "tag": "Action – Neutral",
+    "name": "Merchant Caravan",
+    "cost": [],
+    "values": {},
+    "rules_text": "Discard exactly 2 of your resources and take any 2 resources of your choice in return.",
+    "flavor_text": "",
+    "image": "p04_c7.png",
+    "copies": 2,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "base-goldsmith",
+    "set": "base",
+    "category": "action",
+    "tag": "Action – Neutral",
+    "name": "Goldsmith",
+    "cost": [],
+    "values": {},
+    "rules_text": "Discard 3 gold and take any 2 resources of your choice in return.",
+    "flavor_text": "",
+    "image": "p04_c9.png",
+    "copies": 2,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "base-invention",
+    "set": "base",
+    "category": "event",
+    "tag": "Event",
+    "name": "Invention",
+    "cost": [],
+    "values": {},
+    "rules_text": "Each player gets any 1 resource of his choice for each building with a progress point – up to a maximum of 2 resources.",
+    "flavor_text": "",
+    "image": "p05_c3.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "base-yule",
+    "set": "base",
+    "category": "event",
+    "tag": "Event",
+    "name": "Yule",
+    "cost": [],
+    "values": {},
+    "rules_text": "Shuffle the event card stack as performed at the beginning of the game. Afterwards, draw an event card again.",
+    "flavor_text": "",
+    "image": "p05_c4.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "base-year-of-plenty",
+    "set": "base",
+    "category": "event",
+    "tag": "Event",
+    "name": "Year of Plenty",
+    "cost": [],
+    "values": {},
+    "rules_text": "Each region gets 1 resource for each adjacent Storehouse and Abbey, provided that storage space is available.",
+    "flavor_text": "",
+    "image": "p05_c5.png",
+    "copies": 2,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "base-fraternal-feuds",
+    "set": "base",
+    "category": "event",
+    "tag": "Event",
+    "name": "Fraternal Feuds",
+    "cost": [],
+    "values": {},
+    "rules_text": "The player who has the strength advantage selects 2 cards from the opponent's hand and returns them to the bottom of matching draw stacks.",
+    "flavor_text": "",
+    "image": "p05_c7.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "base-feud",
+    "set": "base",
+    "category": "event",
+    "tag": "Event",
+    "name": "Feud",
+    "cost": [],
+    "values": {},
+    "rules_text": "The player who has the strength advantage selects 3 of his opponent's buildings. The opponent must remove one of them and return it to the bottom of a matching draw stack.",
+    "flavor_text": "",
+    "image": "p05_c8.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "base-traveling-merchant",
+    "set": "base",
+    "category": "event",
+    "tag": "Event",
+    "name": "Traveling Merchant",
+    "cost": [],
+    "values": {},
+    "rules_text": "Each player may take up to 2 resources of his choice, paying 1 gold per resource.",
+    "flavor_text": "",
+    "image": "p05_c9.png",
+    "copies": 2,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "base-trade-ships-race",
+    "set": "base",
+    "category": "event",
+    "tag": "Event",
+    "name": "TRADE SHIPS RACE",
+    "cost": [],
+    "values": {},
+    "rules_text": "The player who owns the most trade ships receives any 1 resource of his choice. In case of a tie, each player receives any 1 resource of his choice (each must have at least 1 trade ship).",
+    "flavor_text": "",
+    "image": "p06_c2.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "gold-storehouse",
+    "set": "gold",
+    "category": "building",
+    "tag": "Building",
+    "name": "STOREHOUSE",
+    "cost": [
+      {
+        "resource": "lumber",
+        "count": 1
+      },
+      {
+        "resource": "wool",
+        "count": 1
+      }
+    ],
+    "values": {},
+    "rules_text": "Do not count the resources on the 2 neighboring regions when the event Brigand Attack is rolled.",
+    "flavor_text": "",
+    "image": "p06_c4.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "gold-toll-bridge",
+    "set": "gold",
+    "category": "building",
+    "tag": "Building",
+    "name": "TOLL BRIDGE",
+    "cost": [
+      {
+        "resource": "lumber",
+        "count": 1
+      },
+      {
+        "resource": "brick",
+        "count": 1
+      }
+    ],
+    "values": {
+      "commerce": 1
+    },
+    "rules_text": "Event Plentiful Harvest: You receive 2 gold.",
+    "flavor_text": "",
+    "image": "p06_c5.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "gold-gold-cache",
+    "set": "gold",
+    "category": "building",
+    "tag": "Building",
+    "name": "GOLD CACHE",
+    "cost": [],
+    "values": {},
+    "rules_text": "The Gold Cache may also be used to store the gold you received. When the event Brigand Attack is rolled, the gold in the cache is neither counted nor stolen. Requires: Hero with at least 1 strength point.",
+    "flavor_text": "",
+    "image": "p06_c6.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "gold-pirate-ship",
+    "set": "gold",
+    "category": "hero-or-unit",
+    "tag": "Unit",
+    "name": "PIRATE SHIP",
+    "cost": [
+      {
+        "resource": "lumber",
+        "count": 1
+      },
+      {
+        "resource": "wool",
+        "count": 1
+      }
+    ],
+    "values": {},
+    "rules_text": "Your opponent must remove 1 trade ship of his choice from his principality and place it on the discard pile. Event Plentiful Harvest: You receive 1 gold.",
+    "flavor_text": "",
+    "image": "p06_c7.png",
+    "copies": 2,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "gold-large-trade-ship",
+    "set": "gold",
+    "category": "hero-or-unit",
+    "tag": "Unit – Trade Ship",
+    "name": "LARGE TRADE SHIP",
+    "cost": [
+      {
+        "resource": "lumber",
+        "count": 1
+      },
+      {
+        "resource": "wool",
+        "count": 1
+      }
+    ],
+    "values": {
+      "commerce": 1,
+      "other": "2:1 (left and right banners)"
+    },
+    "rules_text": "You may trade 2 resources of the left or right neighboring region for any 1 other resource of your choice.",
+    "flavor_text": "",
+    "image": "p06_c9.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "gold-merchant-guild",
+    "set": "gold",
+    "category": "building",
+    "tag": "Face-up Expansion",
+    "name": "MERCHANT GUILD",
+    "cost": [
+      {
+        "resource": "brick",
+        "count": 1
+      },
+      {
+        "resource": "wool",
+        "count": 1
+      },
+      {
+        "resource": "grain",
+        "count": 1
+      }
+    ],
+    "values": {
+      "commerce": 1,
+      "other": "two balance-scale (commerce) symbols at bottom right"
+    },
+    "rules_text": "",
+    "flavor_text": "Money can't buy you happiness. But taking it away from others can.",
+    "image": "p07_c1.png",
+    "copies": 2,
+    "confidence": "low",
+    "unclear": [
+      "values.commerce: the commerce point flag value and the two balance-scale symbol numbers are not legible enough to confirm exact counts"
+    ]
+  },
+  {
+    "id": "gold-moneylender",
+    "set": "gold",
+    "category": "building",
+    "tag": "Building",
+    "name": "MONEYLENDER",
+    "cost": [
+      {
+        "resource": "lumber",
+        "count": 1
+      },
+      {
+        "resource": "ore",
+        "count": 1
+      },
+      {
+        "resource": "brick",
+        "count": 1
+      }
+    ],
+    "values": {},
+    "rules_text": "If you have the trade advantage and the event Trade is rolled on the event die, you may take 2 resources of your choice from your opponent.",
+    "flavor_text": "",
+    "image": "p07_c3.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "gold-harbor",
+    "set": "gold",
+    "category": "building",
+    "tag": "Building",
+    "name": "HARBOR",
+    "cost": [
+      {
+        "resource": "brick",
+        "count": 1
+      },
+      {
+        "resource": "wool",
+        "count": 1
+      },
+      {
+        "resource": "ore",
+        "count": 1
+      }
+    ],
+    "values": {
+      "commerce": 1,
+      "note": "worth +1 VP while >=3 trade ships in play"
+    },
+    "rules_text": "As long as at least 3 trade ships are placed in your principality, the Harbor is worth 1 victory point.",
+    "flavor_text": "",
+    "image": "p07_c4.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "gold-trading-base",
+    "set": "gold",
+    "category": "building",
+    "tag": "Building",
+    "name": "TRADING BASE",
+    "cost": [
+      {
+        "resource": "grain",
+        "count": 1
+      },
+      {
+        "resource": "wool",
+        "count": 1
+      },
+      {
+        "resource": "brick",
+        "count": 1
+      }
+    ],
+    "values": {
+      "commerce": 1
+    },
+    "rules_text": "The Marketplace and the Harbor receive a second commerce point.",
+    "flavor_text": "",
+    "image": "p07_c5.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "gold-mint",
+    "set": "gold",
+    "category": "building",
+    "tag": "Building",
+    "name": "MINT",
+    "cost": [
+      {
+        "resource": "lumber",
+        "count": 1
+      },
+      {
+        "resource": "ore",
+        "count": 1
+      },
+      {
+        "resource": "brick",
+        "count": 1
+      }
+    ],
+    "values": {},
+    "rules_text": "Once per each of your turns, you may use this Mint to trade 1 gold for 1 other resource of your choice.",
+    "flavor_text": "",
+    "image": "p07_c6.png",
+    "copies": 2,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "gold-staple-house",
+    "set": "gold",
+    "category": "building",
+    "tag": "Building",
+    "name": "STAPLE HOUSE",
+    "cost": [
+      {
+        "resource": "brick",
+        "count": 1
+      },
+      {
+        "resource": "ore",
+        "count": 1
+      },
+      {
+        "resource": "wool",
+        "count": 1
+      }
+    ],
+    "values": {},
+    "rules_text": "If you build the Staple House, you immediately receive 2 resources of your choice. Requires: Merchant Guild.",
+    "flavor_text": "",
+    "image": "p07_c8.png",
+    "copies": 2,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "gold-salt-silo",
+    "set": "gold",
+    "category": "building",
+    "tag": "Building",
+    "name": "Salt Silo",
+    "cost": [
+      {
+        "resource": "wool",
+        "count": 1
+      },
+      {
+        "resource": "gold",
+        "count": 1
+      },
+      {
+        "resource": "brick",
+        "count": 1
+      }
+    ],
+    "values": {},
+    "rules_text": "Each of your trade ships is worth 1 more commerce point.",
+    "flavor_text": "",
+    "image": "p08_c1.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "gold-trade-master",
+    "set": "gold",
+    "category": "action",
+    "tag": "Action – Attack",
+    "name": "Trade Master",
+    "cost": [],
+    "values": {},
+    "rules_text": "You immediately receive 2 resources of your choice from your opponent. Requires: Merchant Guild.",
+    "flavor_text": "",
+    "image": "p08_c2.png",
+    "copies": 2,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "gold-merchant",
+    "set": "gold",
+    "category": "action",
+    "tag": "Action – Attack",
+    "name": "Merchant",
+    "cost": [],
+    "values": {},
+    "rules_text": "Take up to 2 resources of your choice from your opponent and give him 1 resource of your choice in return. Requires: 3 commerce points or city.",
+    "flavor_text": "",
+    "image": "p08_c4.png",
+    "copies": 2,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "gold-reiner-the-herald",
+    "set": "gold",
+    "category": "action",
+    "tag": "Action – Neutral",
+    "name": "Reiner the Herald",
+    "cost": [],
+    "values": {},
+    "rules_text": "Play this card before rolling the dice and determine the event Celebration. You receive 1 additional resource for the Celebration.",
+    "flavor_text": "",
+    "image": "p08_c6.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "gold-goldsmith",
+    "set": "gold",
+    "category": "action",
+    "tag": "Action – Neutral",
+    "name": "Goldsmith",
+    "cost": [],
+    "values": {},
+    "rules_text": "Discard 3 gold and take any 2 resources of your choice in return.",
+    "flavor_text": "",
+    "image": "p08_c7.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "gold-brigands",
+    "set": "gold",
+    "category": "action",
+    "tag": "Action – Attack",
+    "name": "Brigands",
+    "cost": [],
+    "values": {},
+    "rules_text": "You may take as many resources of the same type from your opponent as 1 of your regions can accommodate. Requires: Strength advantage.",
+    "flavor_text": "",
+    "image": "p08_c8.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "gold-gudrun-terror-of-the-seas",
+    "set": "gold",
+    "category": "action",
+    "tag": "Action – Attack",
+    "name": "Gudrun, Terror of the Seas",
+    "cost": [],
+    "values": {},
+    "rules_text": "For each of your Pirate Ships, your opponent must give you up to 2 gold.",
+    "flavor_text": "",
+    "image": "p08_c9.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "gold-traveling-merchant",
+    "set": "gold",
+    "category": "event",
+    "tag": "Event",
+    "name": "Traveling Merchant",
+    "cost": [],
+    "values": {},
+    "rules_text": "Each player may take up to 2 resources of his choice. For each resource, 1 gold must be paid.",
+    "flavor_text": "",
+    "image": "p09_c2.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "gold-trade-ships-race",
+    "set": "gold",
+    "category": "event",
+    "tag": "Event",
+    "name": "Trade Ships Race",
+    "cost": [],
+    "values": {},
+    "rules_text": "The player who owns the most trade ships receives any 1 resource of his choice. In case of a tie, each player receives any 1 resource of his choice (each must have at least 1 trade ship).",
+    "flavor_text": "",
+    "image": "p09_c3.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "gold-gift-for-the-prince",
+    "set": "gold",
+    "category": "event",
+    "tag": "Event",
+    "name": "Gift for the Prince",
+    "cost": [],
+    "values": {},
+    "rules_text": "Each player receives 1 gold for each unit with at least 1 strength point.",
+    "flavor_text": "",
+    "image": "p09_c4.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "turmoil-drill-ground",
+    "set": "turmoil",
+    "category": "building",
+    "tag": "Building",
+    "name": "Drill Ground",
+    "cost": [
+      {
+        "resource": "brick",
+        "count": 1
+      },
+      {
+        "resource": "ore",
+        "count": 1
+      }
+    ],
+    "values": {
+      "other": "1x"
+    },
+    "rules_text": "Each hero you build in your principality costs you 1 resource of your choice less.",
+    "flavor_text": "",
+    "image": "p09_c6.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "turmoil-lookout-tower",
+    "set": "turmoil",
+    "category": "building",
+    "tag": "Building",
+    "name": "Lookout Tower",
+    "cost": [
+      {
+        "resource": "lumber",
+        "count": 1
+      },
+      {
+        "resource": "grain",
+        "count": 1
+      }
+    ],
+    "values": {},
+    "rules_text": "When your opponent plays an Archer, Arsonist, or Traitor, roll the die. If you roll a 1 or 2, the card has no effect.",
+    "flavor_text": "",
+    "image": "p09_c7.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "turmoil-carl-forkbeard",
+    "set": "turmoil",
+    "category": "hero-or-unit",
+    "tag": "Unit – Hero",
+    "name": "Carl Forkbeard",
+    "cost": [
+      {
+        "resource": "wool",
+        "count": 1
+      },
+      {
+        "resource": "grain",
+        "count": 1
+      },
+      {
+        "resource": "ore",
+        "count": 1
+      }
+    ],
+    "values": {
+      "strength": 5
+    },
+    "rules_text": "",
+    "flavor_text": "What a beautiful island! I take it.",
+    "image": "p09_c8.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "turmoil-heinrich-the-sentinel",
+    "set": "turmoil",
+    "category": "hero-or-unit",
+    "tag": "Unit – Hero",
+    "name": "Heinrich the Sentinel",
+    "cost": [
+      {
+        "resource": "grain",
+        "count": 1
+      },
+      {
+        "resource": "wool",
+        "count": 1
+      },
+      {
+        "resource": "ore",
+        "count": 1
+      }
+    ],
+    "values": {
+      "strength": 2
+    },
+    "rules_text": "When your opponent plays an Archer, Arsonist, or Traitor, roll the die. If you roll a 3, 4, or 5, the card has no effect.",
+    "flavor_text": "",
+    "image": "p09_c9.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "turmoil-irmgard-keeper-of-the-light",
+    "set": "turmoil",
+    "category": "hero-or-unit",
+    "tag": "Unit – Hero",
+    "name": "Irmgard, Keeper of the Light",
+    "cost": [],
+    "values": {},
+    "rules_text": "If you lose a card of your principality due to an event or an action, you receive any 1 resource of your choice.",
+    "flavor_text": "",
+    "image": "p10_c1.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "turmoil-chapel",
+    "set": "turmoil",
+    "category": "building",
+    "tag": "Building",
+    "name": "Chapel",
+    "cost": [
+      {
+        "resource": "ore",
+        "count": 1
+      },
+      {
+        "resource": "brick",
+        "count": 1
+      },
+      {
+        "resource": "grain",
+        "count": 1
+      }
+    ],
+    "values": {},
+    "rules_text": "If a 1, 2, or 3 is rolled with the production die, the event Riots does not apply to you.",
+    "flavor_text": "",
+    "image": "p10_c2.png",
+    "copies": 2,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "turmoil-fairgrounds",
+    "set": "turmoil",
+    "category": "building",
+    "tag": "Building",
+    "name": "Fairgrounds",
+    "cost": [
+      {
+        "resource": "lumber",
+        "count": 1
+      },
+      {
+        "resource": "grain",
+        "count": 1
+      },
+      {
+        "resource": "wool",
+        "count": 1
+      }
+    ],
+    "values": {},
+    "rules_text": "If you have more skill points than your opponent, you immediately receive 2 resources of your choice after building the Fairground.",
+    "flavor_text": "",
+    "image": "p10_c4.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "turmoil-hedge-tavern-1x",
+    "set": "turmoil",
+    "category": "building",
+    "tag": "Face-up Expansion",
+    "name": "Hedge Tavern (1x)",
+    "cost": [
+      {
+        "resource": "gold",
+        "count": 1
+      },
+      {
+        "resource": "grain",
+        "count": 1
+      },
+      {
+        "resource": "wool",
+        "count": 1
+      }
+    ],
+    "values": {},
+    "rules_text": "",
+    "flavor_text": "In the neighborhood, word has it that more people were seen going inside than coming out.",
+    "image": "p10_c5.png",
+    "copies": 2,
+    "confidence": "high",
+    "unclear": [
+      "No effect text transcribed — confirm against the physical card whether it has printed rules or is a prerequisite-only card"
+    ]
+  },
+  {
+    "id": "turmoil-tithe-barn",
+    "set": "turmoil",
+    "category": "building",
+    "tag": "Building",
+    "name": "Tithe Barn",
+    "cost": [
+      {
+        "resource": "lumber",
+        "count": 1
+      },
+      {
+        "resource": "brick",
+        "count": 1
+      },
+      {
+        "resource": "grain",
+        "count": 1
+      }
+    ],
+    "values": {},
+    "rules_text": "After building the Tithe Barn, you immediately receive either grain or wool – that is, one of the chosen resource for each of your heroes.",
+    "flavor_text": "",
+    "image": "p10_c7.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "turmoil-large-festival-hall",
+    "set": "turmoil",
+    "category": "building",
+    "tag": "Building",
+    "name": "Large Festival Hall",
+    "cost": [
+      {
+        "resource": "gold",
+        "count": 2
+      },
+      {
+        "resource": "ore",
+        "count": 2
+      },
+      {
+        "resource": "brick",
+        "count": 2
+      }
+    ],
+    "values": {
+      "other": "2 red flag/banner markers shown bottom-right"
+    },
+    "rules_text": "",
+    "flavor_text": "Just a moment! Didn't the estimate specify a much bigger tower?",
+    "image": "p10_c8.png",
+    "copies": 1,
+    "confidence": "low",
+    "unclear": [
+      "values: two red banner/flag icons at bottom-right – unsure what point value (e.g. victory_points or strength) they represent",
+      "cost: top icon row read as 2 gold, 2 ore, 2 brick but icon counts/types should be verified against physical card"
+    ]
+  },
+  {
+    "id": "turmoil-fire-brigade",
+    "set": "turmoil",
+    "category": "building",
+    "tag": "Building",
+    "name": "Fire Brigade",
+    "cost": [
+      {
+        "resource": "wool",
+        "count": 1
+      },
+      {
+        "resource": "brick",
+        "count": 1
+      },
+      {
+        "resource": "ore",
+        "count": 1
+      }
+    ],
+    "values": {},
+    "rules_text": "This city's buildings are safe from the Arsonist.",
+    "flavor_text": "",
+    "image": "p10_c9.png",
+    "copies": 2,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "turmoil-voyage-of-plunder",
+    "set": "turmoil",
+    "category": "action",
+    "tag": "Action – Attack",
+    "name": "Voyage of Plunder",
+    "cost": [],
+    "values": {},
+    "rules_text": "If your opponent has more victory points, he must give you 2 resources of your choice. If he isn't in the lead, you only receive one resource. Requires: Strength advantage.",
+    "flavor_text": "",
+    "image": "p11_c2.png",
+    "copies": 2,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "turmoil-archer",
+    "set": "turmoil",
+    "category": "action",
+    "tag": "Action – Attack",
+    "name": "Archer",
+    "cost": [],
+    "values": {},
+    "rules_text": "Your opponent must place 1 of his own units with at least 1 strength point under a matching draw stack. Requires: Hedge Tavern.",
+    "flavor_text": "",
+    "image": "p11_c4.png",
+    "copies": 2,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "turmoil-arsonist",
+    "set": "turmoil",
+    "category": "action",
+    "tag": "Action – Attack",
+    "name": "Arsonist",
+    "cost": [],
+    "values": {},
+    "rules_text": "Choose 1 of your opponent's buildings adjacent to a settlement/city. He must place it under a draw stack of his choice. Requires: Hedge Tavern.",
+    "flavor_text": "",
+    "image": "p11_c6.png",
+    "copies": 2,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "turmoil-brigands",
+    "set": "turmoil",
+    "category": "action",
+    "tag": "Action – Attack",
+    "name": "Brigands",
+    "cost": [],
+    "values": {},
+    "rules_text": "You may take as many resources of the same type from your opponent as 1 of your regions can accommodate. Requires: Strength advantage.",
+    "flavor_text": "",
+    "image": "p11_c8.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "turmoil-sebastian-the-itinerant-preacher",
+    "set": "turmoil",
+    "category": "action",
+    "tag": "Action – Neutral",
+    "name": "Sebastian the Itinerant Preacher",
+    "cost": [],
+    "values": {},
+    "rules_text": "If you play this card when the events Riots, Feud, or Fraternal Feud occur, these events do not apply to you.",
+    "flavor_text": "",
+    "image": "p11_c9.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "turmoil-traitor",
+    "set": "turmoil",
+    "category": "action",
+    "tag": "Action - Attack",
+    "name": "Traitor",
+    "cost": [],
+    "values": {},
+    "rules_text": "Your opponent must show you all the cards in his hand. You may add 1 of them to your hand (in the Tournament Game, only units and action cards). Requires: Hedge Tavern.",
+    "flavor_text": "",
+    "image": "p12_c1.png",
+    "copies": 2,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "turmoil-riots",
+    "set": "turmoil",
+    "category": "event",
+    "tag": "Event",
+    "name": "Riots",
+    "cost": [],
+    "values": {},
+    "rules_text": "A player who has 1 or 2 units with strength points or commerce points pays 1 gold. A player who has more than 2 of these units pays 2 gold. If a player doesn't pay, he must remove one of these units and return it to the bottom of a matching draw stack.",
+    "flavor_text": "",
+    "image": "p12_c4.png",
+    "copies": 2,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "turmoil-fraternal-feuds",
+    "set": "turmoil",
+    "category": "event",
+    "tag": "Event",
+    "name": "Fraternal Feuds",
+    "cost": [],
+    "values": {},
+    "rules_text": "The player who has the strength advantage selects 2 cards from the opponent's hand and returns them to the bottom of matching draw stacks.",
+    "flavor_text": "",
+    "image": "p12_c6.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "turmoil-feud",
+    "set": "turmoil",
+    "category": "event",
+    "tag": "Event",
+    "name": "Feud",
+    "cost": [],
+    "values": {},
+    "rules_text": "The player who has the strength advantage selects 3 of his opponent's buildings. The opponent must remove one of them and return it to the bottom of a matching draw stack.",
+    "flavor_text": "",
+    "image": "p12_c7.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "progress-chief-cannoneer",
+    "set": "progress",
+    "category": "hero-or-unit",
+    "tag": "Unit",
+    "name": "Chief Cannoneer",
+    "cost": [
+      {
+        "resource": "lumber",
+        "count": 1
+      },
+      {
+        "resource": "ore",
+        "count": 1
+      }
+    ],
+    "values": {
+      "strength": 4,
+      "requires": "University"
+    },
+    "rules_text": "Requires: University.",
+    "flavor_text": "I'll show you how to produce a romantic castle ruin.",
+    "image": "p12_c9.png",
+    "copies": 2,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "progress-town-hall",
+    "set": "progress",
+    "category": "building",
+    "tag": "Building",
+    "name": "TOWN HALL",
+    "cost": [
+      {
+        "resource": "wool",
+        "count": 1
+      },
+      {
+        "resource": "ore",
+        "count": 1
+      },
+      {
+        "resource": "brick",
+        "count": 1
+      }
+    ],
+    "values": {},
+    "rules_text": "Place the Town Hall on your Parish Hall. At the end of your turn, you no longer pay for choosing a card.",
+    "flavor_text": "",
+    "image": "p13_c2.png",
+    "copies": 2,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "progress-university",
+    "set": "progress",
+    "category": "building",
+    "tag": "Face-up Expansion",
+    "name": "UNIVERSITY",
+    "cost": [
+      {
+        "resource": "lumber",
+        "count": 1
+      },
+      {
+        "resource": "grain",
+        "count": 1
+      },
+      {
+        "resource": "brick",
+        "count": 1
+      }
+    ],
+    "values": {
+      "skill": 1,
+      "other": "(1x)"
+    },
+    "rules_text": "Requires: Abbey or Library.",
+    "flavor_text": "Formerly, there was a hedge-tavern here. Now there are two of them next door.",
+    "image": "p13_c4.png",
+    "copies": 2,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "progress-library",
+    "set": "progress",
+    "category": "building",
+    "tag": "Building",
+    "name": "LIBRARY",
+    "cost": [
+      {
+        "resource": "lumber",
+        "count": 1
+      },
+      {
+        "resource": "brick",
+        "count": 1
+      },
+      {
+        "resource": "ore",
+        "count": 1
+      }
+    ],
+    "values": {},
+    "rules_text": "When you build the Library, you may immediately choose a card from a draw stack (Tournament: from your own stack).",
+    "flavor_text": "",
+    "image": "p13_c6.png",
+    "copies": 2,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "progress-pharmacy",
+    "set": "progress",
+    "category": "building",
+    "tag": "Building",
+    "name": "PHARMACY",
+    "cost": [
+      {
+        "resource": "wool",
+        "count": 1
+      },
+      {
+        "resource": "brick",
+        "count": 1
+      },
+      {
+        "resource": "gold",
+        "count": 1
+      }
+    ],
+    "values": {},
+    "rules_text": "When the event Plague occurs, you receive any 1 resource of your choice. You receive this resource whether you previously lost resources or not.",
+    "flavor_text": "",
+    "image": "p13_c8.png",
+    "copies": 2,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "progress-bath-house",
+    "set": "progress",
+    "category": "building",
+    "tag": "Building",
+    "name": "BATH HOUSE",
+    "cost": [
+      {
+        "resource": "brick",
+        "count": 1
+      },
+      {
+        "resource": "wool",
+        "count": 1
+      },
+      {
+        "resource": "ore",
+        "count": 1
+      }
+    ],
+    "values": {},
+    "rules_text": "Protects all 4 regions bordering this city from the effects of the event Plague.",
+    "flavor_text": "",
+    "image": "p14_c1.png",
+    "copies": 3,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "progress-building-crane",
+    "set": "progress",
+    "category": "building",
+    "tag": "Building",
+    "name": "BUILDING CRANE",
+    "cost": [
+      {
+        "resource": "lumber",
+        "count": 1
+      }
+    ],
+    "values": {},
+    "rules_text": "Every city expansion you build that costs more than 4 resources costs you 1 resource less. Requires: University.",
+    "flavor_text": "",
+    "image": "p14_c4.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "progress-parliament",
+    "set": "progress",
+    "category": "building",
+    "tag": "Building",
+    "name": "PARLIAMENT",
+    "cost": [
+      {
+        "resource": "lumber",
+        "count": 2
+      },
+      {
+        "resource": "brick",
+        "count": 1
+      },
+      {
+        "resource": "wool",
+        "count": 1
+      }
+    ],
+    "values": {
+      "other": "two region-card/road symbols shown at right of title (orange settlement icons)"
+    },
+    "rules_text": "For the benefit of the people and their representatives in particular. Requires: 2 progress points.",
+    "flavor_text": "For the benefit of the people and their representatives in particular.",
+    "image": "p14_c5.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "progress-three-field-system",
+    "set": "progress",
+    "category": "action",
+    "tag": "Action – Neutral",
+    "name": "THREE-FIELD SYSTEM",
+    "cost": [],
+    "values": {
+      "other": "A (action card letter, top-left in shield)"
+    },
+    "rules_text": "You receive up to 2 grain. Requires: University.",
+    "flavor_text": "",
+    "image": "p14_c6.png",
+    "copies": 2,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "progress-mineral-mining",
+    "set": "progress",
+    "category": "action",
+    "tag": "Action – Neutral",
+    "name": "MINERAL MINING",
+    "cost": [],
+    "values": {
+      "other": "A (action card letter, top-left in shield)"
+    },
+    "rules_text": "You receive up to 2 ore. Requires: University.",
+    "flavor_text": "",
+    "image": "p14_c8.png",
+    "copies": 2,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "progress-benjamin-the-traveling-scholar",
+    "set": "progress",
+    "category": "action",
+    "tag": "Action",
+    "name": "Benjamin the Traveling Scholar",
+    "cost": [],
+    "values": {
+      "other": "Action – Neutral"
+    },
+    "rules_text": "You once more receive the resource of each region whose number you rolled at the beginning of your turn.",
+    "flavor_text": "",
+    "image": "p15_c1.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "progress-guido-the-ambassador",
+    "set": "progress",
+    "category": "action",
+    "tag": "Action",
+    "name": "Guido the Ambassador",
+    "cost": [],
+    "values": {
+      "other": "Action – Attack"
+    },
+    "rules_text": "You may choose 1 card from the discard pile (Tournament: from your opponent's discard pile). Requires: Town Hall or fewer victory points than your opponent.",
+    "flavor_text": "",
+    "image": "p15_c2.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "progress-gustav-the-librarian",
+    "set": "progress",
+    "category": "action",
+    "tag": "Action",
+    "name": "Gustav the Librarian",
+    "cost": [],
+    "values": {
+      "other": "Action – Neutral"
+    },
+    "rules_text": "You may choose 1 card from the discard pile (Tournament: from your own discard pile). Requires: Library or fewer victory points than your opponent.",
+    "flavor_text": "",
+    "image": "p15_c3.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "progress-doctor",
+    "set": "progress",
+    "category": "action",
+    "tag": "Action",
+    "name": "Doctor",
+    "cost": [],
+    "values": {
+      "other": "Action – Neutral"
+    },
+    "rules_text": "Each region bordering your Bath House receives 1 resource. If you have various Bath Houses, you may only use 1 of them.",
+    "flavor_text": "",
+    "image": "p15_c4.png",
+    "copies": 2,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "progress-brigitta-the-wise-woman",
+    "set": "progress",
+    "category": "action",
+    "tag": "Action",
+    "name": "Brigitta, the Wise Woman",
+    "cost": [],
+    "values": {
+      "other": "Action – Neutral"
+    },
+    "rules_text": "Play this card before rolling the dice. Choose the result of the production die roll.",
+    "flavor_text": "",
+    "image": "p15_c6.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "progress-relocation",
+    "set": "progress",
+    "category": "action",
+    "tag": "Action",
+    "name": "Relocation",
+    "cost": [],
+    "values": {
+      "other": "Action – Neutral"
+    },
+    "rules_text": "You may exchange 2 of your own regions or 2 of your own expansion cards. Resources stored on regions may not be changed and card placement rules must be followed.",
+    "flavor_text": "",
+    "image": "p15_c7.png",
+    "copies": 1,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "progress-plague",
+    "set": "progress",
+    "category": "event",
+    "tag": "Event",
+    "name": "Plague",
+    "cost": [],
+    "values": {},
+    "rules_text": "Every region bordering a city loses 1 resource.",
+    "flavor_text": "",
+    "image": "p15_c9.png",
+    "copies": 3,
+    "confidence": "high",
+    "unclear": []
+  },
+  {
+    "id": "progress-invention",
+    "set": "progress",
+    "category": "event",
+    "tag": "Event",
+    "name": "INVENTION",
+    "cost": [],
+    "values": {},
+    "rules_text": "Each player gets any 1 resource of his choice for each building with a progress point – up to a maximum of 2 resources.",
+    "flavor_text": "",
+    "image": "p16_c3.png",
+    "copies": 2,
+    "confidence": "high",
+    "unclear": []
+  }
+]

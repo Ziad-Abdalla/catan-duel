@@ -1,0 +1,93 @@
+/* ===== Card detail / zoom overlay ===== */
+.cardzoom-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: 4vh 4vw;
+  background: rgba(8, 5, 2, 0.72);
+  backdrop-filter: blur(3px);
+  animation: cz-fade 0.16s ease;
+}
+.cardzoom {
+  position: relative;
+  display: flex;
+  gap: clamp(16px, 3vw, 42px);
+  align-items: center;
+  max-width: min(880px, 94vw);
+  max-height: 92vh;
+  padding: clamp(18px, 3vh, 34px);
+  border-radius: 18px;
+  background: linear-gradient(180deg, #6b4426, #43290f);
+  border: 1px solid rgba(243, 215, 154, 0.35);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 220, 160, 0.25);
+  animation: cz-pop 0.22s var(--ease-spring);
+}
+.cardzoom-x {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(243, 215, 154, 0.4);
+  background: rgba(0, 0, 0, 0.4);
+  color: #f3d79a;
+  font-size: 15px;
+  z-index: 2;
+}
+.cardzoom-x:hover { background: rgba(0, 0, 0, 0.6); }
+
+/* the enlarged card — readable rules text beneath the art */
+.cardzoom-card {
+  width: clamp(230px, 33vh, 360px);
+  flex: none;
+  max-height: 86vh;
+  overflow-y: auto;
+}
+.cardzoom-card .cv { padding: 12px; }
+.cardzoom-card .cv-name { font-size: clamp(18px, 2.4vh, 24px); }
+.cardzoom-card .cv-rules { font-size: clamp(14px, 1.9vh, 18px); line-height: 1.45; }
+.cardzoom-card .cv-flavor { font-size: clamp(12px, 1.6vh, 15px); }
+.cardzoom-card .cv-badge { font-size: clamp(12px, 1.5vh, 14px); padding: 2px 9px; }
+.cardzoom-card .cv-res { width: 22px; height: 22px; font-size: 12px; }
+
+.cardzoom-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: clamp(150px, 20vw, 220px);
+  color: #f0e2c2;
+}
+.cz-btn {
+  font-family: var(--font-head);
+  font-size: 15px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(243, 215, 154, 0.45);
+  background: rgba(0, 0, 0, 0.28);
+  color: #f3d79a;
+  transition: transform 0.1s var(--ease-snap), background 0.15s ease;
+}
+.cz-btn:hover { transform: translateY(-1px); background: rgba(0, 0, 0, 0.42); }
+.cz-play { background: var(--gold); color: #2a1c08; border-color: #8a6312; font-size: 16px; }
+.cz-play:hover { background: #d8a23a; }
+.cz-resolve { background: rgba(200, 146, 42, 0.22); color: #f3d79a; border-color: rgba(243, 215, 154, 0.55); }
+.cz-resolve:hover { background: rgba(200, 146, 42, 0.4); }
+.cz-exchange { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; font-size: 13px; }
+.cz-sm { font-size: 13px; padding: 5px 11px; }
+.cz-hint { font-size: 12px; font-style: italic; opacity: 0.7; margin: 0; }
+
+@keyframes cz-fade { from { opacity: 0; } }
+@keyframes cz-pop { from { opacity: 0; transform: scale(0.9) translateY(10px); } }
+
+/* stacked layout on short/narrow viewports */
+@media (max-width: 620px), (max-height: 560px) {
+  .cardzoom { flex-direction: column; gap: 14px; }
+  .cardzoom-actions { flex-direction: row; flex-wrap: wrap; justify-content: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cardzoom-scrim, .cardzoom { animation: none; }
+}

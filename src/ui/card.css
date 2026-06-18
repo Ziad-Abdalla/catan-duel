@@ -1,0 +1,170 @@
+.cv {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, var(--parchment) 0%, var(--parchment-dark) 100%);
+  border: 2px solid var(--wood);
+  border-radius: var(--radius);
+  box-shadow:
+    inset 0 0 0 1px rgba(200, 146, 42, 0.3),
+    0 4px 10px rgba(59, 42, 26, 0.25);
+  padding: 8px;
+  overflow: hidden;
+}
+
+.cv-art {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 6px;
+  border: 1px solid rgba(107, 66, 38, 0.4);
+  background: var(--parchment-dark);
+}
+
+.cv-art-placeholder {
+  aspect-ratio: 1 / 1;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-head);
+  color: var(--wood);
+  text-transform: capitalize;
+}
+
+.cv-tag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-family: var(--font-head);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: var(--wood);
+  color: var(--parchment);
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+.cv-name {
+  font-size: 15px;
+  margin: 8px 2px 4px;
+  color: var(--ink);
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.cv-copies {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--wood);
+}
+
+.cv-cost {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin: 2px;
+  flex-wrap: wrap;
+}
+.cv-cost-label {
+  font-family: var(--font-head);
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--wood);
+  margin-right: 4px;
+}
+.cv-cost-free {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 11px;
+  color: rgba(59, 42, 26, 0.6);
+}
+
+/* prerequisite line — its own row so it never hides among the value badges */
+.cv-req {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin: 4px 2px;
+  font-size: 11.5px;
+}
+.cv-req-key {
+  font-family: var(--font-head);
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--wood);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+.cv-req-val {
+  font-family: var(--font-body);
+  color: var(--ink);
+}
+.cv-req-flag {
+  font-family: var(--font-head);
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 10px;
+}
+.cv-req-met .cv-req-flag { background: rgba(58, 107, 53, 0.3); color: #1e3a1c; }
+.cv-req-unmet .cv-req-flag { background: rgba(139, 46, 46, 0.22); color: #6e1f1f; }
+
+.cv-res {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-head);
+  font-size: 10px;
+  color: #2c2010;
+  border: 1px solid rgba(59, 42, 26, 0.45);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4);
+}
+
+.cv-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 4px 2px;
+}
+
+.cv-badge {
+  font-family: var(--font-head);
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 10px;
+  background: rgba(107, 66, 38, 0.12);
+  border: 1px solid rgba(107, 66, 38, 0.3);
+}
+.cv-badge-vp { background: rgba(200, 146, 42, 0.25); }
+.cv-badge-str { background: rgba(80, 110, 170, 0.25); }
+.cv-badge-skill { background: rgba(58, 107, 53, 0.22); }
+.cv-badge-commerce { background: rgba(139, 46, 46, 0.18); }
+.cv-badge-region { background: rgba(58, 107, 53, 0.18); }
+
+.cv-rules {
+  font-size: 12.5px;
+  line-height: 1.35;
+  margin: 4px 2px;
+  color: var(--ink);
+}
+
+.cv-flavor {
+  font-style: italic;
+  font-size: 11.5px;
+  line-height: 1.3;
+  margin: 2px;
+  color: rgba(59, 42, 26, 0.7);
+}
+
+.cv-unclear {
+  font-size: 11px;
+  color: var(--red);
+  margin: 2px;
+  font-family: var(--font-head);
+}

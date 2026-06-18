@@ -1,0 +1,78 @@
+import { useEffect, useRef, useState } from 'react'
+import type { PlayerId, Stat } from '../../types'
+import { PlateToken } from './TokenLayer'
+import { computeStats, suggestAdvantage } from '../../engine/actions'
+import { useGame } from '../../store/gameStore'
+
+const STAT_META: { key: Stat; glyph: string; title: string }[] = [
+  { key: 'strength', glyph: '⚔', title: 'Strength' },
+  { key: 'skill', glyph: '✦', title: 'Skill' },
+  { key: 'commerce', glyph: '⚖', title: 'Commerce' },
+  { key: 'progress', glyph: '⚙', title: 'Progress' },
+]
+
+/** A player's plaque (slim horizontal bar): colour identity, name, held advantage
+ *  tokens, turn marker, derived stat tallies, and VP with a ± nudge. */
+export function PlayerPlate({ player }: { player: PlayerId }) {
+  const p = useGame((s) => s.state.players[player])
+  const state = useGame((s) => s.state)
+  const active = state.activePlayer === player
+  const dispatch = useGame((s) => s.dispatch)
+  const stats = computeStats(p)
+  const suggest = suggestAdvantage(state)
+  const accent = player === 'p0' ? 'var(--p0)' : 'var(--p1)'
+
+  const [bump, setBump] = useState(false)
+  const prevVP = useRef(p.victoryPoints)
+  useEffect(() => {
+    if (prevVP.current !== p.victoryPoints) {
+      prevVP.current = p.victoryPoints
+      setBump(true)
+    }
+  }, [p.victoryPoints])
+
+  return (
+    <div className={`player-plate${active ? ' active' : ''}`} style={{ ['--pc-accent' as string]: accent }}>
+      <span className="plate-dot" />
+      <input
+        className="plate-name"
+        value={p.name}
+        aria-label="Player name"
+        title="Click to rename"
+        onChange={(e) => dispatch({ type: 'renamePlayer', player, name: e.target.value })}
+        onFocus={(e) => e.target.select()}
+        maxLength={18}
+      />
+      <span className="plate-turn">{active ? '● your turn' : ''}</span>
+      <div className="plate-stats" aria-label="Derived tallies">
+        {STAT_META.map(({ key, glyph, title }) => {
+          const lead =
+            (key === 'strength' && suggest.hero === player) ||
+            (key === 'commerce' && suggest.trade === player)
+          return (
+            <span key={key} className={`plate-stat${lead ? ' lead' : ''}`} title={`${title}: ${stats[key]}${lead ? ' — leads (advantage suggested)' : ''}`}>
+              <i>{glyph}</i>
+              {stats[key]}
+            </span>
+          )
+        })}
+      </div>
+      <div className="plate-tokens">
+        <PlateToken kind="hero" player={player} />
+        <PlateToken kind="trade" player={player} />
+      </div>
+      <div className="plate-vprow">
+        <button className="plate-vpbtn" aria-label="decrease VP" onClick={() => dispatch({ type: 'adjustVP', player, delta: -1 })}>
+          {'−'}
+        </button>
+        <span className={`plate-vp${bump ? ' bump' : ''}`} onAnimationEnd={() => setBump(false)}>
+          {p.victoryPoints}
+          <small>/7</small>
+        </span>
+        <button className="plate-vpbtn" aria-label="increase VP" onClick={() => dispatch({ type: 'adjustVP', player, delta: +1 })}>
+          +
+        </button>
+      </div>
+    </div>
+  )
+}

@@ -1,0 +1,153 @@
+/* ===== Phase 3 — game-feel polish. Pure CSS, GPU-friendly transforms.
+   All motion is gated behind prefers-reduced-motion at the bottom. ===== */
+
+/* dice roll: tumbling die during the suspense window */
+.pipdie.tumbling,
+.die.tumbling {
+  animation: die-tumble 0.16s linear infinite;
+  background: #fffdf6;
+}
+.die.settled {
+  animation: die-settle 0.4s var(--ease-snap);
+}
+@keyframes die-tumble {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(8deg) scale(1.08); }
+  100% { transform: rotate(-8deg) scale(1); }
+}
+/* the settled production die pops in when the roll resolves */
+.pipdie.settled {
+  animation: die-settle 0.4s var(--ease-snap);
+}
+@keyframes die-settle {
+  0% { transform: scale(0.5) rotate(-12deg); opacity: 0; }
+  60% { transform: scale(1.18) rotate(4deg); }
+  100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+.roll-event {
+  animation: fade-rise 0.35s ease both;
+}
+@keyframes fade-rise {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* cards dealt into hand / played to the board ease in on mount */
+.mini,
+.hand-card {
+  animation: deal-in 0.32s var(--ease-out) both;
+}
+@keyframes deal-in {
+  from { opacity: 0; transform: translateY(16px) scale(0.9); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* a piece dropping onto the table with weight (placed building, new settlement, city morph) */
+.pb-site-card,
+.pb-seat,
+.pb-road,
+.pb-region {
+  animation: piece-drop 0.4s var(--ease-spring) both;
+}
+@keyframes piece-drop {
+  0% { opacity: 0; transform: translateY(-22px) scale(1.14); }
+  60% { opacity: 1; }
+  78% { transform: translateY(0) scale(0.97); }
+  100% { transform: translateY(0) scale(1); }
+}
+/* the travelling advantage token lands with a little bounce shadow */
+.travel-token { transition: filter 0.2s ease; }
+
+/* VP number pulses when it changes */
+.vp-num.bump,
+.plate-vp.bump {
+  animation: vp-bump 0.45s var(--ease-snap);
+}
+@keyframes vp-bump {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.5); color: var(--gold); }
+  100% { transform: scale(1); }
+}
+
+/* turn handoff banner sweeps across the board */
+.turn-banner {
+  position: fixed;
+  top: 38%;
+  left: 0;
+  right: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  z-index: 150;
+}
+.turn-banner span {
+  font-family: var(--font-head);
+  font-size: 34px;
+  color: var(--parchment);
+  background: linear-gradient(180deg, var(--wood), #4a2f1a);
+  padding: 14px 46px;
+  border-radius: 14px;
+  border: 2px solid var(--gold);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  animation: banner-sweep 1.25s ease both;
+}
+@keyframes banner-sweep {
+  0% { opacity: 0; transform: translateX(-60px) scale(0.9); }
+  18% { opacity: 1; transform: translateX(0) scale(1); }
+  78% { opacity: 1; transform: translateX(0) scale(1); }
+  100% { opacity: 0; transform: translateX(60px) scale(0.96); }
+}
+
+/* opponent connection toast */
+.toast {
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 160;
+  font-family: var(--font-head);
+  font-size: 14px;
+  color: var(--parchment);
+  background: var(--green);
+  padding: 10px 20px;
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  animation: toast-pop 2.4s ease both;
+}
+.toast.leave { background: var(--red); }
+@keyframes toast-pop {
+  0% { opacity: 0; transform: translate(-50%, 16px); }
+  12% { opacity: 1; transform: translate(-50%, 0); }
+  85% { opacity: 1; transform: translate(-50%, 0); }
+  100% { opacity: 0; transform: translate(-50%, 10px); }
+}
+
+/* gameover entrance */
+.gameover-card {
+  animation: pop-in 0.5s var(--ease-snap) both;
+}
+@keyframes pop-in {
+  0% { opacity: 0; transform: scale(0.8) translateY(10px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pipdie.tumbling,
+  .pipdie.settled,
+  .die.tumbling,
+  .die.settled,
+  .roll-event,
+  .mini,
+  .hand-card,
+  .pb-site-card,
+  .pb-seat,
+  .pb-road,
+  .pb-region,
+  .vp-num.bump,
+  .plate-vp.bump,
+  .turn-banner span,
+  .toast,
+  .gameover-card {
+    animation: none !important;
+  }
+}

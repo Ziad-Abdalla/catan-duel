@@ -1,0 +1,111 @@
+:root {
+  /* Catan-medieval palette (council seat 30) */
+  --parchment: #f5e6c8;
+  --parchment-dark: #e8d0a0;
+  --wood: #6b4226;
+  --ink: #3b2a1a;
+  --gold: #c8922a;
+  --red: #8b2e2e;
+  --green: #3a6b35;
+  --stone: #9e9e8a;
+
+  /* resource accents */
+  --res-lumber: #4a6b32;
+  --res-brick: #b5562a;
+  --res-wool: #c7d199;
+  --res-grain: #e0b83a;
+  --res-ore: #7a8290;
+  --res-gold: #d9a82a;
+
+  --font-head: 'Cinzel', 'MedievalSharp', serif;
+  --font-body: 'IM Fell English', Georgia, serif;
+
+  --radius: 10px;
+  --ease-snap: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-spring: cubic-bezier(0.5, 1.6, 0.4, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* ---- the table (Real Table overhaul) ---- */
+  --wood-dark: #2e1d10;     /* table edge / deep walnut */
+  --wood-rail: #5a3a20;     /* raised rail around the felt */
+  --wood-rail-hi: #7c5430;  /* lit top edge of the rail */
+  --felt: #2f4a39;          /* forest-green play surface */
+  --felt-dark: #233a2c;
+  --felt-line: rgba(232, 208, 160, 0.10);
+  --candle: rgba(255, 224, 150, 0.16); /* warm center light */
+
+  /* player identity — classic Catan red vs blue */
+  --p0: #b5403a;
+  --p0-dark: #7e2622;
+  --p0-glow: rgba(181, 64, 58, 0.55);
+  --p1: #2f6aa0;
+  --p1-dark: #1d4467;
+  --p1-glow: rgba(47, 106, 160, 0.55);
+
+  color-scheme: light;
+  color: var(--ink);
+  font-family: var(--font-body);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(200, 146, 42, 0.12), transparent 60%),
+    var(--parchment);
+  color: var(--ink);
+}
+
+h1,
+h2,
+h3,
+.headline {
+  font-family: var(--font-head);
+  letter-spacing: 0.02em;
+}
+
+button {
+  font-family: var(--font-head);
+  cursor: pointer;
+}
+
+/* focus ring: themed, not default blue (council a11y) */
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* crash fallback (ErrorBoundary) */
+.crash-screen {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: radial-gradient(circle at 50% 30%, #2b1414, #160a0a);
+  z-index: 9999;
+}
+.crash-card {
+  max-width: 680px;
+  background: var(--parchment);
+  border: 2px solid var(--wood);
+  border-radius: 12px;
+  padding: 22px 26px;
+  color: var(--ink);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+.crash-msg { font-weight: 700; color: var(--red); }
+.crash-stack { max-height: 240px; overflow: auto; font-size: 11px; white-space: pre-wrap; background: rgba(0, 0, 0, 0.06); padding: 10px; border-radius: 8px; }
+.crash-card .btn-primary {
+  margin-top: 12px;
+  font-family: var(--font-head);
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: 1px solid #8a6312;
+  background: var(--gold);
+  color: #2a1c08;
+}

@@ -1,0 +1,17 @@
+# dependencies / build output
+node_modules/
+dist/
+.partykit/
+
+# build caches
+*.tsbuildinfo
+
+# local env (machine-specific, e.g. Radmin VPN host) — recreate per machine
+.env*.local
+
+# dev artifacts
+.shots/
+.shots-*.log
+
+# card-extraction working data (large PDFs/PNGs; source art lives in src/assets)
+research/

@@ -21,16 +21,23 @@ ASSISTS (cost math, routing, logging, juice) but never rigidly enforces turn flo
 - [x] B2 Sync: seat-authority merge (fixes vanishing tokens) + commutative/convergent join — 4 tests + merge fuzz
 - [x] B3 Data/Icons: Wheat rebrand (labels everywhere) + distinct wheat icon & field from Gold. (Crafted road/settlement/city icons + official-art drop pipeline → folded into B4.)
 - [ ] B4 Card data + art: confirm costs/requirements vs physical cards; crafted icons for road/settlement/city; official-art drop pipeline for all cards
+- [x] B4 (data) Official match start: per-player region numbers set to owner spec (each 1–6 once; players differ) — tests pinned. (Crafted road/settlement/city icons via CenterArt; official photo-art drop pipeline still open.)
 - [x] B5 (core) UI: collapsible audit-log sidebar (auto-scroll); VP threshold control in HUD; one-click discard (hand + in-play); pay-flag wiring (structural auto-charges, hand cards manual)
-- [ ] B5b: "Requirements Met" flash flag on cards; visible shared discard-pile zone you can draw from
+- [x] B5b: "Requirements Met" flash flag on cards. (Visible shared discard-pile draw zone still open.)
 - [x] Hardening: non-sticky winner (no frozen game-over after corrections); fuzz suite — 15k random actions, all invariants hold; adversarial review applied
-- [ ] B6 Events: simultaneous event pop-up both screens, only the relevant rule paragraph; anti-spoiling dice (no glow until dice settle)
-- [ ] B7 Juice/audio: card-deploy 3D intro + sweep; water under ships; dynamic bg per era; dice sequences (brigand robbing); advantage chime + opponent cue; victory music hook
-- [ ] B8 End game: non-abrupt "Vote to End" → opponent "Agree" → celebration screen (pluggable music)
-- [ ] B9 Identity: real player names everywhere (no hardcoded Player 1/2 in pop-ups)
-- [x] B10 (first pass): full gate green (106 tests + fuzz, tsc, prod build) + DEPLOY to origin
+- [x] B6 Events: simultaneous event pop-up both screens (synced `revealedEvent`, only the relevant rule paragraph); anti-spoiling dice (glow gated on settled roll)
+- [x] B7 (most) Juice/audio: water under ships; dynamic bg per era; card-deploy pop animation; advantage chime + soft loss cue; victory music hook. (Still open: dramatic card-deploy AUDIO sweep; dedicated brigand robbing dice sequence; opponent negative VISUAL cue.)
+- [x] B8 End game: non-abrupt "Vote to End" → opponent "Agree" → celebration screen (pluggable music)
+- [x] B9 Identity: real player names render everywhere (Player 1/2 only as editable defaults)
+- [x] B10: full gate green (117 tests + fuzz, tsc, prod build) + DEPLOYED to origin/master
+
+## Still open (next sessions)
+- Expanded city grids (more building sites per city + extra buildable slots)
+- Visible shared discard-pile zone you can draw from; "draw from any pile" affordances + exhaustive hover metadata
+- Heavy juice tail: card-deploy audio sweep, dedicated brigand robbing sequence, opponent negative visual cue
+- Official photo-art drop pipeline for all cards (crafted SVG icons already cover foundations)
 
 ## Open data confirmations (owner/friend, from physical cards — no fabrication)
-- Exact per-player resource→number maps (low-confidence cells in research doc).
+- Region DRAW STACK numbers still operator-typed; reconcile against the new starting numbers if exact physical layout matters.
 - Any non-canonical printed build costs (settlement/city/road flagged in cards.json).
-- Official card art/icons: owner to drop scans into src/assets/** (pipeline provided).
+- Official card photo-art: owner to drop scans into src/assets/** (pipeline provided).

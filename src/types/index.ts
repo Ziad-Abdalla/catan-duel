@@ -100,6 +100,8 @@ export type Stat = 'strength' | 'skill' | 'commerce' | 'progress'
 export interface PlayerState {
   id: PlayerId
   name: string
+  /** a chosen crest emoji shown on the plate as a profile picture */
+  avatar?: string
   hand: string[] // card ids
   regions: RegionSlot[]
   placed: PlacedCard[] // settlements, cities, roads, buildings, units in play

@@ -56,6 +56,7 @@ export type Action =
   | { type: 'resolveBrigand' } // apply the Brigand event: anyone over 7 loses all gold + wool, logged
   // misc
   | { type: 'renamePlayer'; player: PlayerId; name: string }
+  | { type: 'setAvatar'; player: PlayerId; avatar: string }
   // scoring
   | { type: 'adjustVP'; player: PlayerId; delta: number }
   | { type: 'setToken'; player: PlayerId | null; token: AdvantageToken }
@@ -772,6 +773,11 @@ function reduce(s: GameState, a: Action): GameState {
     case 'renamePlayer':
       return withPlayer(s, a.player, (p) => {
         p.name = a.name
+      })
+
+    case 'setAvatar':
+      return withPlayer(s, a.player, (p) => {
+        p.avatar = a.avatar
       })
 
     case 'adjustVP':

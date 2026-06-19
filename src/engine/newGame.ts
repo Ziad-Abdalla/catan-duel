@@ -37,7 +37,7 @@ function buildEventDeck(sets: SetId[]): string[] {
   return out
 }
 
-function makePlayer(id: PlayerId, name: string): PlayerState {
+function makePlayer(id: PlayerId, name: string, avatar: string): PlayerState {
   const regions: RegionSlot[] = STARTING_PRINCIPALITIES[id].map((r) => ({
     cardId: `region-${r.resource}-${r.number}`,
     resource: r.resource,
@@ -47,6 +47,7 @@ function makePlayer(id: PlayerId, name: string): PlayerState {
   return {
     id,
     name,
+    avatar,
     hand: [],
     regions,
     // start: 2 settlements + 1 road already in play
@@ -82,8 +83,8 @@ export function newGame({ seed, p0Name = 'Player 1', p1Name = 'Player 2', enable
   const sets: SetId[] = Array.from(new Set<SetId>(['base', ...(enabledSets ?? [])]))
 
   const players: Record<PlayerId, PlayerState> = {
-    p0: makePlayer('p0', p0Name),
-    p1: makePlayer('p1', p1Name),
+    p0: makePlayer('p0', p0Name, '🦁'),
+    p1: makePlayer('p1', p1Name, '🐉'),
   }
 
   // Base cards spread round-robin into 4 stacks (red backs); each enabled era

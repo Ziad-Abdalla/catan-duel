@@ -168,29 +168,66 @@ function Settlement() {
 }
 
 function City() {
+  // A painterly walled city: keep + two flanking towers, battlements, gate and banners,
+  // on a sunlit hill. Warm stone palette to sit beside the settlement/road art.
+  const merlons = (x: number, y: number, n: number, w = 4, gap = 2.4) =>
+    Array.from({ length: n }, (_, i) => (
+      <rect key={`${x}-${y}-${i}`} x={x + i * (w + gap)} y={y} width={w} height="4.5" />
+    ))
   return (
     <svg {...SVG_PROPS}>
       <defs>
         <linearGradient id="c-sky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#f3e3b0" />
-          <stop offset="1" stopColor="#cdaa5e" />
+          <stop offset="0" stopColor="#fbeec0" />
+          <stop offset="0.6" stopColor="#f0d590" />
+          <stop offset="1" stopColor="#d8b463" />
+        </linearGradient>
+        <linearGradient id="c-stone" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#efe1c0" />
+          <stop offset="1" stopColor="#c4a874" />
+        </linearGradient>
+        <linearGradient id="c-stoneShade" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#d9c598" />
+          <stop offset="1" stopColor="#a98a58" />
+        </linearGradient>
+        <linearGradient id="c-hill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#7ba24f" />
+          <stop offset="1" stopColor="#4f7436" />
         </linearGradient>
       </defs>
       <rect width="100" height="100" fill="url(#c-sky)" />
-      <ellipse cx="50" cy="95" rx="82" ry="18" fill="#9c7a3c" />
+      <circle cx="74" cy="24" r="11" fill="#fff6d8" opacity="0.65" />
+      <ellipse cx="50" cy="98" rx="86" ry="22" fill="url(#c-hill)" />
+      <ellipse cx="50" cy="90" rx="60" ry="12" fill="#000" opacity="0.12" />
+      {/* back-right tower */}
+      <g stroke="#6e5526" strokeWidth="1">
+        <rect x="62" y="36" width="17" height="50" fill="url(#c-stoneShade)" />
+        <g fill="url(#c-stoneShade)" stroke="none">{merlons(62, 32, 3)}</g>
+        <rect x="66" y="48" width="4.5" height="7" rx="2" fill="#5b3f1f" stroke="none" />
+        <rect x="71.5" y="60" width="4.5" height="7" rx="2" fill="#5b3f1f" stroke="none" />
+      </g>
+      {/* left tower */}
+      <g stroke="#6e5526" strokeWidth="1">
+        <rect x="20" y="40" width="18" height="46" fill="url(#c-stone)" />
+        <g fill="url(#c-stone)" stroke="none">{merlons(20, 36, 3)}</g>
+        <rect x="24" y="52" width="5" height="8" rx="2.2" fill="#5b3f1f" stroke="none" />
+        <rect x="30" y="64" width="5" height="8" rx="2.2" fill="#5b3f1f" stroke="none" />
+      </g>
+      {/* central keep */}
       <g stroke="#6e5526" strokeWidth="1.1">
-        <rect x="20" y="44" width="14" height="42" fill="#cdb98e" />
-        <rect x="66" y="44" width="14" height="42" fill="#cdb98e" />
-        <rect x="32" y="56" width="36" height="30" fill="#c2ad7e" />
-        {[20, 26, 32, 66, 72, 78, 32, 38, 44, 56, 62].map((x, i) => (
-          <rect key={i} x={x} y={i < 6 ? 40 : 52} width="4" height="4" fill="#cdb98e" />
-        ))}
-        <rect x="44" y="68" width="12" height="18" fill="#6e4a22" />
+        <rect x="38" y="46" width="30" height="40" fill="url(#c-stone)" />
+        <g fill="url(#c-stone)" stroke="none">{merlons(38, 42, 4)}</g>
+        <rect x="49" y="68" width="9" height="18" rx="4.5" fill="#5b3f1f" stroke="#3f2a12" />
+        <rect x="42" y="54" width="6" height="8" rx="2.6" fill="#5b3f1f" stroke="none" />
+        <rect x="58" y="54" width="6" height="8" rx="2.6" fill="#5b3f1f" stroke="none" />
       </g>
-      <g transform="translate(27 44)">
-        <line x1="0" y1="0" x2="0" y2="-12" stroke="#6e5526" strokeWidth="1" />
-        <polygon points="0,-12 12,-9 0,-5" fill="#8b2e2e" />
-      </g>
+      {/* banners */}
+      {[[29, 36], [53, 42], [70.5, 32]].map(([x, y], i) => (
+        <g key={i} transform={`translate(${x} ${y})`}>
+          <line x1="0" y1="0" x2="0" y2="-13" stroke="#6e5526" strokeWidth="1" />
+          <polygon points="0,-13 11,-10.5 0,-7.5" fill="#a8302e" stroke="#7c1f1f" strokeWidth="0.5" />
+        </g>
+      ))}
     </svg>
   )
 }

@@ -6,6 +6,9 @@ import { useGame } from '../../store/gameStore'
 import { useUI } from '../../store/uiStore'
 import { playSfx } from '../../audio/sfx'
 
+// crest options cycled by clicking the avatar — a quick, fun identity, no assets needed
+const AVATARS = ['🦁', '🐉', '🦅', '🐺', '🐗', '🦊', '🦌', '🐻', '🦉', '🏰', '👑', '⚔️', '🛡️', '🏹', '🐎', '🦄']
+
 const STAT_META: { key: Stat; glyph: string; title: string }[] = [
   { key: 'strength', glyph: '⚔', title: 'Strength' },
   { key: 'skill', glyph: '✦', title: 'Skill' },
@@ -36,12 +39,25 @@ export function PlayerPlate({ player }: { player: PlayerId }) {
 
   return (
     <div className={`player-plate${active ? ' active' : ''}${cued ? ' cued-negative' : ''}`} style={{ ['--pc-accent' as string]: accent }}>
-      <span className="plate-dot" />
+      <button
+        className="plate-avatar"
+        title="Click to change your crest"
+        aria-label="Change crest"
+        onClick={() => {
+          const cur = p.avatar ?? AVATARS[0]
+          const next = AVATARS[(AVATARS.indexOf(cur) + 1) % AVATARS.length]
+          dispatch({ type: 'setAvatar', player, avatar: next })
+          playSfx('ui')
+        }}
+      >
+        {p.avatar ?? AVATARS[0]}
+      </button>
       <input
         className="plate-name"
         value={p.name}
         aria-label="Player name"
         title="Click to rename"
+        placeholder="Your name"
         onChange={(e) => dispatch({ type: 'renamePlayer', player, name: e.target.value })}
         onFocus={(e) => e.target.select()}
         maxLength={18}

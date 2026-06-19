@@ -19,6 +19,7 @@ import { DiceEventCue } from './DiceEventCue'
 import { EventFlourish } from './EventFlourish'
 import { AmbientMusic } from './AmbientMusic'
 import { EventPopup } from './EventPopup'
+import { TableNav } from './TableNav'
 import { VictoryFlow } from './VictoryFlow'
 import { ConnectionBar } from '../net/ConnectionBar'
 import { NetToasts } from '../net/NetToasts'
@@ -85,6 +86,7 @@ export function TableBoard({ mode, setMode }: { mode: AppMode; setMode: (m: AppM
       <EventFlourish />
       <AmbientMusic />
       <TurnBanner />
+      <TableNav />
       {online && <NetToasts />}
       {online && <ConnectionBar />}
     </>

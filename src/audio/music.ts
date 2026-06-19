@@ -94,7 +94,20 @@ function startSynth() {
 // reshuffle each lap — variety, so it never gets repetitive (better than one short loop).
 // Low volume, on by default; on/off + volume live in shared prefs and yield to master mute.
 // Browsers only allow it to sound after the first user gesture (handled in AmbientMusic).
-const PLAYLIST = ['audio/bgm-1.mp3', 'audio/bgm-2.mp3', 'audio/bgm-3.mp3', 'audio/bgm-4.mp3']
+// ~30 minutes of bundled CC0 medieval/folk tracks (archive.org public-domain collection):
+// tavern dances, courtly ayres, pavanes and epic pieces — shuffled for a long, varied bed.
+const PLAYLIST = [
+  'audio/bgm-1.mp3',
+  'audio/bgm-2.mp3',
+  'audio/bgm-3.mp3',
+  'audio/bgm-4.mp3',
+  'audio/bgm-5.mp3',
+  'audio/bgm-6.mp3',
+  'audio/bgm-7.mp3',
+  'audio/bgm-8.mp3',
+  'audio/bgm-9.mp3',
+  'audio/bgm-10.mp3',
+]
 let ambEl: HTMLAudioElement | null = null
 let order: number[] = []
 let pos = 0

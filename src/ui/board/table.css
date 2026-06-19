@@ -264,8 +264,12 @@
 .pb-region { z-index: 2; }
 .pb-road { z-index: 1; opacity: 0.97; }
 /* player-colour identity under each settlement: a coloured ground glow + pennant */
+.pboard[data-player='p0'] { --pc: var(--p0); --pcg: var(--p0-glow); }
+.pboard[data-player='p1'] { --pc: var(--p1); --pcg: var(--p1-glow); }
 .pboard[data-player='p0'] .pb-seat { --pc: var(--p0); --pcg: var(--p0-glow); }
 .pboard[data-player='p1'] .pb-seat { --pc: var(--p1); --pcg: var(--p1-glow); }
+/* the structural piece icons take the player colour */
+.piece-icon { display: block; width: 100%; height: 100%; color: var(--pc, #c8922a); filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.45)); }
 .pb-seat::before {
   content: '';
   position: absolute;

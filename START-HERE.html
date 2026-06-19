@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Catan Duel — Start Here</title>
+<style>
+  :root { color-scheme: dark; }
+  body { margin:0; font:16px/1.6 -apple-system,Segoe UI,Roboto,Arial,sans-serif;
+         background:radial-gradient(120% 90% at 50% 0%,#1f3a3a,#0c1a1c 70%); color:#f3ecd9; padding:32px 16px 70px; }
+  .wrap { max-width:760px; margin:0 auto; }
+  h1 { font-family:Georgia,serif; color:#f3d79a; margin:0 0 2px; }
+  .sub { opacity:.8; margin:0 0 22px; }
+  .row { display:flex; gap:14px; align-items:flex-start; background:linear-gradient(180deg,#1c2b2c,#15211f);
+         border:1px solid rgba(243,215,154,.22); border-radius:13px; padding:16px 18px; margin:12px 0; }
+  .row .n { flex:none; width:120px; font-family:ui-monospace,Consolas,monospace; font-size:.86rem; color:#f3e6c6;
+            background:rgba(243,215,154,.12); border:1px solid rgba(243,215,154,.3); border-radius:8px; padding:6px 8px; text-align:center; }
+  .row .d b { color:#f3d79a; }
+  .row .d p { margin:3px 0 0; color:#c9d6d3; font-size:.92rem; }
+  a { color:#7fd0e0; } code { font-family:ui-monospace,Consolas,monospace; background:rgba(255,255,255,.07); padding:1px 6px; border-radius:5px; }
+  .status { display:flex; align-items:center; gap:9px; font-weight:600; margin:6px 0 18px; }
+  .dot { width:11px; height:11px; border-radius:50%; background:#666; box-shadow:0 0 8px #666; }
+  .dot.up { background:#7fd99a; box-shadow:0 0 10px #7fd99a; } .dot.down { background:#c75c54; box-shadow:0 0 10px #c75c54; }
+  .note { font-size:.86rem; opacity:.8; }
+  .gen { background:rgba(0,0,0,.25); border-radius:11px; padding:14px 16px; margin:14px 0; }
+  .gen input { background:rgba(0,0,0,.3); color:#f3e6c6; border:1px solid rgba(243,215,154,.3); border-radius:7px; padding:6px 9px; width:170px; }
+  .gen button { background:var(--g,#e0b341); color:#2a1c08; border:0; border-radius:7px; padding:6px 12px; font-weight:700; cursor:pointer; }
+  .link { font-family:ui-monospace,Consolas,monospace; color:#7fd0e0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Catan Duel</h1>
+  <p class="sub">Everything is double-click. The code lives in WSL; these buttons drive it for you.</p>
+
+  <div class="status"><span class="dot" id="dot"></span><span id="stat">checking if the game is running…</span></div>
+
+  <div class="row"><div class="n">PLAY.bat</div><div class="d"><b>Play on this PC</b><p>Sets up (first run) and opens the game. Use the Hotseat tab to play both sides.</p></div></div>
+  <div class="row"><div class="n">PLAY-ONLINE.bat</div><div class="d"><b>Play online with Ziad</b><p>Opens the online control panel: it shows the <b>firewall status</b>, and Opens / Closes hosting in one key. Use the friend-link box below to send Ziad his link.</p></div></div>
+  <div class="row"><div class="n">UPDATE.bat</div><div class="d"><b>Get the latest version</b><p>Pulls new changes from GitHub and re-installs. No Claude needed for updates.</p></div></div>
+  <div class="row"><div class="n">STOP.bat</div><div class="d"><b>Stop the game</b><p>Stops the local servers. (Hosting is closed from the online control panel.)</p></div></div>
+
+  <div class="gen">
+    <b>Friend's link</b> — enter your Radmin IP (the control panel shows it) once:
+    <div style="margin-top:8px"><input id="ip" placeholder="26.x.x.x" /> <button onclick="gen()">Make link</button></div>
+    <p id="out" class="note" style="margin-top:8px">Ziad opens this after joining your Radmin network.</p>
+  </div>
+
+  <p class="note"><b>One-time, for online only:</b> both of you install <a href="https://www.radmin-vpn.com/" target="_blank">Radmin VPN</a> (free) and join the same network. After that, online is just PLAY-ONLINE.bat → Open. The firewall only ever opens to your Radmin network, never the public internet, and Close makes it safe again.</p>
+  <p class="note">Folder: <code>\\wsl$\Ubuntu\home\abdalla\projects\catan-duel</code> — pin it for quick access. Full online walk-through: <a href="PLAY-ONLINE.html">PLAY-ONLINE.html</a>.</p>
+</div>
+<script>
+  // live "is the game running" check (works from a local file → localhost)
+  function ping(){
+    const c = new AbortController(); const t = setTimeout(()=>c.abort(), 1500);
+    fetch('http://localhost:5173/', {mode:'no-cors', signal:c.signal})
+      .then(()=>{ clearTimeout(t); set(true); }).catch(()=>{ clearTimeout(t); set(false); });
+  }
+  function set(up){
+    document.getElementById('dot').className = 'dot ' + (up?'up':'down');
+    document.getElementById('stat').textContent = up ? 'Game is running — open http://localhost:5173' : 'Game not running — double-click PLAY.bat';
+  }
+  function gen(){
+    const ip=(document.getElementById('ip').value||'').trim();
+    const ok=/^26\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(ip);
+    document.getElementById('out').innerHTML = ok
+      ? 'Send Ziad: <span class="link">http://'+ip+':5173</span>'
+      : 'Enter your Radmin IP, e.g. 26.79.157.209';
+    try{ localStorage.setItem('catan.ip', ip); }catch(e){}
+  }
+  try{ const s=localStorage.getItem('catan.ip'); if(s){ document.getElementById('ip').value=s; gen(); } }catch(e){}
+  ping(); setInterval(ping, 4000);
+</script>
+</body>
+</html>

@@ -49,9 +49,8 @@
     <div class="card host">
       <h2>② Host <span class="tag">the person running the game</span></h2>
       <ol>
-        <li>In the repo folder, right-click <code>RADMIN-ONLINE.ps1</code> → <b>Run with PowerShell</b> → click <b>Yes</b> on the prompt.
-            <div class="note">It bridges the game to your Radmin address and opens the firewall to Radmin peers only. It prints <b>your Radmin IP</b> + the friend's URL.</div></li>
-        <li>Start the two servers (in WSL): <code>npm run party</code> and <code>npm run dev</code>.</li>
+        <li>Double-click <code>PLAY-ONLINE.bat</code> (the control panel) → press <b>1</b> (Open &amp; host) → click <b>Yes</b> on the UAC prompt.
+            <div class="note">It starts the servers, bridges them to your Radmin address, and opens the firewall to Radmin peers only. The panel shows your <b>Radmin IP</b>, the live <b>firewall status</b>, and the friend's link (press <b>3</b> to copy it).</div></li>
         <li>Open <code>http://localhost:5173</code> → <b>Online</b> tab → make a room → tell your friend the <b>room code</b>.</li>
       </ol>
     </div>
@@ -69,7 +68,7 @@
     <h2>④ Is it safe? &amp; closing it after</h2>
     <ol>
       <li><span class="ok">Safe by design:</span> the firewall only opens to <b>Radmin peers (26.x)</b> on your Private network — never the public internet. Use a <b>password-protected</b> network with only your friend.</li>
-      <li><b>When you're done</b>, the host right-clicks <code>RADMIN-OFFLINE.ps1</code> → <b>Run with PowerShell</b> → <b>Yes</b>. It removes the bridge + firewall openings — nothing is exposed anymore.</li>
+      <li><b>When you're done</b>, in the same control panel (<code>PLAY-ONLINE.bat</code>) press <b>2</b> (Close / make safe) → <b>Yes</b>. It removes the bridge + firewall openings and stops the servers — nothing is exposed anymore. The panel's <b>Firewall</b> line will read <b>CLOSED</b>.</li>
       <li>Optional: also right-click the Radmin VPN tray icon → <b>Disconnect</b>.</li>
     </ol>
     <div class="note">Trouble? 9 times out of 10 it's the friend not being on the host's Radmin network yet (no green dot). The host can ask the assistant to "check" — it can scan for the peer.</div>

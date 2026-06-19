@@ -20,3 +20,8 @@ research/
 _drive*.mjs
 _drive2.mjs
 _shot.mjs
+
+# e2e
+e2e/artifacts/
+test-results/
+playwright-report/

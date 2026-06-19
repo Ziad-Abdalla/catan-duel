@@ -18,11 +18,16 @@ On Windows with the repo in WSL, just double-click these (they live in the repo 
 
 | Double-click | What it does |
 |---|---|
+| **`Catan-Duel.hta`** | **Desktop control panel** — one window with Play / Host online / Stop / Update buttons, live game + firewall status, and a copy-to-clipboard link for your friend. The Desktop shortcut points here. |
 | **`PLAY.bat`** | Installs on first run, starts the game, opens the browser. Hotseat = both sides on one screen. |
 | **`PLAY-ONLINE.bat`** | Opens the **online control panel** (`RADMIN.ps1`) — live status + one-key Open/Close. |
-| **`UPDATE.bat`** | `git pull` + reinstall — get the latest version, no terminal needed. |
+| **`UPDATE.bat`** | `git pull` + reinstall, then refreshes the panel files — get the latest version, no terminal needed. |
 | **`STOP.bat`** | Stop the local servers. |
 | **`START-HERE.html`** | Friendly index: live "is it running?" check + makes your friend's online link. |
+
+The control panel (`Catan-Duel.hta`) is a self-contained window: its buttons drive the sibling
+`.bat` launchers, so keep it in the same folder as them. `UPDATE.bat` re-copies the panel + launchers
+to wherever they sit after each pull, so the Desktop copy stays current on its own.
 
 ## Run from source (any OS)
 

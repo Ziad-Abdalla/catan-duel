@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="x-ua-compatible" content="ie=edge" />
+<title>Catan Duel</title>
+<hta:application id="app" applicationname="Catan Duel" border="thin" innerborder="no"
+   scroll="no" maximizebutton="no" sysmenu="yes" caption="yes" contextmenu="no" selection="no" />
+<style>
+  html,body { margin:0; height:100%; font:14px/1.5 "Segoe UI",Arial,sans-serif;
+              background:#0c1a1c; color:#f3ecd9; -ms-user-select:none; }
+  .wrap { padding:18px 20px 20px; }
+  h1 { font-family:Georgia,serif; color:#f3d79a; margin:0; font-size:24px; }
+  .sub { color:#9bb0ad; margin:2px 0 14px; font-size:12.5px; }
+  .stat { display:flex; gap:18px; background:#15211f; border:1px solid #2c4446; border-radius:10px; padding:10px 14px; margin-bottom:14px; }
+  .stat b { color:#cdbf9d; font-weight:400; font-size:12px; }
+  .dot { display:inline-block; width:10px; height:10px; border-radius:50%; background:#666; margin-right:6px; vertical-align:middle; }
+  .up { background:#7fd99a; } .down { background:#c75c54; } .warn { background:#e6b34a; }
+  .btns { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px; }
+  button { font:600 14px "Segoe UI",Arial; color:#13100a; background:#e0b341; border:0; border-radius:9px;
+           padding:11px 16px; cursor:pointer; }
+  button:hover { background:#efc457; }
+  button.sec { background:#22343a; color:#f3ecd9; border:1px solid #34525a; }
+  button.sec:hover { background:#2c424a; }
+  .card { background:#15211f; border:1px solid #2c4446; border-radius:10px; padding:12px 14px; margin-bottom:12px; }
+  .card h2 { margin:0 0 6px; font-size:13px; color:#f3d79a; }
+  .lnk { font-family:Consolas,monospace; color:#7fd0e0; }
+  input { font:13px Consolas,monospace; background:#0a1314; color:#f3e6c6; border:1px solid #34525a; border-radius:7px; padding:7px 9px; width:190px; }
+  a { color:#e0b341; } .note { color:#9bb0ad; font-size:11.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Catan Duel</h1>
+  <div class="sub">Double-click control panel. Buttons drive the game for you.</div>
+
+  <div class="stat">
+    <span><b>Game</b><br><span id="dGame" class="dot down"></span><span id="tGame">checking…</span></span>
+    <span><b>Firewall</b><br><span id="dFw" class="dot"></span><span id="tFw">…</span></span>
+    <span><b>Your Radmin IP</b><br><span id="tIp" class="lnk">…</span></span>
+    <span style="margin-left:auto"><button class="sec" onclick="refresh()">Refresh</button></span>
+  </div>
+
+  <div class="btns">
+    <button onclick="play()">▶ Play on this PC</button>
+    <button onclick="host()">🌐 Host online</button>
+    <button class="sec" onclick="stop()">⏹ Stop</button>
+    <button class="sec" onclick="update()">⬆ Update</button>
+  </div>
+
+  <div class="card">
+    <h2>Send your friend the link</h2>
+    <div><span id="friend" class="lnk">start the game / connect Radmin to see your link</span>
+      &nbsp; <button class="sec" onclick="copyFriend()">📋 Copy</button></div>
+  </div>
+
+  <div class="card">
+    <h2>Joining a friend's game?</h2>
+    <div>Paste their link or Radmin IP, then open it:
+      <input id="join" placeholder="http://26.x.x.x:5173" />
+      <button class="sec" onclick="joinGame()">Open</button></div>
+    <div class="note" style="margin-top:6px">You just need <a href="https://www.radmin-vpn.com/">Radmin VPN</a> + their network — no setup on your side.</div>
+  </div>
+
+  <div class="note">First time online: both install <a href="https://www.radmin-vpn.com/">Radmin VPN</a> (free) and join one network.
+     “Host online” opens a panel that handles the firewall (open only to Radmin peers) and closes it safely when you’re done.</div>
+</div>
+
+<script language="JScript">
+var sh = new ActiveXObject("WScript.Shell");
+var fso = new ActiveXObject("Scripting.FileSystemObject");
+var radminIp = "";
+
+function here() {
+  var p = decodeURIComponent(location.pathname).replace(/^\//, "").replace(/\//g, "\\");
+  return p.replace(/\\[^\\]*$/, ""); // folder of this .hta
+}
+function runBat(name, show) { try { sh.Run('"' + here() + '\\' + name + '"', show ? 1 : 0, false); } catch (e) { alert("Could not run " + name + ".\n" + e.message); } }
+
+function play()   { runBat("PLAY.bat", true); }
+function host()   { runBat("PLAY-ONLINE.bat", true); }
+function stop()   { runBat("STOP.bat", false); setTimeout(refresh, 1500); }
+function update() { runBat("UPDATE.bat", true); }
+
+function joinGame() {
+  var v = document.getElementById("join").value.replace(/^\s+|\s+$/g, "");
+  if (!v) { alert("Paste your friend's link or Radmin IP first."); return; }
+  if (v.indexOf("http") !== 0) v = "http://" + v.replace(/:5173$/, "") + ":5173";
+  try { window.clipboardData.setData("Text", v); } catch (e) {}
+  sh.Run('cmd /c start "" "' + v + '"', 0, false);
+}
+function copyFriend() {
+  if (!radminIp) { alert("No Radmin IP yet — connect Radmin VPN, then Refresh."); return; }
+  var link = "http://" + radminIp + ":5173";
+  try { window.clipboardData.setData("Text", link); alert("Copied:  " + link); } catch (e) { alert(link); }
+}
+
+function refresh() {
+  try {
+    var tmp = sh.ExpandEnvironmentStrings("%TEMP%") + "\\catan_status.txt";
+    var ps = "$g=try{if((Invoke-WebRequest 'http://localhost:5173' -TimeoutSec 2 -UseBasicParsing).StatusCode -eq 200){'UP'}else{'DOWN'}}catch{'DOWN'};"
+           + "$f=(Get-NetFirewallRule -DisplayName 'Catan Duel*' -EA SilentlyContinue|Measure-Object).Count;"
+           + "$ip=(Get-NetIPAddress -AddressFamily IPv4|?{$_.IPAddress -like '26.*'}|Select-Object -First 1).IPAddress;"
+           + "Set-Content -Encoding ascii -Path '" + tmp + "' -Value ($g+'|'+$f+'|'+$ip)";
+    sh.Run('powershell -NoProfile -WindowStyle Hidden -Command "' + ps + '"', 0, true);
+    var s = "DOWN|0|";
+    if (fso.FileExists(tmp)) { var fh = fso.OpenTextFile(tmp, 1); s = fh.ReadAll(); fh.Close(); }
+    var p = s.replace(/\s+$/, "").split("|");
+    var gameUp = (p[0] === "UP"), fwOpen = (parseInt(p[1], 10) > 0); radminIp = p[2] || "";
+    document.getElementById("dGame").className = "dot " + (gameUp ? "up" : "down");
+    document.getElementById("tGame").innerHTML = gameUp ? "running — <a href='http://localhost:5173'>open</a>" : "not running";
+    document.getElementById("dFw").className = "dot " + (fwOpen ? "warn" : "up");
+    document.getElementById("tFw").innerHTML = fwOpen ? "OPEN (Radmin only)" : "closed (safe)";
+    document.getElementById("tIp").innerHTML = radminIp ? radminIp : "Radmin not connected";
+    document.getElementById("friend").innerHTML = radminIp ? ("http://" + radminIp + ":5173") : "connect Radmin to see your link";
+  } catch (e) { /* ignore a single failed poll */ }
+}
+
+window.resizeTo(560, 560);
+refresh();
+window.setInterval(refresh, 6000);
+</script>
+</body>
+</html>

@@ -70,10 +70,10 @@ function Open-Host {
   $s = Get-Status
   if (-not $s.Radmin) { Write-Host "`n  Start Radmin VPN first (and join/create a network), then try again.`n" -ForegroundColor Red; Pause; return }
   # point the app at the relay (written through WSL)
-  wsl.exe bash -c "printf 'VITE_PARTYKIT_HOST=%s:1999\n' '$($s.Radmin)' > '$WslRepo/.env.development.local'"
-  # start the servers in WSL if they're not already up
-  if (-not $s.Relay) { wsl.exe bash -lc "cd '$WslRepo' && setsid nohup npm run party  >/tmp/catan-party.log 2>&1 < /dev/null &" }
-  if (-not $s.Game)  { wsl.exe bash -lc "cd '$WslRepo' && setsid nohup npm run dev    >/tmp/catan-dev.log   2>&1 < /dev/null &" }
+  wsl.exe bash -c "printf 'VITE_PARTYKIT_HOST=%s:1999\n' '$($s.Radmin)' > $WslRepo/.env.development.local"
+  # start the servers in WSL if they're not already up (unquoted path so a ~ fallback expands)
+  if (-not $s.Relay) { wsl.exe bash -lc "cd $WslRepo && setsid nohup npm run party  >/tmp/catan-party.log 2>&1 < /dev/null &" }
+  if (-not $s.Game)  { wsl.exe bash -lc "cd $WslRepo && setsid nohup npm run dev    >/tmp/catan-dev.log   2>&1 < /dev/null &" }
   Invoke-Firewall $true $s.Wsl
   Start-Sleep -Seconds 4
   $s = Get-Status

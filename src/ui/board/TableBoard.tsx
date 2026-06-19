@@ -14,7 +14,6 @@ import { ResolutionPanel } from './ResolutionPanel'
 import { AuditLog } from './AuditLog'
 import { AdvantageAudio } from './AdvantageAudio'
 import { BrigandSequence } from './BrigandSequence'
-import { HelpOverlay } from './HelpOverlay'
 import { EventPopup } from './EventPopup'
 import { VictoryFlow } from './VictoryFlow'
 import { ConnectionBar } from '../net/ConnectionBar'
@@ -74,7 +73,6 @@ export function TableBoard({ mode, setMode }: { mode: AppMode; setMode: (m: AppM
       <VictoryFlow />
       <AdvantageAudio />
       <BrigandSequence />
-      <HelpOverlay />
       <TurnBanner />
       {online && <NetToasts />}
       {online && <ConnectionBar />}

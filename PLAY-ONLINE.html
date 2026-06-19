@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Catan Duel — Play Online (Radmin VPN)</title>
+<style>
+  :root { color-scheme: dark; }
+  body { margin:0; font:16px/1.6 -apple-system,Segoe UI,Roboto,Arial,sans-serif;
+         background:radial-gradient(120% 90% at 50% 0%,#1f3a3a,#0c1a1c 70%); color:#f3ecd9; padding:34px 16px 80px; }
+  .wrap { max-width:880px; margin:0 auto; }
+  h1 { font-family:Georgia,serif; color:#f3d79a; margin:0 0 2px; }
+  .sub { opacity:.75; margin:0 0 22px; }
+  .cols { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media (max-width:720px){ .cols{ grid-template-columns:1fr; } }
+  .card { background:linear-gradient(180deg,#1c2b2c,#15211f); border:1px solid rgba(243,215,154,.22);
+          border-radius:14px; padding:18px 20px; box-shadow:0 10px 30px rgba(0,0,0,.4); }
+  .card.host { border-color:rgba(199,92,84,.5); }
+  .card.friend { border-color:rgba(90,134,196,.5); }
+  .card.safe { border-color:rgba(127,217,154,.45); grid-column:1/-1; }
+  h2 { margin:0 0 8px; font-size:1.1rem; }
+  .host h2 { color:#e89a92; } .friend h2 { color:#8fb3e8; } .safe h2 { color:#9fe0b0; }
+  ol { margin:8px 0 0; padding-left:22px; } li { margin:7px 0; }
+  code { font-family:ui-monospace,Menlo,Consolas,monospace; background:rgba(255,255,255,.08); padding:1px 6px; border-radius:5px; color:#f3e6c6; }
+  .big { font-size:1.05rem; font-weight:600; }
+  .tag { display:inline-block; font-size:.72rem; background:rgba(243,215,154,.14); border:1px solid rgba(243,215,154,.3);
+         border-radius:99px; padding:2px 9px; margin-left:6px; color:#f3e6c6; }
+  .note { font-size:.86rem; opacity:.8; margin-top:10px; }
+  .step1 { background:rgba(0,0,0,.25); border-radius:10px; padding:14px 18px; margin:0 0 16px; }
+  .ok { color:#9fe0b0; } .warn{ color:#e6c06a; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Catan Duel — play online together</h1>
+  <p class="sub">Free, private, no cloud. You connect over <b>Radmin VPN</b> (a free virtual LAN) and play in the browser.
+     One-time: both install <a href="https://www.radmin-vpn.com/" target="_blank" style="color:#7fd0e0">Radmin VPN</a>.</p>
+
+  <div class="step1">
+    <span class="big">① Get on the same Radmin network</span> <span class="tag">one time</span>
+    <ol>
+      <li><b>Host</b> opens Radmin VPN → <b>Create network</b> → pick a name + password → share them with your friend.</li>
+      <li><b>Friend</b> opens Radmin VPN → <b>Join network</b> → enter that name + password.</li>
+      <li>You should now see each other's computer with a <span class="ok">green dot</span>. ✅</li>
+    </ol>
+  </div>
+
+  <div class="cols">
+    <div class="card host">
+      <h2>② Host <span class="tag">the person running the game</span></h2>
+      <ol>
+        <li>In the repo folder, right-click <code>RADMIN-ONLINE.ps1</code> → <b>Run with PowerShell</b> → click <b>Yes</b> on the prompt.
+            <div class="note">It bridges the game to your Radmin address and opens the firewall to Radmin peers only. It prints <b>your Radmin IP</b> + the friend's URL.</div></li>
+        <li>Start the two servers (in WSL): <code>npm run party</code> and <code>npm run dev</code>.</li>
+        <li>Open <code>http://localhost:5173</code> → <b>Online</b> tab → make a room → tell your friend the <b>room code</b>.</li>
+      </ol>
+    </div>
+    <div class="card friend">
+      <h2>③ Friend <span class="tag">joins</span></h2>
+      <ol>
+        <li>Make sure you joined the host's Radmin network (step ①, green dot).</li>
+        <li>Open a browser to <code>http://&lt;host's-Radmin-IP&gt;:5173</code> <span class="note">(the host tells you this — e.g. <code>http://26.79.157.209:5173</code>)</span></li>
+        <li>Click <b>Online</b> → type the same <b>room code</b> → pick the other seat. You're synced. 🎲</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="card safe" style="margin-top:16px">
+    <h2>④ Is it safe? &amp; closing it after</h2>
+    <ol>
+      <li><span class="ok">Safe by design:</span> the firewall only opens to <b>Radmin peers (26.x)</b> on your Private network — never the public internet. Use a <b>password-protected</b> network with only your friend.</li>
+      <li><b>When you're done</b>, the host right-clicks <code>RADMIN-OFFLINE.ps1</code> → <b>Run with PowerShell</b> → <b>Yes</b>. It removes the bridge + firewall openings — nothing is exposed anymore.</li>
+      <li>Optional: also right-click the Radmin VPN tray icon → <b>Disconnect</b>.</li>
+    </ol>
+    <div class="note">Trouble? 9 times out of 10 it's the friend not being on the host's Radmin network yet (no green dot). The host can ask the assistant to "check" — it can scan for the peer.</div>
+  </div>
+</div>
+</body>
+</html>

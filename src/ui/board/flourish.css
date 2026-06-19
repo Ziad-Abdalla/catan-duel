@@ -1,0 +1,31 @@
+/* Brief, non-blocking event-die flourish — particles rise from table centre and fade. */
+.flourish {
+  position: fixed;
+  left: 50%;
+  top: 46%;
+  z-index: 65;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+.fl-particle {
+  position: absolute;
+  font-size: clamp(18px, 2.4vh, 30px);
+  opacity: 0;
+  will-change: transform, opacity;
+  animation: fl-rise 1.4s cubic-bezier(0.2, 0.7, 0.3, 1) var(--d, 0s) both;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.5));
+}
+@keyframes fl-rise {
+  0% { transform: translate(0, 18px) scale(0.5) rotate(0deg); opacity: 0; }
+  22% { opacity: 1; }
+  100% { transform: translate(calc(var(--fx, 0) * 26vw), -34vh) scale(1.05) rotate(calc(var(--r, 0) * 40deg)); opacity: 0; }
+}
+/* per-face tint */
+.fl-trade .fl-particle { color: #f3d27a; }
+.fl-celebration .fl-particle { color: #ffd9f0; text-shadow: 0 0 10px rgba(255, 200, 240, 0.8); }
+.fl-harvest .fl-particle { color: #e7c66a; }
+.fl-event .fl-particle { color: #bfe2f4; text-shadow: 0 0 10px rgba(160, 210, 240, 0.8); }
+
+@media (prefers-reduced-motion: reduce) {
+  .fl-particle { animation-duration: 0.6s; }
+}

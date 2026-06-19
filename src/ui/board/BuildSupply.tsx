@@ -92,6 +92,7 @@ export function BuildSupply({ player }: { player: PlayerId }) {
             <button
               key={card.id}
               className={`build-piece build-era era-${card.set}${out ? ' depleted' : ''}`}
+              aria-disabled={out}
               draggable={!out}
               title={out
                 ? `${card.name} — none left in the supply`

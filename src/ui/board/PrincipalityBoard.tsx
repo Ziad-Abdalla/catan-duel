@@ -174,6 +174,7 @@ function Site({
     // structural road/settlement/city builds DO auto-charge in the engine.
     dispatch({ type: 'playCard', player, cardId, slot, pay: false })
     playSfx('place')
+    playSfx('sweep') // dramatic deploy whoosh
     clear()
   }
 

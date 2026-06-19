@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import type { PlayerId } from '../../types'
 import { useGame } from '../../store/gameStore'
+import { useUI } from '../../store/uiStore'
 import { playSfx } from '../../audio/sfx'
 
 type Holder = PlayerId | null
@@ -13,6 +14,7 @@ type Holder = PlayerId | null
 export function AdvantageAudio() {
   const hero: Holder = useGame((s) => (s.state.players.p0.hasHeroToken ? 'p0' : s.state.players.p1.hasHeroToken ? 'p1' : null))
   const trade: Holder = useGame((s) => (s.state.players.p0.hasTradeToken ? 'p0' : s.state.players.p1.hasTradeToken ? 'p1' : null))
+  const flashNegative = useUI((s) => s.flashNegative)
   const prev = useRef<{ hero: Holder; trade: Holder } | null>(null)
 
   useEffect(() => {
@@ -22,9 +24,14 @@ export function AdvantageAudio() {
       const lostOnly = !gained && ((before.hero !== hero && !hero) || (before.trade !== trade && !trade))
       if (gained) playSfx('token') // success chime for the new holder
       else if (lostOnly) playSfx('flip') // softer cue when an advantage is given up
+      // whoever a token moved away from gets a subtle negative flash
+      const losers = new Set<PlayerId>()
+      if (before.hero && before.hero !== hero) losers.add(before.hero)
+      if (before.trade && before.trade !== trade) losers.add(before.trade)
+      losers.forEach((p) => flashNegative(p))
     }
     prev.current = { hero, trade }
-  }, [hero, trade])
+  }, [hero, trade, flashNegative])
 
   return null
 }

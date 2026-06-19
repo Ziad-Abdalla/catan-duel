@@ -775,3 +775,22 @@
 .felt-era-duel .felt-bg::after {
   background: radial-gradient(80% 40% at 50% 0%, rgba(180, 150, 230, 0.16), transparent 70%);
 }
+
+/* shared discard pile in the deck wall (draw the top card back to hand) */
+.cardstack.cs-discard {
+  background: linear-gradient(160deg, #3a3026, #241d15);
+  border: 1px dashed rgba(243, 215, 154, 0.45);
+  cursor: pointer;
+}
+.cardstack.cs-discard:not(:disabled):hover { border-color: rgba(243, 215, 154, 0.85); transform: translateY(-2px); }
+.cardstack.cs-discard:disabled { opacity: 0.4; cursor: default; }
+.cardstack.cs-discard .cs-face { font-size: 22px; color: #e7d6a8; }
+
+/* subtle negative flash when a player loses an advantage */
+.player-plate.cued-negative { animation: plate-negative 0.9s ease; }
+@keyframes plate-negative {
+  0% { box-shadow: 0 0 0 0 rgba(200, 70, 60, 0); }
+  18% { box-shadow: 0 0 18px 3px rgba(200, 70, 60, 0.6); filter: saturate(0.7) brightness(0.92); }
+  100% { box-shadow: 0 0 0 0 rgba(200, 70, 60, 0); }
+}
+@media (prefers-reduced-motion: reduce) { .player-plate.cued-negative { animation: none; } }

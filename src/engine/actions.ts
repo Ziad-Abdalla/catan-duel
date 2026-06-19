@@ -38,6 +38,7 @@ export type Action =
   | { type: 'returnToHand'; player: PlayerId; placedIndex: number }
   | { type: 'discardToStack'; player: PlayerId; cardId: string; stackIndex: number } // end-of-turn exchange: tuck a card under a draw stack
   | { type: 'discardCard'; player: PlayerId; from: 'hand' | 'placed'; cardId?: string; placedIndex?: number } // route a card to the shared discard pile (or back to a face-up supply)
+  | { type: 'drawFromDiscard'; player: PlayerId; cardId?: string } // freely draw a card back from the shared discard pile (top by default)
   | { type: 'drawEvent' } // reveal top event card (pops up on both screens); resolution is manual
   | { type: 'dismissEvent' } // clear the revealed event pop-up
   // spine
@@ -592,6 +593,18 @@ function reduce(s: GameState, a: Action): GameState {
 
     case 'dismissEvent':
       return s.revealedEvent ? { ...s, revealedEvent: undefined } : s
+
+    case 'drawFromDiscard': {
+      if (s.discard.length === 0) return s
+      const cardId = a.cardId ?? s.discard[s.discard.length - 1] // default: top of the pile
+      const idx = s.discard.lastIndexOf(cardId)
+      if (idx < 0) return s
+      const discard = [...s.discard.slice(0, idx), ...s.discard.slice(idx + 1)]
+      const out = withPlayer(s, a.player, (p) => {
+        p.hand.push(cardId)
+      })
+      return logged({ ...out, discard }, a.player, `Drew ${getCard(cardId)?.name ?? cardId} from the discard pile`)
+    }
 
     case 'renamePlayer':
       return withPlayer(s, a.player, (p) => {

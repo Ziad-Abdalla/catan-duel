@@ -3,6 +3,7 @@ import type { PlayerId, Stat } from '../../types'
 import { PlateToken } from './TokenLayer'
 import { computeStats, suggestAdvantage } from '../../engine/actions'
 import { useGame } from '../../store/gameStore'
+import { useUI } from '../../store/uiStore'
 
 const STAT_META: { key: Stat; glyph: string; title: string }[] = [
   { key: 'strength', glyph: '⚔', title: 'Strength' },
@@ -21,6 +22,7 @@ export function PlayerPlate({ player }: { player: PlayerId }) {
   const stats = computeStats(p)
   const suggest = suggestAdvantage(state)
   const accent = player === 'p0' ? 'var(--p0)' : 'var(--p1)'
+  const cued = useUI((s) => s.negativeCue === player)
 
   const [bump, setBump] = useState(false)
   const prevVP = useRef(p.victoryPoints)
@@ -32,7 +34,7 @@ export function PlayerPlate({ player }: { player: PlayerId }) {
   }, [p.victoryPoints])
 
   return (
-    <div className={`player-plate${active ? ' active' : ''}`} style={{ ['--pc-accent' as string]: accent }}>
+    <div className={`player-plate${active ? ' active' : ''}${cued ? ' cued-negative' : ''}`} style={{ ['--pc-accent' as string]: accent }}>
       <span className="plate-dot" />
       <input
         className="plate-name"
@@ -67,7 +69,7 @@ export function PlayerPlate({ player }: { player: PlayerId }) {
         </button>
         <span className={`plate-vp${bump ? ' bump' : ''}`} onAnimationEnd={() => setBump(false)}>
           {p.victoryPoints}
-          <small>/7</small>
+          <small>/{state.winThreshold}</small>
         </span>
         <button className="plate-vpbtn" aria-label="increase VP" onClick={() => dispatch({ type: 'adjustVP', player, delta: +1 })}>
           +

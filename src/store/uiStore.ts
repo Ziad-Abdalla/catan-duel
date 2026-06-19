@@ -57,6 +57,9 @@ interface UIState {
   /** The collapsible action-history ledger (audit log) sidebar. */
   auditOpen: boolean
   toggleAudit: () => void
+  /** A player briefly flashed with a negative cue (e.g. just lost an advantage). */
+  negativeCue: PlayerId | null
+  flashNegative: (player: PlayerId) => void
   rollDice: (production: number, event: string, turn: number) => void
   setDrag: (id: string | null) => void
   setDragBuild: (b: BuildKind | null) => void
@@ -88,6 +91,11 @@ export const useUI = create<UIState>((set) => ({
   dice: null,
   auditOpen: false,
   toggleAudit: () => set((s) => ({ auditOpen: !s.auditOpen })),
+  negativeCue: null,
+  flashNegative: (player) => {
+    set({ negativeCue: player })
+    setTimeout(() => set((s) => (s.negativeCue === player ? { negativeCue: null } : {})), 900)
+  },
   /**
    * Kick off the dice cinematic for one roll. The timers live here in the store
    * singleton (not a React effect), so React StrictMode's mount/unmount/mount in

@@ -1,8 +1,7 @@
-import { useState, type MouseEvent as ReactMouseEvent } from 'react'
+import { type MouseEvent as ReactMouseEvent } from 'react'
 import type { Phase } from '../../types'
 import { EVENT_TEXT, type EventFace } from '../../engine/dice'
-import { getCard, cardArt } from '../../data/cards'
-import { CardView } from '../CardView'
+import { cardArt, getCard } from '../../data/cards'
 import { AdvantageControl } from './TokenLayer'
 import { PipDie, EventSymbol, EVENT_COLOR, EVENT_NAME } from './diceart'
 import { useGame } from '../../store/gameStore'
@@ -40,7 +39,6 @@ export function CentralWall() {
   const addFlight = useUI((s) => s.addFlight)
   const openResolve = useUI((s) => s.openResolve)
   const revealedRoll = useUI((s) => s.revealedRoll)
-  const [revealed, setRevealed] = useState<string | null>(null)
 
   // the roll result is "written" in the wall only once the felt dice have settled
   const shown =
@@ -69,10 +67,16 @@ export function CentralWall() {
     playSfx('flip')
   }
 
+  // Draw the top event card — the synced EventPopup shows it on BOTH screens.
   const drawEvent = () => {
-    const top = state.eventDeck[state.eventDeck.length - 1]
-    setRevealed(top ?? null)
     dispatch({ type: 'drawEvent' })
+    playSfx('flip')
+  }
+
+  /** Draw the top of the shared discard pile into the active player's hand. */
+  const drawFromDiscard = () => {
+    if (state.discard.length === 0) return
+    dispatch({ type: 'drawFromDiscard', player: active })
     playSfx('flip')
   }
 
@@ -96,7 +100,7 @@ export function CentralWall() {
           <button className="wbtn wbtn-undo" disabled={!canUndo} title="Undo the last change (trust-based fat-finger recovery)" onClick={() => { undo(); playSfx('ui') }}>
             ↶ Undo
           </button>
-          <button className="wbtn wbtn-end" disabled={over} onClick={() => { setRevealed(null); dispatch({ type: 'endTurn' }) }}>
+          <button className="wbtn wbtn-end" disabled={over} onClick={() => dispatch({ type: 'endTurn' })}>
             End turn
           </button>
         </div>
@@ -123,6 +127,19 @@ export function CentralWall() {
           <span className="cs-face">?</span>
           <span className="cs-count">{state.eventDeck.length}</span>
         </div>
+        <button
+          className="cardstack cs-discard"
+          disabled={state.discard.length === 0 || over}
+          title={
+            state.discard.length
+              ? `Discard pile — draw the top card (${getCard(state.discard[state.discard.length - 1])?.name ?? '?'}) to ${state.players[active].name}`
+              : 'Discard pile (empty)'
+          }
+          onClick={drawFromDiscard}
+        >
+          <span className="cs-face">♺</span>
+          <span className="cs-count">{state.discard.length}</span>
+        </button>
       </div>
 
       {/* roll + outcome — the result is written here once the felt dice settle */}
@@ -172,18 +189,6 @@ export function CentralWall() {
         <AdvantageControl kind="trade" label="Trade" />
       </div>
 
-      {revealed && getCard(revealed) && (
-        <div className="event-pop">
-          <button className="event-pop-x" onClick={() => setRevealed(null)}>✕</button>
-          <CardView card={getCard(revealed)!} />
-          <button
-            className="wbtn wbtn-sm wbtn-resolve event-pop-resolve"
-            onClick={() => { openResolve({ player: active, from: 'event', cardId: revealed }); setRevealed(null) }}
-          >
-            Resolve this event
-          </button>
-        </div>
-      )}
     </div>
   )
 }

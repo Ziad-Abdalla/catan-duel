@@ -2,7 +2,7 @@
 // nothing to license. One lazy AudioContext (created on first sound, after a user
 // gesture, per browser autoplay rules). A persisted mute toggle gates everything.
 
-export type Sfx = 'rotate' | 'dice' | 'token' | 'place' | 'flip' | 'ui'
+export type Sfx = 'rotate' | 'dice' | 'token' | 'place' | 'flip' | 'ui' | 'sweep'
 
 const STORE_KEY = 'catan-duel.muted'
 let muted = readMuted()
@@ -137,6 +137,11 @@ export function playSfx(kind: Sfx): void {
       break
     case 'ui':
       tone(ac, t, { type: 'triangle', freq: 520, dur: 0.06, gain: 0.08 })
+      break
+    case 'sweep': // a rising, dramatic whoosh as a card is deployed to the board
+      tone(ac, t, { type: 'sawtooth', freq: 180, to: 720, dur: 0.34, gain: 0.12 })
+      noise(ac, t, { dur: 0.3, gain: 0.07, freq: 1800, q: 0.5, type: 'bandpass' })
+      tone(ac, t + 0.04, { type: 'sine', freq: 520, to: 880, dur: 0.26, gain: 0.07 })
       break
   }
 }

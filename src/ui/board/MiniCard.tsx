@@ -23,9 +23,11 @@ export function MiniCard({
 }) {
   const art = cardArt(card.id)
   const isCenter = ['region', 'settlement', 'city', 'road'].includes(card.category)
+  // Trade/pirate ships ride on a strip of living water.
+  const isShip = /\bship\b/i.test(card.name)
   return (
     <div
-      className={`mini${selected ? ' selected' : ''}`}
+      className={`mini deploy${selected ? ' selected' : ''}${isShip ? ' mini-ship' : ''}`}
       tabIndex={0}
       role={onClick ? 'button' : undefined}
       onClick={onClick}
@@ -36,6 +38,7 @@ export function MiniCard({
         }
       }}
     >
+      {isShip && <span className="mini-water" aria-hidden />}
       <div className="mini-art">
         {art ? (
           <img src={art} alt={card.name} loading="lazy" />

@@ -44,6 +44,23 @@ Driven by the audits in this folder (see INDEX.md). Each batch verified (tsc + t
   cancel / close-without-take (consumed only when a card is actually taken).
 - **BUG-6 (left-prepend didn't shift `settle-N`):** now shifts seat slots too (was latent/cosmetic).
 
-## Pending
+## Creative + polish ✅
+- **Thematic sound system** (Q3, above) + **ambient background music** hook (`public/ambient.mp3`, drop-in,
+  ⚙ Setup → Music, yields to mute) + drop-in victory track.
+- **Event-die flourishes:** brief per-face particle burst on roll settle (trade/celebration/harvest/event-card;
+  brigand keeps its cinematic) — non-blocking, reduced-motion aware.
+- **Tactile cursors:** grab/grabbing on every pickup-able piece.
+- **Asset guide** `ASSETS.html` (curated CC0/royalty-free music/sfx/texture/city-art download links → exact slots).
+- **Online play:** `PLAY-ONLINE.html` — dead-simple, safe Radmin guide for host + friend + teardown; one-click
+  `RADMIN-ONLINE.ps1` / `RADMIN-OFFLINE.ps1`.
+
+## Final verification ✅
+- tsc clean · 142 unit/fuzz tests · prod build OK · e2e (action-coverage + random-orders + ui-flows) 0 console errors
+  · visual sweep across gold/turmoil/progress (one-screen fit, themed felt, clean city, supply counts) 0 errors.
+- e2e ui-flows updated for the new ⚙ Setup popover.
+
+## Status: COMPLETE — shipped to master.
+
+## (earlier) Pending
 - Q4 HUD declutter (setup popover) · Q6 polish tail (a11y, blank cards) · creative (cursor, resource
   theming, ambient music, animations) · asset-download HTML · Radmin guide · logic-bug-hunt fixes (04) · final push.

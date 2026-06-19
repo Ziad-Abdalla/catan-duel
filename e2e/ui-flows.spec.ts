@@ -29,14 +29,17 @@ test('click through the real UI surfaces', async ({ page }) => {
   await d.check('log-open')
   await page.locator('.audit-x').click()
 
-  // change felt theme via the HUD select
-  await page.locator('.hud-theme select').selectOption('gold')
+  // change felt theme via the ⚙ Setup popover (sets/win/theme live there now)
+  await page.locator('.hud-btn', { hasText: 'Setup' }).click()
+  await expect(page.locator('.hud-pop')).toBeVisible()
+  await page.locator('.hud-pop select').nth(1).selectOption('gold') // theme is the 2nd select (win, theme)
   await page.waitForTimeout(300)
   await d.shot('04-theme-gold')
   await d.check('theme-gold')
+  await page.locator('.hud-pop-scrim').click() // close the popover
 
-  // toggle the pay/free chip
-  await page.locator('.hud-chip', { hasText: /Pay|Free/ }).first().click()
+  // toggle the pay/free chip (stays on the bar)
+  await page.locator('.hud-pay').click()
   await page.waitForTimeout(100)
   await d.shot('05-pay-toggled')
   await d.check('pay-toggled')

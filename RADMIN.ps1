@@ -1,10 +1,12 @@
-# RADMIN.ps1 — Catan Duel online control panel (Radmin VPN).
+# RADMIN.ps1 - Catan Duel online control panel (Radmin VPN).
 # Right-click this file -> "Run with PowerShell". It shows live status (Radmin, FIREWALL,
 # bridge, servers, friend) and lets you Open (host a game) or Close (make safe) in one key.
 # Run it NON-elevated; it elevates only the firewall/bridge step (one UAC each way).
+# The desktop panel calls it directly with -Open (host now) or -Close (make safe + stop).
+param([switch]$Open, [switch]$Close)
 
 $ErrorActionPreference = 'SilentlyContinue'
-$Host.UI.RawUI.WindowTitle = 'Catan Duel — Online'
+$Host.UI.RawUI.WindowTitle = 'Catan Duel - Online'
 
 # the repo path inside WSL (derived from where this script sits, with a sensible fallback)
 $WslRepo = $PSScriptRoot -replace '^\\\\wsl(\.localhost|\$)\\[^\\]+', '' -replace '\\', '/'
@@ -28,10 +30,10 @@ function Show-Status {
     if ($ok) { Write-Host $okText -ForegroundColor Green } else { Write-Host $noText -ForegroundColor DarkGray }
   }
   Clear-Host
-  Write-Host "`n  CATAN DUEL — ONLINE (Radmin)`n  ----------------------------------------" -ForegroundColor Cyan
-  Line "Radmin VPN"      ([bool]$s.Radmin) ("CONNECTED  (you: {0})" -f $s.Radmin) "NOT CONNECTED — start Radmin VPN"
+  Write-Host "`n  CATAN DUEL - ONLINE (Radmin)`n  ----------------------------------------" -ForegroundColor Cyan
+  Line "Radmin VPN"      ([bool]$s.Radmin) ("CONNECTED  (you: {0})" -f $s.Radmin) "NOT CONNECTED - start Radmin VPN"
   if ($s.FwOpen) { Write-Host ("  {0,-22}" -f "Firewall") -NoNewline; Write-Host "OPEN (to Radmin peers only)" -ForegroundColor Yellow }
-  else           { Write-Host ("  {0,-22}" -f "Firewall") -NoNewline; Write-Host "CLOSED (safe — not exposed)" -ForegroundColor Green }
+  else           { Write-Host ("  {0,-22}" -f "Firewall") -NoNewline; Write-Host "CLOSED (safe - not exposed)" -ForegroundColor Green }
   Line "Port bridge"     $s.Bridge "up (5173, 1999 -> WSL)" "none"
   Line "Game server 5173" $s.Game  "running" "not running"
   Line "Relay 1999"       $s.Relay "running" "not running"
@@ -62,7 +64,7 @@ function Invoke-Firewall($open, $wsl) {
       "Remove-NetFirewallRule -DisplayName 'Catan Duel 1999 (Radmin)' -EA SilentlyContinue"
     ) -join '; '
   }
-  Write-Host "  (a UAC prompt will appear — click YES)" -ForegroundColor Yellow
+  Write-Host "  (a UAC prompt will appear - click YES)" -ForegroundColor Yellow
   Start-Process powershell -Verb RunAs -ArgumentList '-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command', $cmds -Wait
 }
 
@@ -71,21 +73,27 @@ function Open-Host {
   if (-not $s.Radmin) { Write-Host "`n  Start Radmin VPN first (and join/create a network), then try again.`n" -ForegroundColor Red; Pause; return }
   # point the app at the relay (written through WSL)
   wsl.exe bash -c "printf 'VITE_PARTYKIT_HOST=%s:1999\n' '$($s.Radmin)' > $WslRepo/.env.development.local"
-  # start the servers in WSL if they're not already up (unquoted path so a ~ fallback expands)
-  if (-not $s.Relay) { wsl.exe bash -lc "cd $WslRepo && setsid nohup npm run party  >/tmp/catan-party.log 2>&1 < /dev/null &" }
-  if (-not $s.Game)  { wsl.exe bash -lc "cd $WslRepo && setsid nohup npm run dev    >/tmp/catan-dev.log   2>&1 < /dev/null &" }
+  # start the servers in WSL, each in its OWN window so they stay alive (a detached
+  # background server gets reaped when WSL shuts the distro down). Unquoted ~ expands.
+  if (-not $s.Relay) { Start-Process -FilePath 'wsl.exe' -ArgumentList "bash -lc `"cd $WslRepo && npm run party`"" -WindowStyle Minimized }
+  if (-not $s.Game)  { Start-Process -FilePath 'wsl.exe' -ArgumentList "bash -lc `"cd $WslRepo && npm run dev`""   -WindowStyle Minimized }
   Invoke-Firewall $true $s.Wsl
   Start-Sleep -Seconds 4
   $s = Get-Status
-  if (-not $s.Game) { Write-Host "`n  Servers didn't start automatically — open a WSL terminal and run:  npm run party   and   npm run dev" -ForegroundColor Yellow; Pause }
+  if (-not $s.Game) { Write-Host "`n  Servers didn't start automatically - open a WSL terminal and run:  npm run party   and   npm run dev" -ForegroundColor Yellow; Pause }
 }
 
 function Close-Host {
-  Invoke-Firewall $false $null
+  $s = Get-Status
+  if ($s.FwOpen -or $s.Bridge) { Invoke-Firewall $false $null }   # only prompt UAC if something is actually open
   wsl.exe bash -lc "pkill -f vite; pkill -f workerd; pkill -f partykit" 2>$null
   Write-Host "`n  Closed. Nothing is exposed. (You can also Disconnect Radmin from its tray icon.)" -ForegroundColor Green
   Start-Sleep -Seconds 2
 }
+
+# Direct modes for the desktop panel (no menu): -Open hosts now, -Close makes safe + stops.
+if ($Close) { Close-Host; exit }
+if ($Open)  { Open-Host;  exit }
 
 # ---- menu loop ----
 while ($true) {

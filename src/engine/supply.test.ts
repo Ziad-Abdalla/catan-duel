@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { newGame } from './newGame'
-import { applyAction } from './actions'
+import { applyAction, mergeSnapshots } from './actions'
 import { getCard } from '../data/cards'
 
 const FE = 'gold-merchant-guild' // a Face-up Expansion (2 copies)
@@ -66,5 +66,29 @@ describe('Face-up Expansion supply — used buildings must leave the public pile
     expect(s.supply[FE]).toBeUndefined()
     s = applyAction(s, { type: 'playCard', player: 'p0', cardId: FE, slot: 's0-up', pay: false })
     expect(Number.isNaN(s.supply[FE] as number)).toBe(false)
+  })
+
+  it('supply can NEVER exceed copies, even after over-build then remove all (BUG-1)', () => {
+    let s = freshGold()
+    for (let i = 0; i < 4; i++) s = applyAction(s, { type: 'playCard', player: 'p0', cardId: FE, slot: `s0-up${i}`, pay: false })
+    expect(s.supply[FE]).toBe(0)
+    while (s.players.p0.placed.some((p) => p.cardId === FE)) {
+      const idx = s.players.p0.placed.findIndex((p) => p.cardId === FE)
+      s = applyAction(s, { type: 'removePlaced', player: 'p0', placedIndex: idx })
+    }
+    expect(s.supply[FE]).toBe(2) // back to exactly copies, not 4
+  })
+
+  it('supply stays correct across the seat-authority MERGE — concurrent builds (BUG-3)', () => {
+    const base = newGame({ seed: 5, enabledSets: ['gold', 'turmoil'] })
+    // each seat builds a DIFFERENT face-up expansion in the same tick
+    const a = applyAction(base, { type: 'playCard', player: 'p0', cardId: 'gold-merchant-guild', slot: 's0-up', pay: false })
+    const b = applyAction(base, { type: 'playCard', player: 'p1', cardId: 'turmoil-hedge-tavern-1x', slot: 's0-up', pay: false })
+    const merged = mergeSnapshots(a, b)
+    expect(merged.players.p0.placed.some((p) => p.cardId === 'gold-merchant-guild')).toBe(true)
+    expect(merged.players.p1.placed.some((p) => p.cardId === 'turmoil-hedge-tavern-1x')).toBe(true)
+    // both decrements survive (derived from the merged board — no lost/double count)
+    expect(merged.supply['gold-merchant-guild']).toBe(1)
+    expect(merged.supply['turmoil-hedge-tavern-1x']).toBe(1)
   })
 })

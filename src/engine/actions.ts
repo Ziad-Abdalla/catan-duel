@@ -227,21 +227,34 @@ function spendCost(p: PlayerState, cost?: { resource: ResourceType; count: numbe
   for (const c of cost ?? []) distributeResource(p, c.resource, -c.count)
 }
 
-/** Whether a card is a limited face-up expansion (lives in the central supply counter). */
-function isFaceUpExpansion(cardId: string): boolean {
-  return getCard(cardId)?.tag === 'Face-up Expansion'
-}
-
-/** Spend one copy of a face-up expansion from the supply (no-op for anything untracked). */
-function takeFromSupply(supply: Record<string, number>, cardId: string): Record<string, number> {
-  if (!isFaceUpExpansion(cardId) || !(cardId in supply)) return supply
-  return { ...supply, [cardId]: Math.max(0, supply[cardId] - 1) }
-}
-
-/** Return one copy of a face-up expansion to the supply when it leaves play. */
-function returnToSupply(supply: Record<string, number>, cardId: string): Record<string, number> {
-  if (!isFaceUpExpansion(cardId) || !(cardId in supply)) return supply
-  return { ...supply, [cardId]: supply[cardId] + 1 }
+/**
+ * The face-up expansion supply, DERIVED from the board: copies left = total copies −
+ * every copy that exists anywhere else (in play / hands / draw stacks / discard, both
+ * players). Deriving (rather than incrementing a counter) makes it correct after ANY
+ * action AND after the seat-authority merge by construction — no drift, no double-count,
+ * never exceeds `copies` or goes negative. Only the ids already in `s.supply` (the
+ * enabled-era face-up expansions) are tracked.
+ */
+function deriveSupply(s: GameState): GameState {
+  const keys = Object.keys(s.supply)
+  if (keys.length === 0) return s
+  const supply: Record<string, number> = {}
+  let changed = false
+  for (const id of keys) {
+    const copies = getCard(id)?.copies ?? 0
+    let used = 0
+    for (const pid of ['p0', 'p1'] as PlayerId[]) {
+      const p = s.players[pid]
+      for (const pc of p.placed) if (pc.cardId === id) used++
+      for (const c of p.hand) if (c === id) used++
+    }
+    for (const st of s.drawStacks) for (const c of st) if (c === id) used++
+    for (const c of s.discard) if (c === id) used++
+    const v = Math.max(0, copies - used)
+    supply[id] = v
+    if (v !== s.supply[id]) changed = true
+  }
+  return changed ? { ...s, supply } : s
 }
 
 /** Where a card goes when it leaves play: face-up expansions + structural pieces return
@@ -326,7 +339,8 @@ export function applyAction(state: GameState, action: Action): GameState {
   for (const id of ['p0', 'p1'] as PlayerId[]) {
     if (next.players[id] !== state.players[id]) seatSeq[id] = (seatSeq[id] ?? 0) + 1
   }
-  return { ...next, seq: state.seq + 1, seatSeq }
+  // Supply is derived from the board after every action, so it can never drift.
+  return deriveSupply({ ...next, seq: state.seq + 1, seatSeq })
 }
 
 /**
@@ -370,7 +384,9 @@ export function mergeSnapshots(local: GameState, incoming: GameState): GameState
     p1: Math.max(seatVer(local, 'p1'), seatVer(incoming, 'p1')),
   }
   const seq = Math.max(local.seq, incoming.seq)
-  return finalize({ ...base, players, log, seatSeq, seq })
+  // Derive supply from the MERGED board so concurrent builds on each seat can't lose or
+  // double-count a decrement (the shared-zone merge would otherwise carry one lineage's supply).
+  return deriveSupply(finalize({ ...base, players, log, seatSeq, seq }))
 }
 
 function reduce(s: GameState, a: Action): GameState {
@@ -512,6 +528,8 @@ function reduce(s: GameState, a: Action): GameState {
               if (sm) return { ...pc, slot: `s${Number(sm[1]) + 1}-${sm[2]}${sm[3]}` }
               const rm = /^road-(\d+)$/.exec(pc.slot ?? '')
               if (rm) return { ...pc, slot: `road-${Number(rm[1]) + 1}` }
+              const cm = /^settle-(\d+)$/.exec(pc.slot ?? '')
+              if (cm) return { ...pc, slot: `settle-${Number(cm[1]) + 1}` }
               return pc
             })
             p.placed = [{ cardId: 'base-settlement', slot: 'settle-0' }, ...p.placed]
@@ -551,10 +569,9 @@ function reduce(s: GameState, a: Action): GameState {
         p.placed.splice(a.placedIndex, 1)
       })
       const discard = home === 'discard' ? [...out.discard, cardId] : out.discard
-      const supply = returnToSupply(out.supply, cardId)
       const name = getCard(cardId)?.name ?? cardId
       return logged(
-        finalize({ ...out, discard, supply }),
+        finalize({ ...out, discard }),
         a.player,
         home === 'discard' ? `Removed ${name} → discard` : `Removed ${name}`,
       )
@@ -563,6 +580,9 @@ function reduce(s: GameState, a: Action): GameState {
     case 'movePlaced': {
       const pc = s.players[a.player].placed[a.placedIndex]
       if (!pc) return s
+      // a building site holds ONE card — never move onto a slot another piece occupies
+      const occupied = s.players[a.player].placed.some((x, i) => i !== a.placedIndex && x.slot === a.slot)
+      if (occupied) return s
       return logged(
         withPlayer(s, a.player, (p) => {
           p.placed[a.placedIndex] = { ...p.placed[a.placedIndex], slot: a.slot }
@@ -596,9 +616,8 @@ function reduce(s: GameState, a: Action): GameState {
           p.placed.push({ cardId: a.cardId, slot: a.slot })
         }),
       )
-      // Face-up Expansions come from the limited central supply (never a pile/hand) → spend it.
-      const supply = takeFromSupply(out.supply, a.cardId)
-      return logged({ ...out, supply }, a.player, `Played ${name}${pay && cost.length ? ` (${fmtCost(cost)})` : ''}`)
+      // (supply is derived from the board in applyAction — placing a face-up spends it)
+      return logged(out, a.player, `Played ${name}${pay && cost.length ? ` (${fmtCost(cost)})` : ''}`)
     }
 
     case 'returnToHand': {
@@ -648,10 +667,9 @@ function reduce(s: GameState, a: Action): GameState {
       if (!cardId) return s
       const home = discardHome(cardId)
       const discard = home === 'discard' ? [...out.discard, cardId] : out.discard
-      const supply = a.from === 'placed' ? returnToSupply(out.supply, cardId) : out.supply
       const name = getCard(cardId)?.name ?? cardId
       return logged(
-        finalize({ ...out, discard, supply }),
+        finalize({ ...out, discard }),
         a.player,
         home === 'discard' ? `Discarded ${name}` : `Returned ${name} to supply`,
       )

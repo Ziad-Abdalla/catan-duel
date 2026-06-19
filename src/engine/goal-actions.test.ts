@@ -58,6 +58,21 @@ describe('movePlaced — relocate a placed piece without removing it', () => {
   })
 })
 
+describe('movePlaced — one card per site (BUG-4 guard)', () => {
+  it('refuses to move a piece onto an already-occupied site', () => {
+    let s = fresh()
+    s = applyAction(s, { type: 'grantCard', player: 'p0', cardId: 'base-marketplace' })
+    s = applyAction(s, { type: 'grantCard', player: 'p0', cardId: 'base-abbey' })
+    s = applyAction(s, { type: 'playCard', player: 'p0', cardId: 'base-marketplace', slot: 's0-up', pay: false })
+    s = applyAction(s, { type: 'playCard', player: 'p0', cardId: 'base-abbey', slot: 's0-down', pay: false })
+    const ai = s.players.p0.placed.findIndex((p) => p.cardId === 'base-abbey')
+    s = applyAction(s, { type: 'movePlaced', player: 'p0', placedIndex: ai, slot: 's0-up' }) // occupied → no-op
+    expect(s.players.p0.placed[ai].slot).toBe('s0-down')
+    s = applyAction(s, { type: 'movePlaced', player: 'p0', placedIndex: ai, slot: 's1-up' }) // empty → moves
+    expect(s.players.p0.placed[ai].slot).toBe('s1-up')
+  })
+})
+
 describe('stack manipulation — peek/take/put/shuffle (Tabletop-style)', () => {
   it('takeFromStack pulls a specific card into hand, preserving the rest', () => {
     let s = fresh()

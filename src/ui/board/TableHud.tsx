@@ -15,6 +15,15 @@ const ERAS: { id: SetId; label: string }[] = [
   { id: 'progress', label: 'Innovation' },
 ]
 
+const THEMES: { id: string; label: string }[] = [
+  { id: 'auto', label: 'Auto' },
+  { id: 'base', label: 'Classic' },
+  { id: 'gold', label: 'Gold' },
+  { id: 'turmoil', label: 'Turmoil' },
+  { id: 'progress', label: 'Innovation' },
+  { id: 'duel', label: 'Duel' },
+]
+
 /** Live-subscribed mute state for the toggle button. */
 function useMuted() {
   const [m, setM] = useState(isMuted())
@@ -22,7 +31,9 @@ function useMuted() {
   return m
 }
 
-/** Slim top strip on the felt: title, mode switch, names, new game. */
+/** Slim top strip on the felt: title, the setup popover (sets/win/theme), pay toggle,
+ *  log, sound, new game, and the mode tabs. Frequently-used controls stay on the bar;
+ *  the game-setup options (which can restart the game) are tucked into ⚙ Setup. */
 export function TableHud({ mode, setMode }: { mode: AppMode; setMode: (m: AppMode) => void }) {
   const names = {
     p0: useGame((s) => s.state.players.p0.name),
@@ -39,6 +50,7 @@ export function TableHud({ mode, setMode }: { mode: AppMode; setMode: (m: AppMod
   const tableTheme = useUI((s) => s.tableTheme)
   const setTableTheme = useUI((s) => s.setTableTheme)
   const muted = useMuted()
+  const [setupOpen, setSetupOpen] = useState(false)
 
   // Toggling an era starts a fresh game with that card set folded into the decks.
   const toggleEra = (id: SetId) => {
@@ -51,71 +63,64 @@ export function TableHud({ mode, setMode }: { mode: AppMode; setMode: (m: AppMod
   return (
     <div className="table-hud">
       <span className="hud-title">Catan Duel</span>
-      <div className="hud-sets" title="Card sets in play — toggling starts a new game">
-        <span className="hud-sets-label">Sets</span>
-        <span className="hud-chip on" aria-disabled>Basic</span>
-        {ERAS.map((e) => (
-          <button
-            key={e.id}
-            className={`hud-chip${enabledSets.includes(e.id) ? ' on' : ''}`}
-            onClick={() => toggleEra(e.id)}
-          >
-            {e.label}
-          </button>
-        ))}
+
+      <div className="hud-setup-wrap">
+        <button className={`hud-btn${setupOpen ? ' on' : ''}`} title="Game setup — sets, win target, table theme" onClick={() => { setSetupOpen((o) => !o); playSfx('ui') }}>
+          ⚙ Setup
+        </button>
+        {setupOpen && (
+          <>
+            <div className="hud-pop-scrim" onClick={() => setSetupOpen(false)} />
+            <div className="hud-pop" role="dialog" aria-label="Game setup">
+              <div className="hud-pop-group">
+                <span className="hud-pop-label">Card sets <em>· starts a new game</em></span>
+                <div className="hud-chips">
+                  <span className="hud-chip on" aria-disabled>Basic</span>
+                  {ERAS.map((e) => (
+                    <button key={e.id} className={`hud-chip${enabledSets.includes(e.id) ? ' on' : ''}`} onClick={() => toggleEra(e.id)}>{e.label}</button>
+                  ))}
+                </div>
+              </div>
+              <div className="hud-pop-group">
+                <span className="hud-pop-label">Win at</span>
+                <select className="hud-vp-sel" value={winThreshold} onChange={(e) => { dispatch({ type: 'setWinThreshold', value: Number(e.target.value) }); playSfx('ui') }}>
+                  {(VP_TARGETS.includes(winThreshold) ? VP_TARGETS : [winThreshold, ...VP_TARGETS]).map((v) => (
+                    <option key={v} value={v}>{v} VP</option>
+                  ))}
+                </select>
+              </div>
+              <div className="hud-pop-group">
+                <span className="hud-pop-label">Table theme</span>
+                <select className="hud-vp-sel" value={tableTheme} onChange={(e) => { setTableTheme(e.target.value as typeof tableTheme); playSfx('ui') }}>
+                  {THEMES.map((t) => <option key={t.id} value={t.id}>{t.label}</option>)}
+                </select>
+              </div>
+            </div>
+          </>
+        )}
       </div>
+
       <div className="hud-spacer" />
-      <label className="hud-vp" title="Victory points needed to win — 7 intro · 12 single theme · 13 Duel of the Princes · 15 tournament">
-        <span className="hud-vp-label">Win @</span>
-        <select
-          className="hud-vp-sel"
-          value={winThreshold}
-          onChange={(e) => {
-            dispatch({ type: 'setWinThreshold', value: Number(e.target.value) })
-            playSfx('ui')
-          }}
-        >
-          {(VP_TARGETS.includes(winThreshold) ? VP_TARGETS : [winThreshold, ...VP_TARGETS]).map((v) => (
-            <option key={v} value={v}>{v} VP</option>
-          ))}
-        </select>
-      </label>
-      <label className="hud-theme" title="Felt theme — change the table atmosphere any time (visual only)">
-        <span className="hud-vp-label">Theme</span>
-        <select className="hud-vp-sel" value={tableTheme} onChange={(e) => { setTableTheme(e.target.value as typeof tableTheme); playSfx('ui') }}>
-          <option value="auto">Auto</option>
-          <option value="base">Classic</option>
-          <option value="gold">Gold</option>
-          <option value="turmoil">Turmoil</option>
-          <option value="progress">Innovation</option>
-          <option value="duel">Duel</option>
-        </select>
-      </label>
+
       <button
-        className={`hud-chip${payCosts ? ' on' : ''}`}
+        className={`hud-chip hud-pay${payCosts ? ' on' : ''}`}
         title={payCosts ? 'Building spends its cost — click for free placement' : 'Free placement — click to spend costs when building'}
+        aria-pressed={payCosts}
         onClick={() => { setPayCosts(!payCosts); playSfx('ui') }}
       >
         {payCosts ? '💰 Pay' : '🆓 Free'}
       </button>
-      <button className="hud-btn" onClick={() => { toggleAudit(); playSfx('ui') }} title="Action history log">
-        ☰ Log
-      </button>
+      <button className="hud-btn" onClick={() => { toggleAudit(); playSfx('ui') }} title="Action history log">☰ Log</button>
       <button
         className="hud-btn hud-mute"
         aria-pressed={muted}
         title={muted ? 'Sound off — click to unmute' : 'Sound on — click to mute'}
-        onClick={() => {
-          const nowMuted = toggleMute()
-          if (!nowMuted) playSfx('ui')
-        }}
+        onClick={() => { const nowMuted = toggleMute(); if (!nowMuted) playSfx('ui') }}
       >
         {muted ? '🔇' : '🔊'}
       </button>
       {!online && (
-        <button className="hud-btn" onClick={() => newHotseat({ p0Name: names.p0, p1Name: names.p1 })}>
-          ⟳ New game
-        </button>
+        <button className="hud-btn" title="Start a new game" onClick={() => newHotseat({ p0Name: names.p0, p1Name: names.p1 })}>⟳ New</button>
       )}
       <div className="hud-tabs">
         <button className={`hud-tab${mode === 'local' ? ' active' : ''}`} onClick={() => setMode('local')}>Hotseat</button>

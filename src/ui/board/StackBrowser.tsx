@@ -21,12 +21,12 @@ const SEARCH_COST = 2
  */
 export function StackBrowser() {
   const idx = useUI((s) => s.stackBrowse)
-  const close = useUI((s) => s.closeStackBrowse)
+  const closeStackBrowse = useUI((s) => s.closeStackBrowse)
   const state = useGame((s) => s.state)
   const dispatch = useGame((s) => s.dispatch)
   const active = state.activePlayer
   const [search, setSearch] = useState(false)
-  const [paid, setPaid] = useState(0)
+  const [paidRes, setPaidRes] = useState<ResourceType[]>([])
 
   if (idx == null) return null
   const stack = state.drawStacks[idx]
@@ -34,21 +34,28 @@ export function StackBrowser() {
   const set = setOfStack(stack)
   const hand = state.players[active].hand
   const me = state.players[active]
+  const paid = paidRes.length
   const ready = !search || paid >= SEARCH_COST
 
-  const startSearch = () => { setSearch(true); setPaid(0) }
-  const cancelSearch = () => { setSearch(false); setPaid(0) }
+  // refund any resources spent searching if the search is abandoned (cancel / close)
+  const refund = () => {
+    for (const r of paidRes) dispatch({ type: 'addResource', player: active, resource: r, count: 1 })
+    setPaidRes([])
+  }
+  const startSearch = () => { setSearch(true); setPaidRes([]) }
+  const cancelSearch = () => { refund(); setSearch(false) }
+  const close = () => { if (search) refund(); closeStackBrowse() }
   const pay = (r: ResourceType) => {
     if (paid >= SEARCH_COST || resourceTotalOf(me, r) <= 0) return
     dispatch({ type: 'addResource', player: active, resource: r, count: -1 })
-    setPaid((p) => p + 1)
-    playSfx('ui')
+    setPaidRes((p) => [...p, r])
+    playSfx('coin')
   }
   const take = (position: number) => {
     if (!ready) return
     dispatch({ type: 'takeFromStack', player: active, stackIndex: idx, position })
     playSfx('flip')
-    if (search) { dispatch({ type: 'shuffleStack', stackIndex: idx }); cancelSearch() }
+    if (search) { dispatch({ type: 'shuffleStack', stackIndex: idx }); setSearch(false); setPaidRes([]) } // cost consumed, no refund
   }
 
   return (

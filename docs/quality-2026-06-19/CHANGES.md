@@ -28,6 +28,22 @@ Driven by the audits in this folder (see INDEX.md). Each batch verified (tsc + t
 - Deleted the unused `Board / Principality / HandView / MiniCard / CenterColumn / PlayerHeader` subtree
   (root `Board` was imported by nothing) — also removes the soundless duplicate endTurn/VP paths.
 
+## Q4 — HUD declutter ✅
+- Sets / Win-target / Theme folded into one **⚙ Setup popover** (with a "starts a new game" hint on the
+  sets, guarding the one-click reset footgun). Main bar = title · Setup · Pay · Log · mute · New · mode tabs.
+- Pay toggle gained `aria-pressed`.
+
+## Logic-bug-hunt fixes (see 04-logic-bug-hunt.md) ✅
+- **BUG-1/2/3 (supply drift, incl. P0 online merge):** rewrote supply as **DERIVED from the board**
+  (`deriveSupply` in `applyAction` + `mergeSnapshots`) = copies − every copy in play/hand/stacks/discard.
+  Correct after any action AND any merge by construction; can't exceed copies, drift, or be lost online.
+  Regression tests: over-build clamp + concurrent-build merge.
+- **BUG-4 (movePlaced onto an occupied site):** guarded — a site holds one card; move is a no-op if taken.
+  Regression test added.
+- **BUG-5 (search pay not refunded):** StackBrowser now tracks paid resources and refunds them on
+  cancel / close-without-take (consumed only when a card is actually taken).
+- **BUG-6 (left-prepend didn't shift `settle-N`):** now shifts seat slots too (was latent/cosmetic).
+
 ## Pending
 - Q4 HUD declutter (setup popover) · Q6 polish tail (a11y, blank cards) · creative (cursor, resource
   theming, ambient music, animations) · asset-download HTML · Radmin guide · logic-bug-hunt fixes (04) · final push.

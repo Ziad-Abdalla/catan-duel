@@ -19,7 +19,7 @@ describe('Board renders', () => {
     expect(html).toContain('felt-scroll') // the scrollable felt table
     expect(html).toContain('wall-rail') // the sticky central wall
     expect(html).toContain('Catan Duel')
-    expect(html).toContain('hud-sets') // the card-set picker
+    expect(html).toContain('hud-setup-wrap') // the ⚙ setup popover (sets/win/theme)
     expect(html).toContain('Player 1')
     expect(html).toContain('Player 2')
   })

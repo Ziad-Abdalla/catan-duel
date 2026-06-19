@@ -57,6 +57,18 @@ interface UIState {
   /** The collapsible action-history ledger (audit log) sidebar. */
   auditOpen: boolean
   toggleAudit: () => void
+  /** When true, building/playing a card spends its printed cost; off = free placement
+   *  (the manual sandbox lets you opt out of auto-paying). */
+  payCosts: boolean
+  setPayCosts: (v: boolean) => void
+  /** Visual felt theme, decoupled from which card sets are enabled. 'auto' follows the
+   *  enabled eras; otherwise the player picks the atmosphere they want to see. */
+  tableTheme: 'auto' | 'base' | 'gold' | 'turmoil' | 'progress' | 'duel'
+  setTableTheme: (t: UIState['tableTheme']) => void
+  /** Which draw stack is open in the peek/search browser modal (null = closed). */
+  stackBrowse: number | null
+  openStackBrowse: (i: number) => void
+  closeStackBrowse: () => void
   /** A player briefly flashed with a negative cue (e.g. just lost an advantage). */
   negativeCue: PlayerId | null
   flashNegative: (player: PlayerId) => void
@@ -91,6 +103,13 @@ export const useUI = create<UIState>((set) => ({
   dice: null,
   auditOpen: false,
   toggleAudit: () => set((s) => ({ auditOpen: !s.auditOpen })),
+  payCosts: true,
+  setPayCosts: (payCosts) => set({ payCosts }),
+  tableTheme: 'auto',
+  setTableTheme: (tableTheme) => set({ tableTheme }),
+  stackBrowse: null,
+  openStackBrowse: (i) => set({ stackBrowse: i }),
+  closeStackBrowse: () => set({ stackBrowse: null }),
   negativeCue: null,
   flashNegative: (player) => {
     set({ negativeCue: player })

@@ -38,6 +38,7 @@ export function CentralWall() {
 
   const addFlight = useUI((s) => s.addFlight)
   const openResolve = useUI((s) => s.openResolve)
+  const openStackBrowse = useUI((s) => s.openStackBrowse)
   const revealedRoll = useUI((s) => s.revealedRoll)
 
   // the roll result is "written" in the wall only once the felt dice have settled
@@ -111,16 +112,25 @@ export function CentralWall() {
         {state.drawStacks.map((st, i) => {
           const set = (st[0]?.split('-')[0] ?? 'base') as 'base' | 'gold' | 'turmoil' | 'progress'
           return (
-            <button
-              key={i}
-              className={`cardstack cs-set-${set}`}
-              disabled={st.length === 0 || over}
-              title={`Draw from the ${SET_LABEL[set]} deck to ${state.players[active].name}`}
-              onClick={(e) => drawWithFlight(i, e)}
-            >
-              <span className="cs-emblem" aria-hidden />
-              <span className="cs-count">{st.length}</span>
-            </button>
+            <div key={i} className="cardstack-wrap">
+              <button
+                className={`cardstack cs-set-${set}`}
+                disabled={st.length === 0 || over}
+                title={`Draw from the ${SET_LABEL[set]} deck to ${state.players[active].name}`}
+                onClick={(e) => drawWithFlight(i, e)}
+              >
+                <span className="cs-emblem" aria-hidden />
+                <span className="cs-count">{st.length}</span>
+              </button>
+              <button
+                className="cs-peek"
+                disabled={st.length === 0}
+                title={`Look through / search stack ${i + 1}`}
+                onClick={() => openStackBrowse(i)}
+              >
+                🔍
+              </button>
+            </div>
           )
         })}
         <div className="cardstack cs-event" title="Event deck">

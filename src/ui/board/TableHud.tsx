@@ -34,6 +34,10 @@ export function TableHud({ mode, setMode }: { mode: AppMode; setMode: (m: AppMod
   const enabledSets = useGame((s) => s.state.enabledSets)
   const winThreshold = useGame((s) => s.state.winThreshold)
   const toggleAudit = useUI((s) => s.toggleAudit)
+  const payCosts = useUI((s) => s.payCosts)
+  const setPayCosts = useUI((s) => s.setPayCosts)
+  const tableTheme = useUI((s) => s.tableTheme)
+  const setTableTheme = useUI((s) => s.setTableTheme)
   const muted = useMuted()
 
   // Toggling an era starts a fresh game with that card set folded into the decks.
@@ -76,6 +80,24 @@ export function TableHud({ mode, setMode }: { mode: AppMode; setMode: (m: AppMod
           ))}
         </select>
       </label>
+      <label className="hud-theme" title="Felt theme — change the table atmosphere any time (visual only)">
+        <span className="hud-vp-label">Theme</span>
+        <select className="hud-vp-sel" value={tableTheme} onChange={(e) => { setTableTheme(e.target.value as typeof tableTheme); playSfx('ui') }}>
+          <option value="auto">Auto</option>
+          <option value="base">Classic</option>
+          <option value="gold">Gold</option>
+          <option value="turmoil">Turmoil</option>
+          <option value="progress">Innovation</option>
+          <option value="duel">Duel</option>
+        </select>
+      </label>
+      <button
+        className={`hud-chip${payCosts ? ' on' : ''}`}
+        title={payCosts ? 'Building spends its cost — click for free placement' : 'Free placement — click to spend costs when building'}
+        onClick={() => { setPayCosts(!payCosts); playSfx('ui') }}
+      >
+        {payCosts ? '💰 Pay' : '🆓 Free'}
+      </button>
       <button className="hud-btn" onClick={() => { toggleAudit(); playSfx('ui') }} title="Action history log">
         ☰ Log
       </button>

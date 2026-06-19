@@ -28,7 +28,7 @@ export function PrincipalityBoard({
 }) {
   const p = useGame((s) => s.state.players[player])
   const dispatch = useGame((s) => s.dispatch)
-  const { dragBuild, setDragRemove, clear } = useUI()
+  const { dragBuild, setDragRemove, clear, payCosts } = useUI()
 
   const spine = p.placed.map((pc, i) => ({ pc, i, card: getCard(pc.cardId) })).filter((x) => x.card)
   const seats = spine.filter((x) => x.card!.category === 'settlement' || x.card!.category === 'city')
@@ -55,8 +55,11 @@ export function PrincipalityBoard({
 
   const topRegions = p.regions.slice(0, N + 1)
   const botRegions = p.regions.slice(N + 1, 2 * (N + 1))
-  const siteCards = (seat: number, where: 'up' | 'down') =>
-    buildings.filter((b) => b.pc.slot === `s${seat}-${where}`)
+  // Official building-site capacity: a settlement has 1 site above + 1 below; a city
+  // has 2 above + 2 below. Each site holds exactly ONE expansion card.
+  const sideCapacity = (category: string) => (category === 'city' ? 2 : 1)
+  const slotName = (seat: number, where: 'up' | 'down', k: number) => (k === 0 ? `s${seat}-${where}` : `s${seat}-${where}${k + 1}`)
+  const cardForSlot = (slot: string) => buildings.find((b) => b.pc.slot === slot)
 
   const gridStyle: CSSProperties = {
     gridTemplateColumns: `repeat(${cols}, var(--reg))`,
@@ -86,9 +89,9 @@ export function PrincipalityBoard({
             style={{ gridRow: 2, gridColumn: seatCol(j) }}
             disabled={!interactive || s.card!.category !== 'settlement'}
             title={s.card!.category === 'settlement' ? 'Upgrade to city' : 'City'}
-            onClick={() => dispatch({ type: 'upgradeCity', player, seat: j })}
+            onClick={() => dispatch({ type: 'upgradeCity', player, seat: j, pay: payCosts })}
             onDragOver={canCity ? (e) => e.preventDefault() : undefined}
-            onDrop={canCity ? (e) => { e.preventDefault(); dispatch({ type: 'upgradeCity', player, seat: j }); playSfx('place'); clear() } : undefined}
+            onDrop={canCity ? (e) => { e.preventDefault(); dispatch({ type: 'upgradeCity', player, seat: j, pay: payCosts }); playSfx('place'); clear() } : undefined}
           >
             <PieceArt card={s.card!} />
           </button>
@@ -117,7 +120,7 @@ export function PrincipalityBoard({
               className={`pb-roadslot${canRoad ? ' droppable' : ''}`}
               style={{ gridRow: 2, gridColumn: roadSlotCol(i) }}
               onDragOver={canRoad ? (e) => e.preventDefault() : undefined}
-              onDrop={canRoad ? (e) => { e.preventDefault(); dispatch({ type: 'buildPiece', player, piece: 'road', slot: i }); playSfx('place'); clear() } : undefined}
+              onDrop={canRoad ? (e) => { e.preventDefault(); dispatch({ type: 'buildPiece', player, piece: 'road', slot: i, pay: payCosts }); playSfx('place'); clear() } : undefined}
             />
           )
         })}
@@ -128,7 +131,7 @@ export function PrincipalityBoard({
           className={`pb-extend left${dragBuild === 'settlement' ? ' armed' : ''}`}
           title="Build a settlement here"
           onDragOver={dragBuild === 'settlement' ? (e) => e.preventDefault() : undefined}
-          onDrop={dragBuild === 'settlement' ? (e) => { e.preventDefault(); dispatch({ type: 'buildPiece', player, piece: 'settlement', end: 'left' }); playSfx('place'); clear() } : undefined}
+          onDrop={dragBuild === 'settlement' ? (e) => { e.preventDefault(); dispatch({ type: 'buildPiece', player, piece: 'settlement', end: 'left', pay: payCosts }); playSfx('place'); clear() } : undefined}
         >＋</div>
       )}
       {extendRight && (
@@ -136,18 +139,29 @@ export function PrincipalityBoard({
           className={`pb-extend right${dragBuild === 'settlement' ? ' armed' : ''}`}
           title="Build a settlement here"
           onDragOver={dragBuild === 'settlement' ? (e) => e.preventDefault() : undefined}
-          onDrop={dragBuild === 'settlement' ? (e) => { e.preventDefault(); dispatch({ type: 'buildPiece', player, piece: 'settlement', end: 'right' }); playSfx('place'); clear() } : undefined}
+          onDrop={dragBuild === 'settlement' ? (e) => { e.preventDefault(); dispatch({ type: 'buildPiece', player, piece: 'settlement', end: 'right', pay: payCosts }); playSfx('place'); clear() } : undefined}
         >＋</div>
       )}
 
-      {/* building sites: above & below each settlement. A CITY gets an expanded
-          building area (it holds more development cards than a settlement). */}
-      {seats.map((s, j) => (
-        <Site key={`up${j}`} player={player} slot={`s${j}-up`} cards={siteCards(j, 'up')} interactive={interactive} expanded={s.card!.category === 'city'} style={{ gridRow: aboveRow, gridColumn: seatCol(j), alignSelf: 'end' }} />
-      ))}
-      {seats.map((s, j) => (
-        <Site key={`dn${j}`} player={player} slot={`s${j}-down`} cards={siteCards(j, 'down')} interactive={interactive} expanded={s.card!.category === 'city'} style={{ gridRow: belowRow, gridColumn: seatCol(j), alignSelf: 'start' }} />
-      ))}
+      {/* building sites: a settlement exposes 1 site above + 1 below; a CITY exposes
+          2 above + 2 below (official rule). Each site holds a single expansion. */}
+      {(['up', 'down'] as const).map((where) =>
+        seats.map((s, j) => {
+          const cap = sideCapacity(s.card!.category)
+          const row = where === 'up' ? aboveRow : belowRow
+          return (
+            <div
+              key={`grp-${where}-${j}`}
+              className={`pb-sitegroup pb-sitegroup-${where}`}
+              style={{ gridRow: row, gridColumn: seatCol(j), alignSelf: where === 'up' ? 'end' : 'start' }}
+            >
+              {Array.from({ length: cap }, (_, k) => slotName(j, where, k)).map((slot) => (
+                <Site key={slot} player={player} slot={slot} entry={cardForSlot(slot)} interactive={interactive} />
+              ))}
+            </div>
+          )
+        }),
+      )}
     </div>
   )
 }
@@ -155,68 +169,68 @@ export function PrincipalityBoard({
 function Site({
   player,
   slot,
-  cards,
+  entry,
   interactive,
-  expanded,
-  style,
 }: {
   player: PlayerId
   slot: string
-  cards: { pc: PlacedCard; card: ReturnType<typeof getCard>; i: number }[]
+  entry: { pc: PlacedCard; card: ReturnType<typeof getCard>; i: number } | undefined
   interactive?: boolean
-  /** city sites get a larger building area (more development capacity) */
-  expanded?: boolean
-  style: CSSProperties
 }) {
   const dispatch = useGame((s) => s.dispatch)
-  const { dragCardId, selectedCardId, clear, openZoom, setDragRemove } = useUI()
+  const { dragCardId, selectedCardId, dragRemove, payCosts, clear, openZoom, setDragRemove } = useUI()
   const [over, setOver] = useState(false)
+  const occupied = !!entry
 
   const place = (cardId: string | null) => {
-    if (!cardId) return
-    // Dropping a card onto a site places it without auto-charging (manual sandbox);
-    // structural road/settlement/city builds DO auto-charge in the engine.
-    dispatch({ type: 'playCard', player, cardId, slot, pay: false })
+    if (!cardId || occupied) return
+    // Honour the global auto-pay toggle — on by default so face-up buildings actually
+    // spend their cost; off lets you place freely in the manual sandbox.
+    dispatch({ type: 'playCard', player, cardId, slot, pay: payCosts })
     playSfx('sweep') // a single dramatic deploy whoosh (one sound per action)
     clear()
   }
+  // Dropping a piece you dragged off the board (dragRemove) into an empty site MOVES it.
+  const moveHere = () => {
+    if (!dragRemove || occupied) return
+    dispatch({ type: 'movePlaced', player: dragRemove.player, placedIndex: dragRemove.placedIndex, slot })
+    playSfx('place')
+    setDragRemove(null)
+  }
+  const armed = interactive && !occupied && (!!dragCardId || !!selectedCardId || !!dragRemove)
 
   return (
     <div
-      className={`pb-site${cards.length ? ' filled' : ''}${over ? ' over' : ''}${expanded ? ' expanded' : ''}${interactive && (dragCardId || selectedCardId) ? ' droppable' : ''}`}
-      style={style}
-      onDragOver={interactive ? (e) => { e.preventDefault(); setOver(true) } : undefined}
+      className={`pb-site${occupied ? ' filled' : ''}${over ? ' over' : ''}${armed ? ' droppable' : ''}`}
+      onDragOver={interactive && !occupied ? (e) => { e.preventDefault(); setOver(true) } : undefined}
       onDragLeave={interactive ? () => setOver(false) : undefined}
       onDrop={
         interactive
           ? (e) => {
               e.preventDefault()
               setOver(false)
-              place(e.dataTransfer.getData('text/cardid') || dragCardId)
+              if (dragRemove) moveHere()
+              else place(e.dataTransfer.getData('text/cardid') || dragCardId)
             }
           : undefined
       }
-      onClick={interactive && selectedCardId ? () => place(selectedCardId) : undefined}
+      onClick={interactive && selectedCardId && !occupied ? () => place(selectedCardId) : undefined}
     >
-      {cards.map((c) => {
-        const art = cardArt(c.card!.id)
-        return (
-          <div
-            key={c.i}
-            className="pb-site-card"
-            title={`${c.card!.name} — tap to enlarge, drag to the build bar to remove`}
-            draggable={interactive}
-            onDragStart={interactive ? (e) => { e.stopPropagation(); setDragRemove({ placedIndex: c.i, player }) } : undefined}
-            onDragEnd={interactive ? () => setDragRemove(null) : undefined}
-            onClick={(e) => {
-              e.stopPropagation()
-              openZoom({ cardId: c.card!.id, from: 'play', player, placedIndex: c.i })
-            }}
-          >
-            {art ? <img src={art} alt={c.card!.name} /> : <span>{c.card!.name}</span>}
-          </div>
-        )
-      })}
+      {entry && (
+        <div
+          className="pb-site-card"
+          title={`${entry.card!.name} — tap to enlarge, drag to a free site to move or to the build bar to remove`}
+          draggable={interactive}
+          onDragStart={interactive ? (e) => { e.stopPropagation(); setDragRemove({ placedIndex: entry.i, player }) } : undefined}
+          onDragEnd={interactive ? () => setDragRemove(null) : undefined}
+          onClick={(e) => {
+            e.stopPropagation()
+            openZoom({ cardId: entry.card!.id, from: 'play', player, placedIndex: entry.i })
+          }}
+        >
+          {cardArt(entry.card!.id) ? <img src={cardArt(entry.card!.id)} alt={entry.card!.name} /> : <span>{entry.card!.name}</span>}
+        </div>
+      )}
     </div>
   )
 }

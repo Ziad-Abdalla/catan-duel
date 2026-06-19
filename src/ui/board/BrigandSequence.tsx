@@ -32,7 +32,7 @@ export function BrigandSequence() {
       <div className="brigand-rider">
         <span className="brigand-glyph">🏴‍☠️</span>
         <span className="brigand-title">Brigands raid the roads!</span>
-        <span className="brigand-sub">Anyone holding more than 7 resources loses their gold &amp; ore.</span>
+        <span className="brigand-sub">Anyone holding more than 7 resources loses their gold &amp; wool.</span>
       </div>
     </div>
   )

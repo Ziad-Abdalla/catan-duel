@@ -47,6 +47,13 @@ export type Action =
   | { type: 'buildPiece'; player: PlayerId; piece: 'road' | 'settlement'; end?: 'left' | 'right'; slot?: number; pay?: boolean } // manual placement; road `slot` = road-slot index
   | { type: 'placeLandscape'; player: PlayerId; regionIndex: number } // fill an empty landscape slot from the region stack
   | { type: 'removePlaced'; player: PlayerId; placedIndex: number } // drag a placed road/building back off the board
+  | { type: 'movePlaced'; player: PlayerId; placedIndex: number; slot: string } // relocate a placed piece to another slot (no remove)
+  // stack manipulation (Tabletop-style: peek is UI-only since the snapshot already carries the stacks)
+  | { type: 'shuffleStack'; stackIndex: number } // shuffle one draw stack in place (seeded → sync-safe)
+  | { type: 'takeFromStack'; player: PlayerId; stackIndex: number; cardId?: string; position?: number } // search/take a card into hand (top by default)
+  | { type: 'putToStack'; player: PlayerId; cardId: string; stackIndex: number; position?: 'top' | 'bottom' } // place a hand card onto a stack
+  // events
+  | { type: 'resolveBrigand' } // apply the Brigand event: anyone over 7 loses all gold + wool, logged
   // misc
   | { type: 'renamePlayer'; player: PlayerId; name: string }
   // scoring
@@ -125,6 +132,16 @@ export function resourceTotalOf(p: PlayerState, resource: ResourceType): number 
   return p.regions.reduce((n, r) => n + (!r.empty && r.resource === resource ? r.stored : 0), 0)
 }
 
+/** The printed cost of a card (empty when none / unknown) — for the UI's manual-pay affordance. */
+export function costOf(cardId: string): { resource: ResourceType; count: number }[] {
+  return getCard(cardId)?.cost ?? []
+}
+
+/** Whether a player is currently storing enough to cover a cost (per resource). */
+export function canAfford(p: PlayerState, cost: { resource: ResourceType; count: number }[]): boolean {
+  return cost.every((c) => resourceTotalOf(p, c.resource) >= c.count)
+}
+
 /** Trust-based SUGGESTION of who holds each advantage (strength → hero, commerce → trade).
  *  Returns the strict leader (with a positive tally) or null on a tie / nobody. */
 export function suggestAdvantage(s: GameState): { hero: PlayerId | null; trade: PlayerId | null } {
@@ -194,6 +211,15 @@ function resLabel(r: ResourceType): string {
 /** Format a cost list as a signed delta string, e.g. "-1 wood, -1 brick". */
 function fmtCost(cost: { resource: ResourceType; count: number }[]): string {
   return cost.map((c) => `-${c.count} ${resLabel(c.resource)}`).join(', ')
+}
+
+/** Short, human label for an event die face (used in the auto-log). */
+const EVENT_LABEL: Record<string, string> = {
+  'event-card': 'Event Card',
+  'plentiful-harvest': 'Plentiful Harvest',
+  celebration: 'Celebration',
+  trade: 'Trade',
+  brigand: 'Brigand',
 }
 
 /** Spend a card's cost best-effort across the player's regions (never goes negative). */
@@ -333,7 +359,11 @@ export function mergeSnapshots(local: GameState, incoming: GameState): GameState
 function reduce(s: GameState, a: Action): GameState {
   switch (a.type) {
     case 'roll':
-      return { ...s, lastRoll: { production: a.production, event: a.event }, phase: 'action' }
+      return logged(
+        { ...s, lastRoll: { production: a.production, event: a.event }, phase: 'action' },
+        s.activePlayer,
+        `Rolled ${a.production} · ${EVENT_LABEL[a.event] ?? a.event}`,
+      )
 
     case 'applyProduction': {
       const n = s.lastRoll?.production
@@ -346,20 +376,34 @@ function reduce(s: GameState, a: Action): GameState {
         )
         players[id] = p
       }
-      return { ...s, players }
+      return logged({ ...s, players }, s.activePlayer, `Production — regions showing ${n} gain +1`)
     }
 
-    case 'rotateRegion':
-      return withPlayer(s, a.player, (p) => {
-        const r = p.regions[a.regionIndex]
-        if (r) r.stored = (((r.stored + 1) % 4) as 0 | 1 | 2 | 3)
-      })
+    case 'rotateRegion': {
+      const r0 = s.players[a.player].regions[a.regionIndex]
+      if (!r0 || r0.empty) return s
+      const next = ((r0.stored + 1) % 4) as 0 | 1 | 2 | 3
+      return logged(
+        withPlayer(s, a.player, (p) => {
+          p.regions[a.regionIndex].stored = next
+        }),
+        a.player,
+        `${resLabel(r0.resource)} → ${next}`,
+      )
+    }
 
-    case 'setStored':
-      return withPlayer(s, a.player, (p) => {
-        const r = p.regions[a.regionIndex]
-        if (r) r.stored = a.stored
-      })
+    case 'setStored': {
+      const r0 = s.players[a.player].regions[a.regionIndex]
+      if (!r0) return s
+      return logged(
+        withPlayer(s, a.player, (p) => {
+          const r = p.regions[a.regionIndex]
+          if (r) r.stored = a.stored
+        }),
+        a.player,
+        `Set ${resLabel(r0.resource)} = ${a.stored}`,
+      )
+    }
 
     case 'drawRegion': {
       if (s.regionStack.length === 0) return s
@@ -368,7 +412,8 @@ function reduce(s: GameState, a: Action): GameState {
       const out = withPlayer(s, a.player, (p) => {
         p.regions = [...p.regions, makeRegionSlot(id)]
       })
-      return { ...out, regionStack }
+      const { resource, number } = parseRegionId(id)
+      return logged({ ...out, regionStack }, a.player, `Drew region ${resLabel(resource)}${number != null ? ` #${number}` : ''}`)
     }
 
     case 'upgradeCity': {
@@ -414,7 +459,7 @@ function reduce(s: GameState, a: Action): GameState {
         regions.push(makeRegionSlot(botId)) // new bottom region last
         p.regions = regions
       })
-      return finalize({ ...out, regionStack })
+      return logged(finalize({ ...out, regionStack }), a.player, 'Expanded — +settlement +road, drew 2 regions')
     }
 
     case 'buildPiece': {
@@ -446,8 +491,8 @@ function reduce(s: GameState, a: Action): GameState {
           if (pay) spendCost(p, settleCost)
           if (end === 'left') {
             p.placed = p.placed.map((pc) => {
-              const sm = /^s(\d+)-(up|down)$/.exec(pc.slot ?? '')
-              if (sm) return { ...pc, slot: `s${Number(sm[1]) + 1}-${sm[2]}` }
+              const sm = /^s(\d+)-(up|down)(\d*)$/.exec(pc.slot ?? '')
+              if (sm) return { ...pc, slot: `s${Number(sm[1]) + 1}-${sm[2]}${sm[3]}` }
               const rm = /^road-(\d+)$/.exec(pc.slot ?? '')
               if (rm) return { ...pc, slot: `road-${Number(rm[1]) + 1}` }
               return pc
@@ -476,7 +521,8 @@ function reduce(s: GameState, a: Action): GameState {
       const out = withPlayer(s, a.player, (p) => {
         p.regions = p.regions.map((r, i) => (i === a.regionIndex ? makeRegionSlot(id) : r))
       })
-      return { ...out, regionStack }
+      const { resource, number } = parseRegionId(id)
+      return logged({ ...out, regionStack }, a.player, `Placed landscape ${resLabel(resource)}${number != null ? ` #${number}` : ''}`)
     }
 
     case 'removePlaced': {
@@ -493,6 +539,18 @@ function reduce(s: GameState, a: Action): GameState {
         finalize({ ...out, discard }),
         a.player,
         home === 'discard' ? `Removed ${name} → discard` : `Removed ${name}`,
+      )
+    }
+
+    case 'movePlaced': {
+      const pc = s.players[a.player].placed[a.placedIndex]
+      if (!pc) return s
+      return logged(
+        withPlayer(s, a.player, (p) => {
+          p.placed[a.placedIndex] = { ...p.placed[a.placedIndex], slot: a.slot }
+        }),
+        a.player,
+        `Moved ${getCard(pc.cardId)?.name ?? pc.cardId}`,
       )
     }
 
@@ -526,13 +584,20 @@ function reduce(s: GameState, a: Action): GameState {
       )
     }
 
-    case 'returnToHand':
-      return finalize(
-        withPlayer(s, a.player, (p) => {
-          const [removed] = p.placed.splice(a.placedIndex, 1)
-          if (removed) p.hand.push(removed.cardId)
-        }),
+    case 'returnToHand': {
+      const pc = s.players[a.player].placed[a.placedIndex]
+      if (!pc) return s
+      return logged(
+        finalize(
+          withPlayer(s, a.player, (p) => {
+            const [removed] = p.placed.splice(a.placedIndex, 1)
+            if (removed) p.hand.push(removed.cardId)
+          }),
+        ),
+        a.player,
+        `Returned ${getCard(pc.cardId)?.name ?? pc.cardId} to hand`,
       )
+    }
 
     case 'discardToStack': {
       const out = withPlayer(s, a.player, (p) => {
@@ -606,16 +671,82 @@ function reduce(s: GameState, a: Action): GameState {
       return logged({ ...out, discard }, a.player, `Drew ${getCard(cardId)?.name ?? cardId} from the discard pile`)
     }
 
+    case 'shuffleStack': {
+      const st = s.drawStacks[a.stackIndex]
+      if (!st || st.length < 2) return s
+      const drawStacks = s.drawStacks.map((x, i) =>
+        i === a.stackIndex ? shuffle(x, makeRng((s.seq + 1) ^ (0x5712 + a.stackIndex))) : x,
+      )
+      return logged({ ...s, drawStacks }, s.activePlayer, `Shuffled stack ${a.stackIndex + 1}`)
+    }
+
+    case 'takeFromStack': {
+      const st = s.drawStacks[a.stackIndex]
+      if (!st || st.length === 0) return s
+      const idx = a.cardId != null ? st.lastIndexOf(a.cardId) : a.position != null ? a.position : st.length - 1
+      if (idx < 0 || idx >= st.length) return s
+      const cardId = st[idx]
+      const drawStacks = s.drawStacks.map((x, i) => (i === a.stackIndex ? [...x.slice(0, idx), ...x.slice(idx + 1)] : x))
+      const out = withPlayer(s, a.player, (p) => {
+        p.hand.push(cardId)
+      })
+      return logged({ ...out, drawStacks }, a.player, `Took ${getCard(cardId)?.name ?? cardId} from stack ${a.stackIndex + 1}`)
+    }
+
+    case 'putToStack': {
+      const st = s.drawStacks[a.stackIndex]
+      if (!st || !s.players[a.player].hand.includes(a.cardId)) return s
+      const out = withPlayer(s, a.player, (p) => {
+        const i = p.hand.indexOf(a.cardId)
+        if (i >= 0) p.hand.splice(i, 1)
+      })
+      const pos = a.position ?? 'top'
+      const drawStacks = s.drawStacks.map((x, i) =>
+        i === a.stackIndex ? (pos === 'top' ? [...x, a.cardId] : [a.cardId, ...x]) : x,
+      )
+      return logged({ ...out, drawStacks }, a.player, `Put ${getCard(a.cardId)?.name ?? a.cardId} on ${pos} of stack ${a.stackIndex + 1}`)
+    }
+
+    case 'resolveBrigand': {
+      const THRESH = 7
+      const players = { ...s.players }
+      const lines: string[] = []
+      let changed = false
+      for (const id of ['p0', 'p1'] as PlayerId[]) {
+        const before = s.players[id]
+        if (resourceTotal(before) <= THRESH) continue
+        const lostGold = resourceTotalOf(before, 'gold')
+        const lostWool = resourceTotalOf(before, 'wool')
+        if (lostGold === 0 && lostWool === 0) continue
+        const p = clonePlayer(before)
+        for (const r of p.regions) {
+          if (!r.empty && (r.resource === 'gold' || r.resource === 'wool')) r.stored = 0
+        }
+        players[id] = p
+        changed = true
+        const parts: string[] = []
+        if (lostGold) parts.push(`${lostGold} gold`)
+        if (lostWool) parts.push(`${lostWool} wool`)
+        lines.push(`${before.name} over 7 — lost ${parts.join(' + ')}`)
+      }
+      const text = lines.length ? `Brigand: ${lines.join('; ')}` : 'Brigand: no one over 7'
+      return logged(changed ? finalize({ ...s, players }) : s, s.activePlayer, text)
+    }
+
     case 'renamePlayer':
       return withPlayer(s, a.player, (p) => {
         p.name = a.name
       })
 
     case 'adjustVP':
-      return finalize(
-        withPlayer(s, a.player, (p) => {
-          p.vpAdjust += a.delta
-        }),
+      return logged(
+        finalize(
+          withPlayer(s, a.player, (p) => {
+            p.vpAdjust += a.delta
+          }),
+        ),
+        a.player,
+        `VP ${a.delta >= 0 ? '+' : ''}${a.delta}`,
       )
 
     case 'setToken': {
@@ -624,7 +755,9 @@ function reduce(s: GameState, a: Action): GameState {
       for (const id of ['p0', 'p1'] as PlayerId[]) {
         players[id] = { ...clonePlayer(players[id]), [key]: a.player === id }
       }
-      return finalize({ ...s, players })
+      const label = a.token === 'hero' ? 'hero (strength) advantage' : 'trade advantage'
+      const text = a.player ? `${s.players[a.player].name} takes the ${label}` : `${label} cleared`
+      return logged(finalize({ ...s, players }), a.player ?? s.activePlayer, text)
     }
 
     case 'addResource':
@@ -644,16 +777,21 @@ function reduce(s: GameState, a: Action): GameState {
         players[a.to] = clonePlayer(players[a.to])
         distributeResource(players[a.to], a.resource, a.count)
       }
-      return { ...s, players }
+      const nm = (x: PlayerId | 'bank') => (x === 'bank' ? 'bank' : s.players[x].name)
+      return logged({ ...s, players }, s.activePlayer, `${nm(a.from)} → ${nm(a.to)}: ${a.count} ${resLabel(a.resource)}`)
     }
 
     case 'adjustStat':
-      return finalize(
-        withPlayer(s, a.player, (p) => {
-          const adj = { ...(p.statAdjust ?? {}) }
-          adj[a.stat] = (adj[a.stat] ?? 0) + a.delta
-          p.statAdjust = adj
-        }),
+      return logged(
+        finalize(
+          withPlayer(s, a.player, (p) => {
+            const adj = { ...(p.statAdjust ?? {}) }
+            adj[a.stat] = (adj[a.stat] ?? 0) + a.delta
+            p.statAdjust = adj
+          }),
+        ),
+        a.player,
+        `${a.stat} ${a.delta >= 0 ? '+' : ''}${a.delta}`,
       )
 
     case 'grantCard': {
@@ -671,7 +809,7 @@ function reduce(s: GameState, a: Action): GameState {
       const out = withPlayer(s, a.player, (p) => {
         p.hand.push(a.cardId)
       })
-      return { ...out, drawStacks }
+      return logged({ ...out, drawStacks }, a.player, `Gained ${getCard(a.cardId)?.name ?? a.cardId}`)
     }
 
     case 'setDice': {
@@ -731,7 +869,8 @@ function reduce(s: GameState, a: Action): GameState {
       for (const id of ['p0', 'p1'] as PlayerId[]) {
         if (players[id].usedThisTurn?.length) players[id] = { ...players[id], usedThisTurn: [] }
       }
-      return { ...s, players, activePlayer, phase: 'roll', turn: s.turn + 1, lastRoll: undefined }
+      const ended = { ...s, players, activePlayer, phase: 'roll' as Phase, turn: s.turn + 1, lastRoll: undefined }
+      return logged(ended, activePlayer, `— ${s.players[activePlayer].name}'s turn —`)
     }
 
     default:

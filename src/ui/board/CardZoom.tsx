@@ -8,19 +8,22 @@ import { useUI } from '../../store/uiStore'
 import { playSfx } from '../../audio/sfx'
 import './cardzoom.css'
 
-/** First empty building site for a player, scanning up/down across each seat;
- *  falls back to the first seat's upper site (cards stack) when all are filled. */
+/** First empty building site for a player, scanning up/down across each seat. A city
+ *  exposes 2 sites per side, a settlement 1 (official capacity). Falls back to s0-up. */
 function firstOpenSlot(placed: { cardId: string; slot?: string }[]): string {
   const seats = placed.filter((pc) => {
     const c = getCard(pc.cardId)
     return c && (c.category === 'settlement' || c.category === 'city')
-  }).length
-  const n = Math.max(2, seats)
+  })
+  const n = Math.max(2, seats.length)
   const used = new Set(placed.map((pc) => pc.slot).filter(Boolean))
   for (let i = 0; i < n; i++) {
-    for (const w of ['up', 'down']) {
-      const slot = `s${i}-${w}`
-      if (!used.has(slot)) return slot
+    const cap = getCard(seats[i]?.cardId ?? '')?.category === 'city' ? 2 : 1
+    for (const w of ['up', 'down'] as const) {
+      for (let k = 0; k < cap; k++) {
+        const slot = k === 0 ? `s${i}-${w}` : `s${i}-${w}${k + 1}`
+        if (!used.has(slot)) return slot
+      }
     }
   }
   return 's0-up'
@@ -122,7 +125,7 @@ export function CardZoom() {
               <button className="cz-btn cz-discard" onClick={discardFromHand}>Discard</button>
               <div className="cz-exchange">
                 <span>Exchange under stack</span>
-                {[0, 1, 2, 3].map((i) => (
+                {state.drawStacks.map((_, i) => (
                   <button key={i} className="cz-btn cz-sm" onClick={() => exchange(i)}>{i + 1}</button>
                 ))}
               </div>

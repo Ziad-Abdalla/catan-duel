@@ -344,7 +344,7 @@ function CardTool({ owner, resolveFrom, cardId, placedIndex, hot }: { owner: Pla
       {cardId && resolveFrom === 'hand' && (
         <div className="rl-cardthis">
           <span className="rl-mini-label">This card</span>
-          {[0, 1, 2, 3].map((i) => (
+          {stacks.map((_, i) => (
             <button key={i} className="rl-quick" disabled={!stacks[i]} onClick={() => dispatch({ type: 'discardToStack', player: owner, cardId, stackIndex: i })}>
               discard → stack {i + 1}
             </button>
@@ -477,6 +477,19 @@ export function ResolutionPanel() {
         {rules && <p className="rl-rules">{rules}</p>}
 
         <div className="rl-body" ref={scroller}>
+          {resolve.event === 'brigand' && (
+            <section className="rl-section rl-suggested">
+              <h4 className="rl-h">Brigand attack</h4>
+              <p className="rl-step-text">Anyone holding more than 7 resources loses all their gold and wool.</p>
+              <button
+                className="rl-apply"
+                onClick={() => { dispatch({ type: 'resolveBrigand' }); playSfx('token') }}
+              >
+                Apply to both players (auto-logs the loss)
+              </button>
+            </section>
+          )}
+
           {steps && steps.length > 0 ? (
             <section className="rl-section rl-suggested">
               <h4 className="rl-h">Suggested steps</h4>

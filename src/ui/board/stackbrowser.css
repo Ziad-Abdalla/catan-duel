@@ -1,0 +1,79 @@
+.sb-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(8, 16, 18, 0.72);
+  backdrop-filter: blur(3px);
+  padding: 4vh 3vw;
+}
+.sb-panel {
+  width: min(960px, 96vw);
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px 20px 22px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #1c2b2c, #15211f);
+  border: 1px solid rgba(243, 215, 154, 0.22);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.6);
+  color: #f3ecd9;
+}
+.sb-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.sb-title { font-weight: 700; letter-spacing: 0.02em; }
+.sb-tools { display: flex; align-items: center; gap: 8px; }
+.sb-hint { margin: 0; font-size: 0.82rem; opacity: 0.72; }
+.sb-btn {
+  border: 1px solid rgba(243, 215, 154, 0.3);
+  background: rgba(243, 215, 154, 0.08);
+  color: #f3ecd9;
+  border-radius: 8px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 0.84rem;
+  transition: background 0.13s ease, transform 0.1s ease;
+}
+.sb-btn:hover { background: rgba(243, 215, 154, 0.18); transform: translateY(-1px); }
+.sb-x {
+  border: none; background: transparent; color: #f3ecd9; cursor: pointer;
+  font-size: 1.1rem; opacity: 0.7; padding: 2px 6px;
+}
+.sb-x:hover { opacity: 1; }
+.sb-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  overflow-y: auto;
+  padding: 6px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.22);
+}
+.sb-empty { opacity: 0.6; padding: 24px; }
+.sb-card {
+  position: relative;
+  width: 92px;
+  padding: 0;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  background: #0c1414;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.sb-card img { width: 100%; border-radius: 7px; display: block; }
+.sb-card span { display: block; padding: 18px 6px; font-size: 0.7rem; }
+.sb-card:hover { transform: translateY(-4px) scale(1.04); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5); z-index: 2; }
+.sb-card.sb-top { outline: 2px solid var(--gold, #c8922a); }
+.sb-toptag {
+  position: absolute; top: 3px; right: 3px;
+  font-size: 0.6rem; background: var(--gold, #c8922a); color: #1a1206;
+  padding: 1px 5px; border-radius: 5px; font-weight: 700;
+}
+.sb-put { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.sb-put-label { font-size: 0.82rem; opacity: 0.8; }
+.sb-select {
+  background: rgba(0, 0, 0, 0.3); color: #f3ecd9;
+  border: 1px solid rgba(243, 215, 154, 0.25); border-radius: 7px; padding: 4px 8px;
+}

@@ -3,6 +3,8 @@ import type { PlayerId } from '../../types'
 import { getCard } from '../../data/cards'
 import { MiniCard } from './MiniCard'
 import { useGame } from '../../store/gameStore'
+import { useUI } from '../../store/uiStore'
+import { SET_LABEL, setOfStack } from './deckmeta'
 
 /**
  * The active player's hand. Select a card, then play it into the in-play area or
@@ -11,7 +13,9 @@ import { useGame } from '../../store/gameStore'
  */
 export function HandView({ player }: { player: PlayerId }) {
   const hand = useGame((s) => s.state.players[player].hand)
+  const drawStacks = useGame((s) => s.state.drawStacks)
   const dispatch = useGame((s) => s.dispatch)
+  const payCosts = useUI((s) => s.payCosts)
   const [selected, setSelected] = useState<number | null>(null)
 
   const sel = selected != null ? hand[selected] : undefined
@@ -28,21 +32,21 @@ export function HandView({ player }: { player: PlayerId }) {
             <span className="hand-sel">{selCard.name}</span>
             <button
               className="btn"
+              title={payCosts ? 'Play and spend its cost' : 'Place for free (auto-pay is off)'}
               onClick={() => {
-                // Place from hand without auto-charging — pay via the card detail's
-                // "Play & pay cost" or the resolution panel (manual sandbox).
-                dispatch({ type: 'playCard', player, cardId: sel!, pay: false })
+                // Honour the global auto-pay toggle (manual sandbox: turn it off for free placement).
+                dispatch({ type: 'playCard', player, cardId: sel!, pay: payCosts })
                 clear()
               }}
             >
               ▶ Play
             </button>
             <span className="hand-x-label">Exchange under stack:</span>
-            {[0, 1, 2, 3].map((i) => (
+            {drawStacks.map((st, i) => (
               <button
                 key={i}
                 className="btn btn-sm"
-                title={`Put under draw stack ${i + 1}`}
+                title={`Put under draw stack ${i + 1} (${SET_LABEL[setOfStack(st)]})`}
                 onClick={() => {
                   dispatch({ type: 'discardToStack', player, cardId: sel!, stackIndex: i })
                   clear()

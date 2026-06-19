@@ -15,3 +15,8 @@ dist/
 
 # card-extraction working data (large PDFs/PNGs; source art lives in src/assets)
 research/
+
+# goal-2026-06-19 scratch (not committed)
+_drive*.mjs
+_drive2.mjs
+_shot.mjs

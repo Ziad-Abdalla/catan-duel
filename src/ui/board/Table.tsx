@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react'
 import { useGame } from '../../store/gameStore'
+import { useUI } from '../../store/uiStore'
 import './table.css'
 
 /** The themed atmosphere for the felt, chosen by which card sets are in play. */
@@ -19,7 +20,10 @@ function tableEra(eras: string[]): string {
  */
 export function Table({ children }: { children: ReactNode }) {
   const enabledSets = useGame((s) => s.state.enabledSets)
-  const era = tableEra(enabledSets.filter((s) => s !== 'base'))
+  const tableTheme = useUI((s) => s.tableTheme)
+  // The felt atmosphere normally follows the enabled eras, but the player can pin a
+  // specific theme so the background visibly changes whenever they want.
+  const era = tableTheme === 'auto' ? tableEra(enabledSets.filter((s) => s !== 'base')) : tableTheme
   return (
     <div className={`felt-scroll felt-era-${era}`} data-era={era}>
       <div className="felt-bg" aria-hidden>

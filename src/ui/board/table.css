@@ -309,9 +309,12 @@
   transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s var(--ease-snap);
 }
 .pb-site.filled { border-color: transparent; background: transparent; min-height: 0; }
-/* a city has a larger building area than a settlement (more development capacity) */
-.pb-site.expanded { min-height: calc(var(--site-empty) * 1.5); border-color: rgba(243, 215, 154, 0.34); border-style: solid; }
-.pb-site.expanded.filled { min-height: 0; border-color: transparent; }
+/* a settlement exposes 1 site per side, a city 2 — they stack within the seat column,
+ * growing away from the spine (up-group upward, down-group downward). */
+.pb-sitegroup { width: var(--reg); display: flex; gap: 5px; }
+.pb-sitegroup-up { flex-direction: column-reverse; }
+.pb-sitegroup-down { flex-direction: column; }
+.pb-sitegroup .pb-site { width: 100%; }
 /* glow the legal drop targets while dragging/placing */
 .pb-site.droppable { border-color: rgba(243, 215, 154, 0.6); background: rgba(243, 215, 154, 0.08); cursor: pointer; }
 .pb-site.over { border-color: var(--gold); background: rgba(200, 146, 42, 0.28); transform: scale(1.06); box-shadow: 0 0 18px rgba(200, 146, 42, 0.5); }
@@ -577,6 +580,27 @@
   overflow-x: auto;
   padding-bottom: 2px;
 }
+.cardstack-wrap { position: relative; flex: none; display: grid; }
+.cs-peek {
+  position: absolute;
+  bottom: -7px;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 1px solid rgba(243, 215, 154, 0.4);
+  background: rgba(20, 28, 26, 0.92);
+  color: #f3ecd9;
+  border-radius: 7px;
+  font-size: 0.62rem;
+  line-height: 1;
+  padding: 2px 5px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.12s ease, transform 0.12s ease;
+  z-index: 4;
+}
+.cardstack-wrap:hover .cs-peek { opacity: 0.95; }
+.cs-peek:hover { transform: translateX(-50%) translateY(-1px); }
+.cs-peek:disabled { display: none; }
 .cardstack {
   --back: #9e2b2b;
   --back-hi: #c0413c;

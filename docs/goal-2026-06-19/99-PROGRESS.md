@@ -6,7 +6,7 @@ tsc clean, production build OK, e2e 3 specs / 78 screenshots / 0 console errors.
 | Req | What shipped | Verify |
 |-----|--------------|--------|
 | A1/A2 auto-log | `logged()` added to roll, production, region rotate/set, drawRegion, expandSpine, placeLandscape, transfer, setToken, adjustVP/Stat, grantCard, move, stack ops, endTurn; one-click **Brigand resolver** logs "Brigand: <name> over 7 — lost X gold + Y wool" | goal-actions.test.ts; audit-log screenshot shows rolls+production |
-| B1 icons | New crisp player-coloured SVG tokens for settlement/city/road (`PieceIcon.tsx`), replacing dated photos | board screenshots |
+| B1 icons | **HYBRID (owner-chosen):** board pieces use Ziad's official high-res art (he pushed `fd0961f` "fixed the art" — settlement+road) with a **player-colour ring** (red p0 / blue p1, verified #b5403a / #2f6aa0) for at-a-glance identity. My SVG-icon approach was reverted in favour of his art; `PieceIcon.tsx` deleted. ⚠️ **`city.webp` is still the OLD low-res** — Ziad fixed settlement+road only; drop an official city scan into `src/assets/buildings/city.webp` to match. | board screenshots (red/blue rings) |
 | C1 stacking | Building sites match the rulebook: settlement 1 above+1 below, city 2 above+2 below, **1 card per site** (was: uncapped, 2 stacked on a settlement) | drove city → 2 upper sites; settlement caps at 1/side |
 | C2 costs reduce | Site/tavern drops now pay via the toggle; verified marketplace play reduced resources by its cost with a visible log line | end-to-end pay check (−2, log "(-1 wheat, -1 wool)") |
 | C3 manual pay | Global **Pay / Free** toggle in the HUD (default Pay); every build/play honours it | ui-flows screenshot |

@@ -268,8 +268,13 @@
 .pboard[data-player='p1'] { --pc: var(--p1); --pcg: var(--p1-glow); }
 .pboard[data-player='p0'] .pb-seat { --pc: var(--p0); --pcg: var(--p0-glow); }
 .pboard[data-player='p1'] .pb-seat { --pc: var(--p1); --pcg: var(--p1-glow); }
-/* the structural piece icons take the player colour */
-.piece-icon { display: block; width: 100%; height: 100%; color: var(--pc, #c8922a); filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.45)); }
+/* official piece illustrations get a player-colour ring so red vs blue pieces read at
+   a glance (seats also keep the corner pennant below). */
+.pb-seat .piece-art,
+.pb-road .piece-art {
+  border-radius: 8px;
+  box-shadow: 0 0 0 2.5px var(--pc, var(--gold)), 0 4px 7px rgba(0, 0, 0, 0.5);
+}
 .pb-seat::before {
   content: '';
   position: absolute;

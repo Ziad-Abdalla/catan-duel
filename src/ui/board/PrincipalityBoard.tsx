@@ -140,12 +140,13 @@ export function PrincipalityBoard({
         >＋</div>
       )}
 
-      {/* building sites: above & below each settlement */}
-      {seats.map((_, j) => (
-        <Site key={`up${j}`} player={player} slot={`s${j}-up`} cards={siteCards(j, 'up')} interactive={interactive} style={{ gridRow: aboveRow, gridColumn: seatCol(j), alignSelf: 'end' }} />
+      {/* building sites: above & below each settlement. A CITY gets an expanded
+          building area (it holds more development cards than a settlement). */}
+      {seats.map((s, j) => (
+        <Site key={`up${j}`} player={player} slot={`s${j}-up`} cards={siteCards(j, 'up')} interactive={interactive} expanded={s.card!.category === 'city'} style={{ gridRow: aboveRow, gridColumn: seatCol(j), alignSelf: 'end' }} />
       ))}
-      {seats.map((_, j) => (
-        <Site key={`dn${j}`} player={player} slot={`s${j}-down`} cards={siteCards(j, 'down')} interactive={interactive} style={{ gridRow: belowRow, gridColumn: seatCol(j), alignSelf: 'start' }} />
+      {seats.map((s, j) => (
+        <Site key={`dn${j}`} player={player} slot={`s${j}-down`} cards={siteCards(j, 'down')} interactive={interactive} expanded={s.card!.category === 'city'} style={{ gridRow: belowRow, gridColumn: seatCol(j), alignSelf: 'start' }} />
       ))}
     </div>
   )
@@ -156,12 +157,15 @@ function Site({
   slot,
   cards,
   interactive,
+  expanded,
   style,
 }: {
   player: PlayerId
   slot: string
   cards: { pc: PlacedCard; card: ReturnType<typeof getCard>; i: number }[]
   interactive?: boolean
+  /** city sites get a larger building area (more development capacity) */
+  expanded?: boolean
   style: CSSProperties
 }) {
   const dispatch = useGame((s) => s.dispatch)
@@ -180,7 +184,7 @@ function Site({
 
   return (
     <div
-      className={`pb-site${cards.length ? ' filled' : ''}${over ? ' over' : ''}${interactive && (dragCardId || selectedCardId) ? ' droppable' : ''}`}
+      className={`pb-site${cards.length ? ' filled' : ''}${over ? ' over' : ''}${expanded ? ' expanded' : ''}${interactive && (dragCardId || selectedCardId) ? ' droppable' : ''}`}
       style={style}
       onDragOver={interactive ? (e) => { e.preventDefault(); setOver(true) } : undefined}
       onDragLeave={interactive ? () => setOver(false) : undefined}

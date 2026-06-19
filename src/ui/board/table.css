@@ -309,6 +309,9 @@
   transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s var(--ease-snap);
 }
 .pb-site.filled { border-color: transparent; background: transparent; min-height: 0; }
+/* a city has a larger building area than a settlement (more development capacity) */
+.pb-site.expanded { min-height: calc(var(--site-empty) * 1.5); border-color: rgba(243, 215, 154, 0.34); border-style: solid; }
+.pb-site.expanded.filled { min-height: 0; border-color: transparent; }
 /* glow the legal drop targets while dragging/placing */
 .pb-site.droppable { border-color: rgba(243, 215, 154, 0.6); background: rgba(243, 215, 154, 0.08); cursor: pointer; }
 .pb-site.over { border-color: var(--gold); background: rgba(200, 146, 42, 0.28); transform: scale(1.06); box-shadow: 0 0 18px rgba(200, 146, 42, 0.5); }

@@ -210,6 +210,10 @@
 }
 .hud-btn:hover { background: rgba(0, 0, 0, 0.35); }
 .hud-btn.on { background: var(--gold); color: #2a1c08; border-color: var(--gold); }
+
+/* tactile cursors — anything you can pick up shows a grab/grabbing hand */
+.hand-card, .build-piece, .pb-road, .pb-site-card, .pb-region .rtile { cursor: grab; }
+.hand-card:active, .build-piece:active, .pb-road:active, .pb-site-card:active { cursor: grabbing; }
 .hud-mute { font-size: 15px; padding: 3px 9px; line-height: 1; }
 
 /* ⚙ Setup popover — folds the sets / win-target / theme config off the main bar */

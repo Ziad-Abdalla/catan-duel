@@ -49,6 +49,8 @@ export function TableHud({ mode, setMode }: { mode: AppMode; setMode: (m: AppMod
   const setPayCosts = useUI((s) => s.setPayCosts)
   const tableTheme = useUI((s) => s.tableTheme)
   const setTableTheme = useUI((s) => s.setTableTheme)
+  const musicOn = useUI((s) => s.musicOn)
+  const setMusicOn = useUI((s) => s.setMusicOn)
   const muted = useMuted()
   const [setupOpen, setSetupOpen] = useState(false)
 
@@ -94,6 +96,12 @@ export function TableHud({ mode, setMode }: { mode: AppMode; setMode: (m: AppMod
                 <select className="hud-vp-sel" value={tableTheme} onChange={(e) => { setTableTheme(e.target.value as typeof tableTheme); playSfx('ui') }}>
                   {THEMES.map((t) => <option key={t.id} value={t.id}>{t.label}</option>)}
                 </select>
+              </div>
+              <div className="hud-pop-group">
+                <span className="hud-pop-label">Music <em>· needs public/ambient.mp3</em></span>
+                <button className={`hud-chip${musicOn ? ' on' : ''}`} aria-pressed={musicOn} onClick={() => { setMusicOn(!musicOn); playSfx('ui') }}>
+                  {musicOn ? '♪ Ambient on' : '♪ Ambient off'}
+                </button>
               </div>
             </div>
           </>

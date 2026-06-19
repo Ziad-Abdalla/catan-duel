@@ -88,6 +88,37 @@ function startSynth() {
   }, 7000)
 }
 
+// ── Ambient background music ─────────────────────────────────────────────────
+// Plays a looping, low-volume bed from `public/ambient.mp3` IF the owner drops one in
+// (see docs/quality-2026-06-19/ASSETS.html for a curated, royalty-free download). With
+// no file it silently no-ops — there's no synthesized drone (that gets old fast). The
+// player turns it on in ⚙ Setup → Music; it always yields to the global mute.
+let amb: HTMLAudioElement | null = null
+
+export function playAmbient(): void {
+  if (isMuted() || typeof Audio === 'undefined') return
+  try {
+    if (!amb) {
+      amb = new Audio(`${import.meta.env.BASE_URL}ambient.mp3`)
+      amb.loop = true
+      amb.volume = 0.3
+    }
+    void amb.play().catch(() => {
+      /* no file / autoplay blocked → stay silent */
+    })
+  } catch {
+    /* ignore */
+  }
+}
+
+export function stopAmbient(): void {
+  try {
+    amb?.pause()
+  } catch {
+    /* ignore */
+  }
+}
+
 /** Stop whatever victory music is playing (safe to call anytime). */
 export function stopVictoryMusic(): void {
   if (loop) {

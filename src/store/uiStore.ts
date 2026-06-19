@@ -69,6 +69,9 @@ interface UIState {
   stackBrowse: number | null
   openStackBrowse: (i: number) => void
   closeStackBrowse: () => void
+  /** Ambient background-music toggle (plays public/ambient.mp3 if present; off by default). */
+  musicOn: boolean
+  setMusicOn: (v: boolean) => void
   /** A player briefly flashed with a negative cue (e.g. just lost an advantage). */
   negativeCue: PlayerId | null
   flashNegative: (player: PlayerId) => void
@@ -110,6 +113,8 @@ export const useUI = create<UIState>((set) => ({
   stackBrowse: null,
   openStackBrowse: (i) => set({ stackBrowse: i }),
   closeStackBrowse: () => set({ stackBrowse: null }),
+  musicOn: false,
+  setMusicOn: (musicOn) => set({ musicOn }),
   negativeCue: null,
   flashNegative: (player) => {
     set({ negativeCue: player })

@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Catan Duel — Optional Audio/Art Assets</title>
+<style>
+  :root { color-scheme: dark; }
+  body { margin:0; font:16px/1.6 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+         background:radial-gradient(120% 90% at 50% 0%,#1f3a3a,#0c1a1c 70%); color:#f3ecd9; padding:36px 18px 80px; }
+  .wrap { max-width:860px; margin:0 auto; }
+  h1 { font-family:Georgia,serif; color:#f3d79a; margin:0 0 4px; }
+  .sub { opacity:.7; margin:0 0 24px; }
+  .card { background:linear-gradient(180deg,#1c2b2c,#15211f); border:1px solid rgba(243,215,154,.22);
+          border-radius:14px; padding:18px 20px; margin:16px 0; box-shadow:0 10px 30px rgba(0,0,0,.4); }
+  .card h2 { margin:0 0 4px; color:#f3d79a; font-size:1.15rem; }
+  .slot { display:inline-block; font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.82rem;
+          background:rgba(243,215,154,.12); border:1px solid rgba(243,215,154,.3); border-radius:7px;
+          padding:2px 8px; margin:4px 0 8px; color:#f3e6c6; }
+  a { color:#7fd0e0; text-decoration:none; } a:hover { text-decoration:underline; }
+  ul { margin:8px 0 0; padding-left:20px; } li { margin:4px 0; }
+  .lic { font-size:.82rem; opacity:.78; }
+  .ok { color:#7fd99a; font-weight:600; }
+  .warn { color:#e6c06a; }
+  .steps { background:rgba(0,0,0,.25); border-radius:10px; padding:14px 18px; }
+  code { font-family:ui-monospace,Menlo,Consolas,monospace; background:rgba(255,255,255,.07); padding:1px 5px; border-radius:5px; }
+  .pill { font-size:.72rem; background:#2a4a2a; color:#bfe8bf; border-radius:99px; padding:2px 9px; margin-left:6px; }
+  .pill.opt { background:#3a3320; color:#e6d6a6; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Catan Duel — optional audio &amp; art</h1>
+  <p class="sub">Everything already works with zero downloads (sound is synthesized, art is drawn).
+     These are <b>optional</b> upgrades. Pick a file, rename it to the slot name, drop it in the repo —
+     or just download them into one folder and send it over and I'll wire them in.</p>
+
+  <div class="card steps">
+    <b>How to use</b>
+    <ul>
+      <li>Click a link, preview, and <b>download</b> the track/file you like.</li>
+      <li>Rename it to the exact <span class="slot">slot</span> filename and put it in the project's <code>public/</code> folder
+          (e.g. <code>public/ambient.mp3</code>). That's it — it loads automatically, no code change.</li>
+      <li>Prefer the <span class="ok">CC0 / Pixabay</span> options — they need no credit and are safe to commit to the shared repo.
+          If you pick a <span class="warn">CC-BY</span> track (e.g. Incompetech), tell me and I'll add the required one-line credit.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>1 · Background music <span class="pill">recommended</span></h2>
+    <div class="slot">public/ambient.mp3</div>
+    <div>A calm medieval/tavern loop under the game. Turn it on in-game via <b>⚙ Setup → Music</b>. Keep it gentle &amp; loopable.</div>
+    <ul>
+      <li><a href="https://pixabay.com/music/folk-medieval-citytavern-ambient-235876/" target="_blank">Pixabay — “Medieval city/tavern ambient”</a> <span class="lic ok">(royalty-free, no credit)</span></li>
+      <li><a href="https://pixabay.com/music/folk-medieval-background-196571/" target="_blank">Pixabay — “Medieval Background”</a> <span class="lic ok">(royalty-free)</span></li>
+      <li><a href="https://pixabay.com/music/search/medieval%20tavern/" target="_blank">Pixabay — browse “medieval tavern”</a> · <a href="https://pixabay.com/music/search/tavern/" target="_blank">“tavern”</a></li>
+      <li><a href="https://freepd.com/" target="_blank">FreePD.com</a> <span class="lic ok">(CC0 / public domain — safest to commit)</span> — see the “World” / “Epic” sections</li>
+      <li><a href="https://archive.org/details/medieval-instrumental-background-music" target="_blank">Internet Archive — CC0 medieval instrumental collection</a> <span class="lic ok">(CC0)</span></li>
+      <li><a href="https://opengameart.org/content/cc0-music-0" target="_blank">OpenGameArt — CC0 music</a> <span class="lic ok">(CC0)</span></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>2 · Victory / celebration music <span class="pill opt">optional</span></h2>
+    <div class="slot">public/victory.mp3</div>
+    <div>Plays on the win screen. If absent, the game already plays an original synthesized fanfare — so this is pure flavour.</div>
+    <ul>
+      <li><a href="https://pixabay.com/music/search/fanfare/" target="_blank">Pixabay — “fanfare” / “victory”</a> <span class="lic ok">(royalty-free)</span></li>
+      <li><a href="https://freepd.com/" target="_blank">FreePD.com</a> — “Misc → Fanfare / Triumph” <span class="lic ok">(CC0)</span></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>3 · Sound effects <span class="pill opt">optional — synth already covers these</span></h2>
+    <div class="slot">(none needed)</div>
+    <div>All SFX (dice, place, build, coin, ship-splash, brigand menace, hero flourish, festival, magic, VP chime…) are
+       synthesized live — no files required. Only grab these if you want to <i>replace</i> a specific cue; tell me which and I'll wire an override.</div>
+    <ul>
+      <li><a href="https://pixabay.com/sound-effects/" target="_blank">Pixabay — sound effects</a> <span class="lic ok">(royalty-free)</span></li>
+      <li><a href="https://kenney.nl/assets?q=audio" target="_blank">Kenney.nl — audio packs</a> <span class="lic ok">(CC0)</span></li>
+      <li><a href="https://sonniss.com/gameaudiogdc" target="_blank">Sonniss — free GDC game-audio bundles</a> <span class="lic ok">(royalty-free)</span></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>4 · Felt / table texture <span class="pill opt">optional — ask me to wire</span></h2>
+    <div class="slot">public/textures/felt.webp</div>
+    <div>A subtle fabric/wood texture over the table mat. Not auto-loaded yet — drop one in and tell me, I'll wire it under the gradient (kept very subtle so cards stay readable).</div>
+    <ul>
+      <li><a href="https://opengameart.org/art-search?keys=felt+fabric+wood+texture" target="_blank">OpenGameArt — felt/fabric/wood textures</a> <span class="lic ok">(filter CC0)</span></li>
+      <li><a href="https://www.pexels.com/search/felt%20texture/" target="_blank">Pexels — felt texture</a> <span class="lic ok">(free, no credit)</span> · <a href="https://polyhaven.com/textures" target="_blank">Poly Haven</a> <span class="lic ok">(CC0)</span></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>5 · Official city art <span class="pill opt">optional — replaces the drawn SVG</span></h2>
+    <div class="slot">src/assets/buildings/city.webp</div>
+    <div>Right now the city is a clean hand-drawn SVG (the old scan was low-res). If you/Ziad have an official city
+       illustration (to match the settlement &amp; road photos), drop it here and re-add <code>'base-city': 'city'</code> to
+       <code>FOUNDATION_ART</code> in <code>src/data/cards.ts</code> — or just send it and I'll do it.</div>
+  </div>
+
+  <p class="sub" style="margin-top:24px">Slots already wired and waiting: <code>public/ambient.mp3</code>, <code>public/victory.mp3</code>.
+     Drop files in and they light up — no rebuild needed for <code>public/</code> assets in dev.</p>
+</div>
+</body>
+</html>

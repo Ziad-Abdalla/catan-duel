@@ -16,6 +16,7 @@ import { AuditLog } from './AuditLog'
 import { AdvantageAudio } from './AdvantageAudio'
 import { BrigandSequence } from './BrigandSequence'
 import { DiceEventCue } from './DiceEventCue'
+import { AmbientMusic } from './AmbientMusic'
 import { EventPopup } from './EventPopup'
 import { VictoryFlow } from './VictoryFlow'
 import { ConnectionBar } from '../net/ConnectionBar'
@@ -80,6 +81,7 @@ export function TableBoard({ mode, setMode }: { mode: AppMode; setMode: (m: AppM
       <AdvantageAudio />
       <BrigandSequence />
       <DiceEventCue />
+      <AmbientMusic />
       <TurnBanner />
       {online && <NetToasts />}
       {online && <ConnectionBar />}

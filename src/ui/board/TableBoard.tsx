@@ -12,6 +12,7 @@ import { DiceLayer } from './DiceLayer'
 import { CardZoom } from './CardZoom'
 import { ResolutionPanel } from './ResolutionPanel'
 import { AuditLog } from './AuditLog'
+import { EventPopup } from './EventPopup'
 import { VictoryFlow } from './VictoryFlow'
 import { ConnectionBar } from '../net/ConnectionBar'
 import { NetToasts } from '../net/NetToasts'
@@ -66,6 +67,7 @@ export function TableBoard({ mode, setMode }: { mode: AppMode; setMode: (m: AppM
       <CardZoom />
       <ResolutionPanel />
       <AuditLog />
+      <EventPopup />
       <VictoryFlow />
       <TurnBanner />
       {online && <NetToasts />}

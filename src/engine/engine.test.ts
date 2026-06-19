@@ -45,11 +45,11 @@ describe('newGame', () => {
     }
   })
 
-  it('uses the confirmed starting numbers', () => {
+  it('uses the official starting numbers (owner-specified per-player mapping)', () => {
     const p0 = Object.fromEntries(g.players.p0.regions.map((r) => [r.resource, r.number]))
-    expect(p0).toMatchObject({ gold: 1, lumber: 2, brick: 3, wool: 4, ore: 5, grain: 6 })
+    expect(p0).toMatchObject({ grain: 5, lumber: 3, wool: 1, brick: 2, ore: 6, gold: 4 })
     const p1 = Object.fromEntries(g.players.p1.regions.map((r) => [r.resource, r.number]))
-    expect(p1).toMatchObject({ wool: 1, brick: 2, lumber: 3, gold: 4, ore: 5, grain: 6 })
+    expect(p1).toMatchObject({ grain: 6, gold: 1, brick: 3, wool: 4, ore: 5, lumber: 2 })
   })
 
   it('deals 3-card starting hands and 4 draw stacks', () => {

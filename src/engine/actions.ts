@@ -38,7 +38,8 @@ export type Action =
   | { type: 'returnToHand'; player: PlayerId; placedIndex: number }
   | { type: 'discardToStack'; player: PlayerId; cardId: string; stackIndex: number } // end-of-turn exchange: tuck a card under a draw stack
   | { type: 'discardCard'; player: PlayerId; from: 'hand' | 'placed'; cardId?: string; placedIndex?: number } // route a card to the shared discard pile (or back to a face-up supply)
-  | { type: 'drawEvent' } // reveal top event card (logged); resolution is manual
+  | { type: 'drawEvent' } // reveal top event card (pops up on both screens); resolution is manual
+  | { type: 'dismissEvent' } // clear the revealed event pop-up
   // spine
   | { type: 'upgradeCity'; player: PlayerId; seat: number; pay?: boolean } // settlement → city in place
   | { type: 'expandSpine'; player: PlayerId } // +settlement +road, draw 2 regions
@@ -576,15 +577,21 @@ function reduce(s: GameState, a: Action): GameState {
       if (s.eventDeck.length === 0) return s
       const eventDeck = [...s.eventDeck]
       const id = eventDeck.pop()! // top of the deck
+      const name = getCard(id)?.name ?? id
+      // `revealedEvent` is part of the synced snapshot, so the pop-up appears on
+      // BOTH screens simultaneously.
       if (id === YULE_ID) {
         // Yule/festival: reshuffle the rest and re-seat Yule 4th from the bottom.
         // Deterministic (seeded by seq) so both online clients stay in sync.
         const reshuffled = shuffle(eventDeck, makeRng((s.seq + 1) ^ 0x59c1e))
-        return { ...s, eventDeck: seatYule(reshuffled) }
+        return logged({ ...s, eventDeck: seatYule(reshuffled), revealedEvent: id }, s.activePlayer, `Event: ${name}`)
       }
       eventDeck.unshift(id) // other events cycle to the bottom after resolving
-      return { ...s, eventDeck }
+      return logged({ ...s, eventDeck, revealedEvent: id }, s.activePlayer, `Event: ${name}`)
     }
+
+    case 'dismissEvent':
+      return s.revealedEvent ? { ...s, revealedEvent: undefined } : s
 
     case 'renamePlayer':
       return withPlayer(s, a.player, (p) => {

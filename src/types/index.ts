@@ -132,6 +132,8 @@ export interface GameState {
   /** shared discard pile (top = last). Action cards + removed buildings/units land here. */
   discard: string[]
   lastRoll?: { production: number; event: string }
+  /** The event card just revealed by `drawEvent` — pops up on BOTH screens until dismissed. */
+  revealedEvent?: string
   log: LogEntry[]
   enabledSets: SetId[]
   /** VP needed to win: 7 intro · 12 single theme · 13 Duel of the Princes · adjustable. */

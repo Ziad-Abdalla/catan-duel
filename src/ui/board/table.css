@@ -747,3 +747,31 @@
   cursor: pointer;
 }
 .hud-vp-sel:hover { border-color: rgba(243, 215, 154, 0.7); }
+
+/* ── Dynamic per-era table atmosphere ──────────────────────────────────────
+   The whole felt re-tints to the active thematic expansion. Base = cool dim
+   room (the default above); each era warms or cools the radial wash + top glow. */
+.felt-era-gold .felt-bg {
+  background: radial-gradient(120% 80% at 50% 32%, #4a3a1a 0%, #281d0d 58%, #140d05 100%);
+}
+.felt-era-gold .felt-bg::after {
+  background: radial-gradient(80% 40% at 50% 0%, rgba(243, 200, 110, 0.16), transparent 70%);
+}
+.felt-era-turmoil .felt-bg {
+  background: radial-gradient(120% 80% at 50% 32%, #43232a 0%, #261216 58%, #140809 100%);
+}
+.felt-era-turmoil .felt-bg::after {
+  background: radial-gradient(80% 40% at 50% 0%, rgba(220, 110, 90, 0.16), transparent 70%);
+}
+.felt-era-progress .felt-bg {
+  background: radial-gradient(120% 80% at 50% 32%, #1d3f3a 0%, #112723 58%, #08130f 100%);
+}
+.felt-era-progress .felt-bg::after {
+  background: radial-gradient(80% 40% at 50% 0%, rgba(110, 210, 180, 0.16), transparent 70%);
+}
+.felt-era-duel .felt-bg {
+  background: radial-gradient(120% 80% at 50% 32%, #3a2c52 0%, #20183a 58%, #0e0a1c 100%);
+}
+.felt-era-duel .felt-bg::after {
+  background: radial-gradient(80% 40% at 50% 0%, rgba(180, 150, 230, 0.16), transparent 70%);
+}

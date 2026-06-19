@@ -1,0 +1,64 @@
+.evpop-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 74;
+  display: grid;
+  place-items: center;
+  background: rgba(8, 6, 3, 0.55);
+  backdrop-filter: blur(2px);
+  animation: evpop-fade 0.18s ease;
+}
+@keyframes evpop-fade { from { opacity: 0; } to { opacity: 1; } }
+
+.evpop {
+  width: min(440px, 90vw);
+  background: linear-gradient(180deg, rgba(38, 28, 14, 0.99), rgba(24, 17, 9, 0.99));
+  border: 1px solid rgba(243, 215, 154, 0.5);
+  border-radius: 16px;
+  padding: 0 24px 22px;
+  color: #f3e6c6;
+  text-align: center;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.6);
+  animation: evpop-pop 0.28s cubic-bezier(0.2, 1.2, 0.4, 1);
+}
+@keyframes evpop-pop {
+  from { transform: scale(0.85) translateY(8px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+.evpop-banner {
+  display: inline-block;
+  margin: -12px auto 10px;
+  padding: 4px 18px;
+  border-radius: 999px;
+  background: var(--gold, #e0b341);
+  color: #2a1c08;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.evpop-name {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 22px;
+  color: #f3d79a;
+  margin: 6px 0 12px;
+}
+.evpop-rules {
+  font-family: 'IM Fell English', Georgia, serif;
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 0 0 12px;
+}
+.evpop-muted { opacity: 0.7; font-style: italic; }
+.evpop-flavor { font-size: 13px; opacity: 0.6; font-style: italic; margin: 0 0 14px; }
+.evpop-ok {
+  border: 0;
+  border-radius: 8px;
+  padding: 8px 22px;
+  background: var(--gold, #e0b341);
+  color: #2a1c08;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 14px;
+  cursor: pointer;
+}
+.evpop-ok:hover { background: #efc457; }

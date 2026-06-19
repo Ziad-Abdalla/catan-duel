@@ -62,8 +62,7 @@ export function CardZoom() {
     // The engine spends the cost when pay=true (no manual subtraction here — that
     // would double-charge). pay=false just places it (manual "show your friend").
     dispatch({ type: 'playCard', player: zoom.player, cardId: zoom.cardId, slot, pay })
-    playSfx('place')
-    playSfx('sweep') // dramatic deploy whoosh
+    playSfx('sweep') // a single dramatic deploy whoosh (one sound per action)
     closeZoom()
   }
   const exchange = (stackIndex: number) => {

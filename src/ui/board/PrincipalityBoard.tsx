@@ -177,8 +177,7 @@ function Site({
     // Dropping a card onto a site places it without auto-charging (manual sandbox);
     // structural road/settlement/city builds DO auto-charge in the engine.
     dispatch({ type: 'playCard', player, cardId, slot, pay: false })
-    playSfx('place')
-    playSfx('sweep') // dramatic deploy whoosh
+    playSfx('sweep') // a single dramatic deploy whoosh (one sound per action)
     clear()
   }
 

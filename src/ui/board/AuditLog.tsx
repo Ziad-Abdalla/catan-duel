@@ -31,7 +31,7 @@ export function AuditLog() {
         <span className="audit-title">Action Log</span>
         <button className="audit-x" onClick={toggle} aria-label="Close action log">✕</button>
       </header>
-      <ol className="audit-list">
+      <ol className="audit-list" role="log" aria-live="polite" aria-relevant="additions" aria-label="Game action history">
         {log.length === 0 && <li className="audit-empty">No actions yet.</li>}
         {log.map((e, i) => (
           <li key={i} className={`audit-row seat-${e.player}${e.manual ? ' manual' : ''}`}>

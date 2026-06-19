@@ -1,5 +1,4 @@
 import { type MouseEvent as ReactMouseEvent } from 'react'
-import type { Phase } from '../../types'
 import { EVENT_TEXT, type EventFace } from '../../engine/dice'
 import { cardArt, getCard } from '../../data/cards'
 import { AdvantageControl } from './TokenLayer'
@@ -18,14 +17,7 @@ const SET_LABEL: Record<'base' | 'gold' | 'turmoil' | 'progress', string> = {
   progress: 'Innovation',
 }
 
-const PHASES: { id: Phase; label: string }[] = [
-  { id: 'roll', label: 'Roll' },
-  { id: 'action', label: 'Action' },
-  { id: 'replenish', label: 'Replenish' },
-  { id: 'exchange', label: 'Exchange' },
-]
-
-/** The central wall: card stacks, dice tray, phase track, turn controls, tokens. */
+/** The central wall: card stacks, dice tray, turn controls, tokens. */
 export function CentralWall() {
   const state = useGame((s) => s.state)
   const dispatch = useGame((s) => s.dispatch)
@@ -34,7 +26,6 @@ export function CentralWall() {
   const canUndo = useGame((s) => s.history.length > 0)
   const active = state.activePlayer
   const over = state.phase === 'gameover'
-  const phaseIdx = PHASES.findIndex((p) => p.id === state.phase)
 
   const addFlight = useUI((s) => s.addFlight)
   const openResolve = useUI((s) => s.openResolve)
@@ -83,21 +74,11 @@ export function CentralWall() {
 
   return (
     <div className="wall">
-      {/* left: phase + turn */}
+      {/* left: turn controls — no enforced phases (free manual play); just roll & end */}
       <div className="wall-flow">
-        <div className="phase-rail">
-          {PHASES.map((ph, i) => (
-            <div key={ph.id} className={`prail-step${state.phase === ph.id ? ' on' : ''}${i < phaseIdx ? ' done' : ''}`}>
-              <b>{i + 1}</b>
-              <span>{ph.label}</span>
-            </div>
-          ))}
-        </div>
         <div className="turn-row">
           <span className="turn-tag">Turn {state.turn}</span>
-          <button className="wbtn" disabled={over || state.phase === 'exchange' || state.phase === 'roll'} onClick={() => dispatch({ type: 'nextPhase' })}>
-            Next phase
-          </button>
+          <span className="turn-active" title="Whose turn it is">{state.players[active].name}</span>
           <button className="wbtn wbtn-undo" disabled={!canUndo} title="Undo the last change (trust-based fat-finger recovery)" onClick={() => { undo(); playSfx('ui') }}>
             ↶ Undo
           </button>

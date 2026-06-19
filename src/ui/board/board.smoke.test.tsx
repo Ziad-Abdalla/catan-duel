@@ -24,10 +24,11 @@ describe('Board renders', () => {
     expect(html).toContain('Player 2')
   })
 
-  it('shows the dice, phase track and deck wall', () => {
+  it('shows the dice, turn controls and deck wall', () => {
     expect(html).toContain('Roll') // dice button
-    expect(html).toContain('Replenish') // phase step
+    expect(html).toContain('End turn') // turn control (phases removed — free manual play)
     expect(html).toContain('cardstack') // the deck wall
+    expect(html).toContain('cs-peek') // peek/search a draw stack
     expect(html).toContain('Strength') // advantage token post
   })
 

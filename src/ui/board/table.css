@@ -49,7 +49,7 @@
   position: absolute;
   border-radius: 50%;
   filter: blur(60px);
-  opacity: 0.5;
+  opacity: 0.62;
   will-change: transform;
 }
 .felt-orb.o1 { width: 46vw; height: 46vw; left: -8vw; top: 8vh; background: radial-gradient(circle, rgba(70, 150, 175, 0.5), transparent 65%); animation: orb-drift-a 34s ease-in-out infinite; }
@@ -106,7 +106,7 @@
   box-shadow:
     inset 0 0 0 2px rgba(0, 0, 0, 0.45),
     inset 0 0 0 4px rgba(160, 210, 220, 0.16),
-    inset 0 0 140px rgba(0, 0, 0, 0.55),
+    inset 0 0 110px rgba(0, 0, 0, 0.42),
     0 20px 56px rgba(0, 0, 0, 0.62);
 }
 .pmat::after {
@@ -553,6 +553,7 @@
 .prail-step.done { opacity: 0.95; background: rgba(58, 107, 53, 0.4); }
 .turn-row { display: flex; align-items: center; gap: 8px; }
 .turn-tag { font-family: var(--font-head); font-size: 13px; color: #f3d79a; }
+.turn-active { font-size: 12px; font-weight: 700; color: #fff; opacity: 0.85; padding: 2px 8px; border-radius: 6px; background: rgba(255, 255, 255, 0.08); }
 
 .wbtn {
   font-family: var(--font-head); font-size: 12px;
@@ -801,6 +802,50 @@
 }
 .felt-era-duel .felt-bg::after {
   background: radial-gradient(80% 40% at 50% 0%, rgba(180, 150, 230, 0.16), transparent 70%);
+}
+
+/* The VISIBLE table mat re-tints per theme too — this is the surface the player looks
+   at, so the atmosphere change is now obvious (not just the hidden margins). */
+.felt-era-gold .pmat {
+  background:
+    radial-gradient(60% 50% at 50% 42%, rgba(243, 215, 154, 0.2), transparent 72%),
+    radial-gradient(130% 120% at 50% 40%, #4a3f22 0%, #3c3119 38%, #2a2010 76%, #160f06 100%);
+}
+.felt-era-turmoil .pmat {
+  background:
+    radial-gradient(60% 50% at 50% 42%, rgba(235, 150, 140, 0.18), transparent 72%),
+    radial-gradient(130% 120% at 50% 40%, #4a2a2a 0%, #3a2020 38%, #2a1414 76%, #160808 100%);
+}
+.felt-era-progress .pmat {
+  background:
+    radial-gradient(60% 50% at 50% 42%, rgba(150, 235, 200, 0.2), transparent 72%),
+    radial-gradient(130% 120% at 50% 40%, #1d4a3c 0%, #163a30 38%, #0f2a22 76%, #06150f 100%);
+}
+.felt-era-duel .pmat {
+  background:
+    radial-gradient(60% 50% at 50% 42%, rgba(200, 170, 240, 0.2), transparent 72%),
+    radial-gradient(130% 120% at 50% 40%, #3a2c52 0%, #2c2042 38%, #1e1530 76%, #100a1c 100%);
+}
+
+/* living table: a slow wandering pool of warm light drifts across every mat so the
+   felt breathes even on a default game. Sits under the pieces (children are lifted). */
+.pmat::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(38% 30% at 32% 28%, rgba(255, 244, 214, 0.09), transparent 70%);
+  animation: mat-breathe 19s ease-in-out infinite alternate;
+}
+.pmat > * { position: relative; z-index: 1; }
+@keyframes mat-breathe {
+  from { transform: translate(-6%, -4%) scale(1); opacity: 0.7; }
+  to { transform: translate(9%, 7%) scale(1.12); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pmat::before { animation: none; }
 }
 
 /* shared discard pile in the deck wall (draw the top card back to hand) */

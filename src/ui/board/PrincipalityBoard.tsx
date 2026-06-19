@@ -1,7 +1,7 @@
 import { useState, type CSSProperties } from 'react'
 import type { PlacedCard, PlayerId } from '../../types'
 import { getCard, cardArt } from '../../data/cards'
-import { CenterArt } from '../CenterArt'
+import { PieceArt } from './PieceArt'
 import { RegionTile } from './RegionTile'
 import { useGame } from '../../store/gameStore'
 import { useUI } from '../../store/uiStore'
@@ -90,7 +90,7 @@ export function PrincipalityBoard({
             onDragOver={canCity ? (e) => e.preventDefault() : undefined}
             onDrop={canCity ? (e) => { e.preventDefault(); dispatch({ type: 'upgradeCity', player, seat: j }); playSfx('place'); clear() } : undefined}
           >
-            <CenterArt card={s.card!} />
+            <PieceArt card={s.card!} />
           </button>
         )
       })}
@@ -104,7 +104,7 @@ export function PrincipalityBoard({
           onDragStart={interactive ? () => setDragRemove({ placedIndex: r.i, player }) : undefined}
           onDragEnd={interactive ? () => setDragRemove(null) : undefined}
         >
-          <CenterArt card={r.card!} />
+          <PieceArt card={r.card!} />
         </div>
       ))}
       {Array.from({ length: N + 1 }, (_, i) => i)

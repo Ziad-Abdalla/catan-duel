@@ -1,6 +1,6 @@
 import type { PlayerId } from '../../types'
 import { getCard } from '../../data/cards'
-import { CenterArt } from '../CenterArt'
+import { PieceArt } from './PieceArt'
 import { MiniCard } from './MiniCard'
 import { RegionTile } from './RegionTile'
 import { useGame } from '../../store/gameStore'
@@ -35,7 +35,7 @@ export function Principality({ player, top }: { player: PlayerId; top?: boolean 
     <section className="pr-foundations" key="foundations">
       {foundations.map(({ card, i }) => (
         <div className="foundation" key={i}>
-          <CenterArt card={card!} />
+          <PieceArt card={card!} />
         </div>
       ))}
     </section>

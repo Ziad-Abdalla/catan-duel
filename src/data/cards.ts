@@ -30,15 +30,45 @@ export function cardsByCategory(category: Card['category']): Card[] {
   return CARDS.filter((c) => c.category === category)
 }
 
-/** Card art path (Vite resolves at build time via import.meta.glob). */
-const artModules = import.meta.glob('../assets/cards/*.webp', {
-  eager: true,
-  import: 'default',
-}) as Record<string, string>
+/** Card art (Vite resolves at build time via import.meta.glob), across all art folders. */
+const artModules = import.meta.glob('../assets/cards/*.webp', { eager: true, import: 'default' }) as Record<string, string>
+const regionArt = import.meta.glob('../assets/regions/*.webp', { eager: true, import: 'default' }) as Record<string, string>
+const buildingArt = import.meta.glob('../assets/buildings/*.webp', { eager: true, import: 'default' }) as Record<string, string>
 
+/** base-set foundation cards → their photo in assets/buildings. */
+const FOUNDATION_ART: Record<string, string> = {
+  'base-settlement': 'settlement',
+  'base-city': 'city',
+  'base-road': 'road',
+}
+
+/**
+ * Resolve a card's photo. Order: an exact per-card photo (assets/cards/<id>.webp),
+ * then the shared foundation art (settlement/city/road), then the per-resource
+ * region terrain photo — covering region archetype cards AND in-play region slots
+ * like `region-gold-3`. Returns undefined only when truly no art exists (the caller
+ * then falls back to the hand-drawn CenterArt SVG).
+ */
 export function cardArt(id: string): string | undefined {
-  const key = `../assets/cards/${id}.webp`
-  return artModules[key]
+  const direct = artModules[`../assets/cards/${id}.webp`]
+  if (direct) return direct
+
+  const found = FOUNDATION_ART[id]
+  if (found) return buildingArt[`../assets/buildings/${found}.webp`]
+
+  // region archetype card → its produced resource's terrain photo
+  const card = byId.get(id)
+  if (card?.category === 'region' && card.region_resource) {
+    const r = regionArt[`../assets/regions/${card.region_resource}.webp`]
+    if (r) return r
+  }
+  // in-play region slot id: region-<resource>-<number>
+  const m = /^region-([a-z]+)-/.exec(id)
+  if (m) {
+    const r = regionArt[`../assets/regions/${m[1]}.webp`]
+    if (r) return r
+  }
+  return undefined
 }
 
 /**

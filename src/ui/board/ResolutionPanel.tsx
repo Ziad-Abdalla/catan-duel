@@ -128,8 +128,10 @@ function Ledger() {
   const [xfer, setXfer] = useState<ResourceType>('lumber')
   const ids: PlayerId[] = ['p0', 'p1']
 
-  const move = (from: PlayerId, to: PlayerId) =>
+  const move = (from: PlayerId, to: PlayerId) => {
     dispatch({ type: 'transferResource', from, to, resource: xfer, count: 1 })
+    playSfx('coin')
+  }
 
   return (
     <div className="rl-ledger">
@@ -152,11 +154,11 @@ function Ledger() {
                   <ResSwatch res={r} />
                   <span className="rl-resname">{RLAB[r]}</span>
                   <span className="rl-spacer" />
-                  <button className="rl-pm" title={`Remove 1 ${RLAB[r]}`} onClick={() => dispatch({ type: 'addResource', player: id, resource: r, count: -1 })}>
+                  <button className="rl-pm" title={`Remove 1 ${RLAB[r]}`} onClick={() => { dispatch({ type: 'addResource', player: id, resource: r, count: -1 }); playSfx('coin') }}>
                     −
                   </button>
                   <span className="rl-resn">{n}</span>
-                  <button className="rl-pm" title={`Add 1 ${RLAB[r]}`} onClick={() => dispatch({ type: 'addResource', player: id, resource: r, count: 1 })}>
+                  <button className="rl-pm" title={`Add 1 ${RLAB[r]}`} onClick={() => { dispatch({ type: 'addResource', player: id, resource: r, count: 1 }); playSfx('coin') }}>
                     ＋
                   </button>
                 </div>
@@ -483,7 +485,7 @@ export function ResolutionPanel() {
               <p className="rl-step-text">Anyone holding more than 7 resources loses all their gold and wool.</p>
               <button
                 className="rl-apply"
-                onClick={() => { dispatch({ type: 'resolveBrigand' }); playSfx('token') }}
+                onClick={() => { dispatch({ type: 'resolveBrigand' }); playSfx('menace') }}
               >
                 Apply to both players (auto-logs the loss)
               </button>

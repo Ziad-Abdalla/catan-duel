@@ -4,6 +4,7 @@ import { PlateToken } from './TokenLayer'
 import { computeStats, suggestAdvantage } from '../../engine/actions'
 import { useGame } from '../../store/gameStore'
 import { useUI } from '../../store/uiStore'
+import { playSfx } from '../../audio/sfx'
 
 const STAT_META: { key: Stat; glyph: string; title: string }[] = [
   { key: 'strength', glyph: '⚔', title: 'Strength' },
@@ -28,8 +29,10 @@ export function PlayerPlate({ player }: { player: PlayerId }) {
   const prevVP = useRef(p.victoryPoints)
   useEffect(() => {
     if (prevVP.current !== p.victoryPoints) {
+      const gained = p.victoryPoints > prevVP.current
       prevVP.current = p.victoryPoints
       setBump(true)
+      if (gained) playSfx('vp') // a bright bell whenever points are scored (build or manual)
     }
   }, [p.victoryPoints])
 

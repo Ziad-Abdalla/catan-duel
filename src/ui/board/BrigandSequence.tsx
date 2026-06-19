@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import { useUI } from '../../store/uiStore'
-import { playSfx } from '../../audio/sfx'
 import './brigand.css'
 
 /**
@@ -20,7 +19,7 @@ export function BrigandSequence() {
     if (key === lastKey.current) return // already played for this roll
     lastKey.current = key
     setShow(true)
-    playSfx('token')
+    // audio is owned by DiceEventCue (brigand → 'menace'); this stays purely visual.
     const t = setTimeout(() => setShow(false), 1900)
     return () => clearTimeout(t)
   }, [revealedRoll])

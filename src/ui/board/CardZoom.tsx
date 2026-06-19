@@ -6,6 +6,7 @@ import { resourceTotalOf } from '../../engine/actions'
 import { useGame } from '../../store/gameStore'
 import { useUI } from '../../store/uiStore'
 import { playSfx } from '../../audio/sfx'
+import { cardSfx } from '../../audio/cardSound'
 import './cardzoom.css'
 
 /** First empty building site for a player, scanning up/down across each seat. A city
@@ -65,7 +66,8 @@ export function CardZoom() {
     // The engine spends the cost when pay=true (no manual subtraction here — that
     // would double-charge). pay=false just places it (manual "show your friend").
     dispatch({ type: 'playCard', player: zoom.player, cardId: zoom.cardId, slot, pay })
-    playSfx('sweep') // a single dramatic deploy whoosh (one sound per action)
+    if (pay) playSfx('coin')
+    playSfx(cardSfx(zoom.cardId)) // thematic cue for what was played
     closeZoom()
   }
   const exchange = (stackIndex: number) => {

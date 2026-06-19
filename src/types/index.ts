@@ -131,6 +131,10 @@ export interface GameState {
   eventDeck: string[]
   /** shared discard pile (top = last). Action cards + removed buildings/units land here. */
   discard: string[]
+  /** Limited central supply for face-up expansion buildings (e.g. Merchant Guild,
+   *  Hedge Tavern, University): id → copies still available to build. These live ONLY
+   *  here, never in the draw stacks, so building one truly leaves the public supply. */
+  supply: Record<string, number>
   lastRoll?: { production: number; event: string }
   /** The event card just revealed by `drawEvent` — pops up on BOTH screens until dismissed. */
   revealedEvent?: string

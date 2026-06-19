@@ -291,10 +291,12 @@
 .pboard[data-player='p1'] { --pc: var(--p1); --pcg: var(--p1-glow); }
 .pboard[data-player='p0'] .pb-seat { --pc: var(--p0); --pcg: var(--p0-glow); }
 .pboard[data-player='p1'] .pb-seat { --pc: var(--p1); --pcg: var(--p1-glow); }
-/* official piece illustrations get a player-colour ring so red vs blue pieces read at
-   a glance (seats also keep the corner pennant below). */
+/* pieces get a player-colour ring so red vs blue read at a glance (photos AND the
+   hand-drawn city SVG; seats also keep the corner pennant below). */
 .pb-seat .piece-art,
-.pb-road .piece-art {
+.pb-road .piece-art,
+.pb-seat .ctr,
+.pb-road .ctr {
   border-radius: 8px;
   box-shadow: 0 0 0 2.5px var(--pc, var(--gold)), 0 4px 7px rgba(0, 0, 0, 0.5);
 }
@@ -431,6 +433,9 @@
   border: 1px solid rgba(243, 215, 154, 0.4);
 }
 .build-era img { width: 100%; border-radius: 5px; display: block; border: 1px solid rgba(0, 0, 0, 0.4); }
+/* a face-up expansion with none left in the supply: greyed + not draggable */
+.build-era.depleted { filter: grayscale(1) brightness(0.55); cursor: not-allowed; }
+.build-era.depleted .build-copies { background: #5a3a2a; }
 .build-era.era-gold { box-shadow: 0 0 0 2px rgba(224, 176, 58, 0.7); border-radius: 6px; }
 .build-era.era-turmoil { box-shadow: 0 0 0 2px rgba(138, 63, 143, 0.7); border-radius: 6px; }
 .build-era.era-progress { box-shadow: 0 0 0 2px rgba(47, 138, 153, 0.7); border-radius: 6px; }

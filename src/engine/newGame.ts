@@ -4,16 +4,27 @@ import { STARTING_PRINCIPALITIES, REGION_DRAW_STACK, startingStored } from '../d
 import { makeRng, shuffle, type Rng } from './rng'
 import { seatYule } from './actions'
 
-/** Expand the enabled sets' drawable cards (buildings, units/heroes, actions) into a flat id list by copy count. */
+/** Expand the enabled sets' drawable cards (buildings, units/heroes, actions) into a flat id list by copy count.
+ *  Face-up Expansions are EXCLUDED — they sit in the limited central supply, not the face-down draw stacks. */
 function buildDrawDeck(sets: SetId[]): string[] {
   const out: string[] = []
   for (const c of CARDS) {
     if (!sets.includes(c.set)) continue
+    if (c.tag === 'Face-up Expansion') continue
     if (c.category === 'building' || c.category === 'hero-or-unit' || c.category === 'action') {
       for (let i = 0; i < c.copies; i++) out.push(c.id)
     }
   }
   return out
+}
+
+/** The limited face-up expansion supply for the enabled sets (id → copies available). */
+function buildSupply(sets: SetId[]): Record<string, number> {
+  const supply: Record<string, number> = {}
+  for (const c of CARDS) {
+    if (sets.includes(c.set) && c.tag === 'Face-up Expansion') supply[c.id] = c.copies
+  }
+  return supply
 }
 
 function buildEventDeck(sets: SetId[]): string[] {
@@ -115,6 +126,7 @@ export function newGame({ seed, p0Name = 'Player 1', p1Name = 'Player 2', enable
     regionStack,
     eventDeck,
     discard: [],
+    supply: buildSupply(sets),
     log: [
       {
         turn: 1,

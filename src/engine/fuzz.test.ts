@@ -83,6 +83,11 @@ function checkInvariants(prev: GameState, next: GameState) {
     for (const pc of next.players[id].placed) expect(getCard(pc.cardId)).toBeTruthy()
   }
   for (const cid of next.discard) expect(getCard(cid)).toBeTruthy()
+  // supply counters stay valid non-negative integers
+  for (const k of Object.keys(next.supply)) {
+    expect(Number.isInteger(next.supply[k])).toBe(true)
+    expect(next.supply[k]).toBeGreaterThanOrEqual(0)
+  }
   // eligibility is derived fresh: whoever is flagged eligible must truly meet the
   // (current) threshold. (The winner itself is vote-driven and may be agreed at any
   // score in the manual sandbox, so it is not threshold-bound.)

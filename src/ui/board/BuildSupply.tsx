@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import type { PlayerId } from '../../types'
-import { getCard, regionCardFor, CARDS } from '../../data/cards'
+import { getCard, regionCardFor, CARDS, cardArt } from '../../data/cards'
 import { CenterArt } from '../CenterArt'
-import { cardArt } from '../../data/cards'
+import { PieceArt } from './PieceArt'
 import { useGame } from '../../store/gameStore'
 import { useUI, type BuildKind } from '../../store/uiStore'
 import { playSfx } from '../../audio/sfx'
@@ -28,6 +28,7 @@ const ERA_LABEL: Record<string, string> = { gold: 'Gold', turmoil: 'Turmoil', pr
 export function BuildSupply({ player }: { player: PlayerId }) {
   const dispatch = useGame((s) => s.dispatch)
   const enabledSets = useGame((s) => s.state.enabledSets)
+  const supply = useGame((s) => s.state.supply)
   const { setDragBuild, setDrag, openZoom, dragRemove, clear } = useUI()
   const [over, setOver] = useState(false)
 
@@ -75,7 +76,7 @@ export function BuildSupply({ player }: { player: PlayerId }) {
               onDragEnd={() => setDragBuild(null)}
               onClick={() => openZoom({ cardId, from: 'build', player })}
             >
-              <CenterArt card={card} />
+              <PieceArt card={card} />
               <span className="build-piece-name">{label}</span>
             </button>
           )
@@ -85,13 +86,17 @@ export function BuildSupply({ player }: { player: PlayerId }) {
 
         {eraBuildings.map((card) => {
           const art = cardArt(card.id)
+          const left = supply[card.id] ?? card.copies
+          const out = left <= 0
           return (
             <button
               key={card.id}
-              className={`build-piece build-era era-${card.set}`}
-              draggable
-              title={`${card.name} (${ERA_LABEL[card.set] ?? card.set}) — click for details, drag onto a building site`}
-              onDragStart={(e) => {
+              className={`build-piece build-era era-${card.set}${out ? ' depleted' : ''}`}
+              draggable={!out}
+              title={out
+                ? `${card.name} — none left in the supply`
+                : `${card.name} (${ERA_LABEL[card.set] ?? card.set}) — ${left} left · click for details, drag onto a building site`}
+              onDragStart={out ? undefined : (e) => {
                 e.dataTransfer.setData('text/cardid', card.id)
                 e.dataTransfer.effectAllowed = 'copy'
                 setDrag(card.id)
@@ -100,7 +105,7 @@ export function BuildSupply({ player }: { player: PlayerId }) {
               onClick={() => openZoom({ cardId: card.id, from: 'build', player })}
             >
               {art ? <img src={art} alt={card.name} /> : <CenterArt card={card} />}
-              {card.copies > 1 && <span className="build-copies">×{card.copies}</span>}
+              <span className="build-copies">{left}</span>
             </button>
           )
         })}

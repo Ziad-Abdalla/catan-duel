@@ -2,7 +2,19 @@
 // nothing to license. One lazy AudioContext (created on first sound, after a user
 // gesture, per browser autoplay rules). A persisted mute toggle gates everything.
 
-export type Sfx = 'rotate' | 'dice' | 'token' | 'place' | 'flip' | 'ui' | 'sweep'
+export type Sfx =
+  | 'rotate' | 'dice' | 'token' | 'place' | 'flip' | 'ui' | 'sweep'
+  | 'build' // a solid wooden construction thunk (settlement/city/road)
+  | 'coin' // a bright metallic clink when a cost is paid
+  | 'vp' // an ascending bell when victory points are gained
+  | 'turn' // a soft sweep marking the turn passing
+  | 'deny' // a short low buzz for an illegal / unavailable action
+  | 'water' // a soft wave swoosh — ships, harbours
+  | 'menace' // a low ominous swell — pirates, brigands, raids
+  | 'hero' // a bright heroic flourish — heroes & units
+  | 'harvest' // a warm rustle + chime — plenty, grain, mills
+  | 'festival' // a bright jingle — celebrations, halls, abbeys
+  | 'magic' // a shimmering arpeggio — inventions, universities
 
 const STORE_KEY = 'catan-duel.muted'
 let muted = readMuted()
@@ -142,6 +154,59 @@ export function playSfx(kind: Sfx): void {
       tone(ac, t, { type: 'sawtooth', freq: 180, to: 720, dur: 0.34, gain: 0.12 })
       noise(ac, t, { dur: 0.3, gain: 0.07, freq: 1800, q: 0.5, type: 'bandpass' })
       tone(ac, t + 0.04, { type: 'sine', freq: 520, to: 880, dur: 0.26, gain: 0.07 })
+      break
+    case 'build': // a solid wooden double-thunk — a structure going up
+      tone(ac, t, { type: 'sine', freq: 150, to: 70, dur: 0.16, gain: 0.3 })
+      noise(ac, t, { dur: 0.07, gain: 0.12, freq: 700, q: 0.6, type: 'lowpass' })
+      tone(ac, t + 0.11, { type: 'sine', freq: 120, to: 60, dur: 0.14, gain: 0.22 })
+      noise(ac, t + 0.11, { dur: 0.06, gain: 0.09, freq: 600, q: 0.6, type: 'lowpass' })
+      break
+    case 'coin': // bright metallic clink as a cost is paid
+      tone(ac, t, { type: 'triangle', freq: 1180, dur: 0.09, gain: 0.1 })
+      tone(ac, t + 0.05, { type: 'triangle', freq: 1560, dur: 0.1, gain: 0.08 })
+      noise(ac, t, { dur: 0.05, gain: 0.04, freq: 5200, q: 1, type: 'highpass' })
+      break
+    case 'vp': // an ascending bell — victory points gained
+      tone(ac, t, { type: 'sine', freq: 660, dur: 0.16, gain: 0.12 })
+      tone(ac, t + 0.08, { type: 'sine', freq: 880, dur: 0.18, gain: 0.12 })
+      tone(ac, t + 0.16, { type: 'sine', freq: 1320, dur: 0.26, gain: 0.12 })
+      break
+    case 'turn': // a soft sweep marking the turn passing
+      tone(ac, t, { type: 'sine', freq: 320, to: 480, dur: 0.3, gain: 0.1 })
+      noise(ac, t, { dur: 0.28, gain: 0.04, freq: 900, q: 0.4, type: 'bandpass' })
+      break
+    case 'deny': // a short low buzz — unavailable / illegal
+      tone(ac, t, { type: 'sawtooth', freq: 150, to: 110, dur: 0.16, gain: 0.12 })
+      break
+    case 'water': // a soft wave swoosh — ships, harbours
+      noise(ac, t, { dur: 0.45, gain: 0.12, freq: 700, q: 0.4, type: 'lowpass' })
+      noise(ac, t + 0.12, { dur: 0.4, gain: 0.08, freq: 1100, q: 0.4, type: 'bandpass', pan: 0.3 })
+      tone(ac, t, { type: 'sine', freq: 90, to: 60, dur: 0.4, gain: 0.05 })
+      break
+    case 'menace': // a low ominous swell — pirates, brigands, raids
+      tone(ac, t, { type: 'sawtooth', freq: 70, to: 55, dur: 0.5, gain: 0.18 })
+      tone(ac, t, { type: 'sawtooth', freq: 73, to: 58, dur: 0.5, gain: 0.14 }) // detuned beat
+      noise(ac, t + 0.1, { dur: 0.35, gain: 0.07, freq: 300, q: 0.5, type: 'lowpass' })
+      break
+    case 'hero': // a bright heroic flourish — heroes & units
+      tone(ac, t, { type: 'triangle', freq: 392, dur: 0.12, gain: 0.13 })
+      tone(ac, t + 0.09, { type: 'triangle', freq: 523, dur: 0.12, gain: 0.13 })
+      tone(ac, t + 0.18, { type: 'triangle', freq: 784, dur: 0.3, gain: 0.14 })
+      break
+    case 'harvest': // a warm rustle + soft chime — plenty, grain, mills
+      noise(ac, t, { dur: 0.3, gain: 0.08, freq: 2200, q: 0.4, type: 'bandpass' })
+      tone(ac, t + 0.05, { type: 'sine', freq: 560, to: 680, dur: 0.22, gain: 0.1 })
+      break
+    case 'festival': // a bright little jingle — celebrations, halls, abbeys
+      tone(ac, t, { type: 'triangle', freq: 660, dur: 0.1, gain: 0.1 })
+      tone(ac, t + 0.07, { type: 'triangle', freq: 880, dur: 0.1, gain: 0.1 })
+      tone(ac, t + 0.14, { type: 'triangle', freq: 990, dur: 0.1, gain: 0.1 })
+      tone(ac, t + 0.21, { type: 'triangle', freq: 1320, dur: 0.22, gain: 0.11 })
+      break
+    case 'magic': // a shimmering arpeggio — inventions, universities, progress
+      for (let i = 0; i < 4; i++) {
+        tone(ac, t + i * 0.05, { type: 'sine', freq: 880 * Math.pow(1.26, i), dur: 0.3, gain: 0.06 })
+      }
       break
   }
 }

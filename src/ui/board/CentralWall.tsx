@@ -82,7 +82,7 @@ export function CentralWall() {
           <button className="wbtn wbtn-undo" disabled={!canUndo} title="Undo the last change (trust-based fat-finger recovery)" onClick={() => { undo(); playSfx('ui') }}>
             ↶ Undo
           </button>
-          <button className="wbtn wbtn-end" disabled={over} onClick={() => dispatch({ type: 'endTurn' })}>
+          <button className="wbtn wbtn-end" disabled={over} onClick={() => { dispatch({ type: 'endTurn' }); playSfx('turn') }}>
             End turn
           </button>
         </div>

@@ -227,6 +227,23 @@ function spendCost(p: PlayerState, cost?: { resource: ResourceType; count: numbe
   for (const c of cost ?? []) distributeResource(p, c.resource, -c.count)
 }
 
+/** Whether a card is a limited face-up expansion (lives in the central supply counter). */
+function isFaceUpExpansion(cardId: string): boolean {
+  return getCard(cardId)?.tag === 'Face-up Expansion'
+}
+
+/** Spend one copy of a face-up expansion from the supply (no-op for anything untracked). */
+function takeFromSupply(supply: Record<string, number>, cardId: string): Record<string, number> {
+  if (!isFaceUpExpansion(cardId) || !(cardId in supply)) return supply
+  return { ...supply, [cardId]: Math.max(0, supply[cardId] - 1) }
+}
+
+/** Return one copy of a face-up expansion to the supply when it leaves play. */
+function returnToSupply(supply: Record<string, number>, cardId: string): Record<string, number> {
+  if (!isFaceUpExpansion(cardId) || !(cardId in supply)) return supply
+  return { ...supply, [cardId]: supply[cardId] + 1 }
+}
+
 /** Where a card goes when it leaves play: face-up expansions + structural pieces return
  *  to the supply (no discard entry); everything else (actions/buildings/units) is discarded. */
 function discardHome(cardId: string): 'discard' | 'supply' {
@@ -534,9 +551,10 @@ function reduce(s: GameState, a: Action): GameState {
         p.placed.splice(a.placedIndex, 1)
       })
       const discard = home === 'discard' ? [...out.discard, cardId] : out.discard
+      const supply = returnToSupply(out.supply, cardId)
       const name = getCard(cardId)?.name ?? cardId
       return logged(
-        finalize({ ...out, discard }),
+        finalize({ ...out, discard, supply }),
         a.player,
         home === 'discard' ? `Removed ${name} → discard` : `Removed ${name}`,
       )
@@ -570,18 +588,17 @@ function reduce(s: GameState, a: Action): GameState {
       const card = getCard(a.cardId)
       const cost = card?.cost ?? []
       const name = card?.name ?? a.cardId
-      return logged(
-        finalize(
-          withPlayer(s, a.player, (p) => {
-            const i = p.hand.indexOf(a.cardId)
-            if (i >= 0) p.hand.splice(i, 1)
-            if (pay) spendCost(p, cost)
-            p.placed.push({ cardId: a.cardId, slot: a.slot })
-          }),
-        ),
-        a.player,
-        `Played ${name}${pay && cost.length ? ` (${fmtCost(cost)})` : ''}`,
+      const out = finalize(
+        withPlayer(s, a.player, (p) => {
+          const i = p.hand.indexOf(a.cardId)
+          if (i >= 0) p.hand.splice(i, 1)
+          if (pay) spendCost(p, cost)
+          p.placed.push({ cardId: a.cardId, slot: a.slot })
+        }),
       )
+      // Face-up Expansions come from the limited central supply (never a pile/hand) → spend it.
+      const supply = takeFromSupply(out.supply, a.cardId)
+      return logged({ ...out, supply }, a.player, `Played ${name}${pay && cost.length ? ` (${fmtCost(cost)})` : ''}`)
     }
 
     case 'returnToHand': {
@@ -631,9 +648,10 @@ function reduce(s: GameState, a: Action): GameState {
       if (!cardId) return s
       const home = discardHome(cardId)
       const discard = home === 'discard' ? [...out.discard, cardId] : out.discard
+      const supply = a.from === 'placed' ? returnToSupply(out.supply, cardId) : out.supply
       const name = getCard(cardId)?.name ?? cardId
       return logged(
-        finalize({ ...out, discard }),
+        finalize({ ...out, discard, supply }),
         a.player,
         home === 'discard' ? `Discarded ${name}` : `Returned ${name} to supply`,
       )

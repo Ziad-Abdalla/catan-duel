@@ -6,6 +6,7 @@ import { RegionTile } from './RegionTile'
 import { useGame } from '../../store/gameStore'
 import { useUI } from '../../store/uiStore'
 import { playSfx } from '../../audio/sfx'
+import { cardSfx } from '../../audio/cardSound'
 
 /**
  * One player's principality, laid out like the real table. The spine alternates
@@ -91,7 +92,7 @@ export function PrincipalityBoard({
             title={s.card!.category === 'settlement' ? 'Upgrade to city' : 'City'}
             onClick={() => dispatch({ type: 'upgradeCity', player, seat: j, pay: payCosts })}
             onDragOver={canCity ? (e) => e.preventDefault() : undefined}
-            onDrop={canCity ? (e) => { e.preventDefault(); dispatch({ type: 'upgradeCity', player, seat: j, pay: payCosts }); playSfx('place'); clear() } : undefined}
+            onDrop={canCity ? (e) => { e.preventDefault(); dispatch({ type: 'upgradeCity', player, seat: j, pay: payCosts }); playSfx('build'); clear() } : undefined}
           >
             <PieceArt card={s.card!} />
           </button>
@@ -120,7 +121,7 @@ export function PrincipalityBoard({
               className={`pb-roadslot${canRoad ? ' droppable' : ''}`}
               style={{ gridRow: 2, gridColumn: roadSlotCol(i) }}
               onDragOver={canRoad ? (e) => e.preventDefault() : undefined}
-              onDrop={canRoad ? (e) => { e.preventDefault(); dispatch({ type: 'buildPiece', player, piece: 'road', slot: i, pay: payCosts }); playSfx('place'); clear() } : undefined}
+              onDrop={canRoad ? (e) => { e.preventDefault(); dispatch({ type: 'buildPiece', player, piece: 'road', slot: i, pay: payCosts }); playSfx('build'); clear() } : undefined}
             />
           )
         })}
@@ -131,7 +132,7 @@ export function PrincipalityBoard({
           className={`pb-extend left${dragBuild === 'settlement' ? ' armed' : ''}`}
           title="Build a settlement here"
           onDragOver={dragBuild === 'settlement' ? (e) => e.preventDefault() : undefined}
-          onDrop={dragBuild === 'settlement' ? (e) => { e.preventDefault(); dispatch({ type: 'buildPiece', player, piece: 'settlement', end: 'left', pay: payCosts }); playSfx('place'); clear() } : undefined}
+          onDrop={dragBuild === 'settlement' ? (e) => { e.preventDefault(); dispatch({ type: 'buildPiece', player, piece: 'settlement', end: 'left', pay: payCosts }); playSfx('build'); clear() } : undefined}
         >＋</div>
       )}
       {extendRight && (
@@ -139,7 +140,7 @@ export function PrincipalityBoard({
           className={`pb-extend right${dragBuild === 'settlement' ? ' armed' : ''}`}
           title="Build a settlement here"
           onDragOver={dragBuild === 'settlement' ? (e) => e.preventDefault() : undefined}
-          onDrop={dragBuild === 'settlement' ? (e) => { e.preventDefault(); dispatch({ type: 'buildPiece', player, piece: 'settlement', end: 'right', pay: payCosts }); playSfx('place'); clear() } : undefined}
+          onDrop={dragBuild === 'settlement' ? (e) => { e.preventDefault(); dispatch({ type: 'buildPiece', player, piece: 'settlement', end: 'right', pay: payCosts }); playSfx('build'); clear() } : undefined}
         >＋</div>
       )}
 
@@ -187,14 +188,14 @@ function Site({
     // Honour the global auto-pay toggle — on by default so face-up buildings actually
     // spend their cost; off lets you place freely in the manual sandbox.
     dispatch({ type: 'playCard', player, cardId, slot, pay: payCosts })
-    playSfx('sweep') // a single dramatic deploy whoosh (one sound per action)
+    playSfx(cardSfx(cardId)) // thematic cue for what was played (ship→water, hero→flourish…)
     clear()
   }
   // Dropping a piece you dragged off the board (dragRemove) into an empty site MOVES it.
   const moveHere = () => {
     if (!dragRemove || occupied) return
     dispatch({ type: 'movePlaced', player: dragRemove.player, placedIndex: dragRemove.placedIndex, slot })
-    playSfx('place')
+    playSfx('build')
     setDragRemove(null)
   }
   const armed = interactive && !occupied && (!!dragCardId || !!selectedCardId || !!dragRemove)

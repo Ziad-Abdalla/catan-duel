@@ -35,10 +35,12 @@ const artModules = import.meta.glob('../assets/cards/*.webp', { eager: true, imp
 const regionArt = import.meta.glob('../assets/regions/*.webp', { eager: true, import: 'default' }) as Record<string, string>
 const buildingArt = import.meta.glob('../assets/buildings/*.webp', { eager: true, import: 'default' }) as Record<string, string>
 
-/** base-set foundation cards → their photo in assets/buildings. */
+/** base-set foundation cards → their photo in assets/buildings. NOTE: `base-city` is
+ *  intentionally omitted — its only scan is low-res, so the city falls back to the clean
+ *  hand-drawn CenterArt SVG (which matches the painted settlement/road art). Drop an
+ *  official city scan here as `city` to switch it back to a photo. */
 const FOUNDATION_ART: Record<string, string> = {
   'base-settlement': 'settlement',
-  'base-city': 'city',
   'base-road': 'road',
 }
 

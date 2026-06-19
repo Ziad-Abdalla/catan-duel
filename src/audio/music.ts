@@ -1,38 +1,101 @@
-// Pluggable victory music. The app ships NO audio file — drop your own track at
-// `public/victory.mp3` (anything you hold the rights to) and the celebration screen
-// will loop it. If the file is absent or autoplay is blocked, this stays silent and
-// never throws. Honors the global mute toggle.
+// Victory music for the celebration screen.
+//
+// Two sources, in order: (1) an owner-supplied track at `public/victory.mp3` if you
+// drop one in; (2) otherwise an ORIGINAL, royalty-free fanfare synthesized live in
+// the browser — so the celebration always has music with no bundled audio file and
+// no copyright concern. Honors the global mute toggle; never throws.
 import { isMuted } from './sfx'
 
-let audio: HTMLAudioElement | null = null
+let ctx: AudioContext | null = null
+let mp3: HTMLAudioElement | null = null
+let loop: ReturnType<typeof setInterval> | null = null
 
-function el(): HTMLAudioElement | null {
-  if (typeof Audio === 'undefined') return null
-  if (!audio) {
-    audio = new Audio(`${import.meta.env.BASE_URL}victory.mp3`)
-    audio.loop = true
-    audio.volume = 0.7
-  }
-  return audio
+function ac(): AudioContext | null {
+  if (typeof window === 'undefined') return null
+  const AC = window.AudioContext || (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
+  if (!AC) return null
+  if (!ctx) ctx = new AC()
+  if (ctx.state === 'suspended') void ctx.resume()
+  return ctx
 }
 
-/** Loop the owner-supplied victory track (no-op if muted / missing / blocked). */
+/** One warm plucked note. */
+function note(a: AudioContext, freq: number, start: number, dur: number, gain = 0.12, type: OscillatorType = 'triangle') {
+  const o = a.createOscillator()
+  const g = a.createGain()
+  o.type = type
+  o.frequency.value = freq
+  g.gain.setValueAtTime(0.0001, start)
+  g.gain.exponentialRampToValueAtTime(gain, start + 0.02)
+  g.gain.exponentialRampToValueAtTime(0.0001, start + dur)
+  o.connect(g)
+  g.connect(a.destination)
+  o.start(start)
+  o.stop(start + dur + 0.05)
+}
+
+/** An original triumphant flourish: a rising C-major arpeggio resolving to a chord. */
+function fanfare() {
+  const a = ac()
+  if (!a || isMuted()) return
+  const t = a.currentTime + 0.04
+  const arp: [number, number][] = [
+    [523.25, 0.0], // C5
+    [659.25, 0.16], // E5
+    [783.99, 0.32], // G5
+    [1046.5, 0.5], // C6
+  ]
+  for (const [f, dt] of arp) note(a, f, t + dt, 0.5, 0.11)
+  // resolving major chord + a soft bass
+  note(a, 783.99, t + 0.86, 1.4, 0.09) // G5
+  note(a, 1046.5, t + 0.86, 1.4, 0.09) // C6
+  note(a, 659.25, t + 0.86, 1.4, 0.07) // E5
+  note(a, 130.81, t + 0.86, 1.6, 0.1, 'sine') // C3 bass
+}
+
+/** Loop the celebration music — owner mp3 if present, else the synth fanfare. */
 export function playVictoryMusic(): void {
   if (isMuted()) return
-  const a = el()
-  if (!a) return
-  try {
-    a.currentTime = 0
-    void a.play().catch(() => {}) // missing file or autoplay policy → silently ignore
-  } catch {
-    /* ignore */
+  stopVictoryMusic()
+  if (typeof Audio !== 'undefined') {
+    try {
+      if (!mp3) {
+        mp3 = new Audio(`${import.meta.env.BASE_URL}victory.mp3`)
+        mp3.loop = true
+        mp3.volume = 0.7
+      }
+      mp3.currentTime = 0
+      void mp3
+        .play()
+        .then(() => {
+          /* owner track is playing */
+        })
+        .catch(() => startSynth()) // no file / blocked → fall back to the synth fanfare
+      return
+    } catch {
+      /* fall through to synth */
+    }
   }
+  startSynth()
 }
 
-/** Stop the victory track (safe to call even if it never started). */
+function startSynth() {
+  fanfare()
+  // replay every 7s with a gap between, so it celebrates without droning
+  loop = setInterval(() => {
+    if (isMuted()) return
+    fanfare()
+  }, 7000)
+}
+
+/** Stop whatever victory music is playing (safe to call anytime). */
 export function stopVictoryMusic(): void {
+  if (loop) {
+    clearInterval(loop)
+    loop = null
+  }
   try {
-    audio?.pause()
+    mp3?.pause()
   } catch {
     /* ignore */
   }

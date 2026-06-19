@@ -74,7 +74,14 @@ export function RegionTile({
   // a slot flipping between empty/filled (e.g. when building a settlement splices
   // a new slot in) changes the hook count and crashes React (rules of hooks).
   const dispatch = useGame((s) => s.dispatch)
-  const produces = useGame((s) => s.state.lastRoll?.production) === region.number
+  // Anti-spoiling: a region only glows AFTER the dice animation has settled — we
+  // gate on the UI's `revealedRoll` (set when the tumble ends), not the raw
+  // `lastRoll` (set the instant the roll is dispatched), so the result of a roll
+  // is never telegraphed by a glowing tile mid-tumble.
+  const rolledNumber = useGame((s) => s.state.lastRoll?.production)
+  const turn = useGame((s) => s.state.turn)
+  const revealedRoll = useUI((s) => s.revealedRoll)
+  const produces = !!revealedRoll && revealedRoll.turn === turn && rolledNumber === region.number
   const dragBuild = useUI((s) => s.dragBuild)
   const clearUI = useUI((s) => s.clear)
   const [over, setOver] = useState(false)

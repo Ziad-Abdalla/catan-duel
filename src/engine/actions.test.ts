@@ -120,11 +120,17 @@ describe('victory points & tokens', () => {
     expect(s.players.p0.victoryPoints).toBe(3)
   })
 
-  it('reaching 7 VP ends the game and records the winner', () => {
-    const s = applyAction(fresh(), { type: 'adjustVP', player: 'p1', delta: 5 })
+  it('reaching 7 VP marks eligibility (no forced freeze); a vote concludes the game', () => {
+    let s = applyAction(fresh(), { type: 'adjustVP', player: 'p1', delta: 5 })
     expect(s.players.p1.victoryPoints).toBe(7)
-    expect(s.phase).toBe('gameover')
+    expect(s.eligible).toBe('p1')
+    expect(s.winner).toBeUndefined() // not auto-won
+    expect(s.phase).not.toBe('gameover') // not frozen
+    // vote-to-end: p1 claims, p0 agrees → game concludes
+    s = applyAction(s, { type: 'claimVictory', player: 'p1' })
+    s = applyAction(s, { type: 'agreeVictory', player: 'p0' })
     expect(s.winner).toBe('p1')
+    expect(s.phase).toBe('gameover')
   })
 
   it('setToken assigns an advantage to one player and clears the other', () => {

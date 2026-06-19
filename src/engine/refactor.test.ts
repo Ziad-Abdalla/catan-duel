@@ -118,13 +118,13 @@ describe('configurable win threshold', () => {
   it('all three themes default to 13 VP (Duel of the Princes)', () => {
     expect(newGame({ seed: 1, enabledSets: ['gold', 'turmoil', 'progress'] }).winThreshold).toBe(13)
   })
-  it('setWinThreshold changes the target and finalize respects it', () => {
+  it('setWinThreshold changes the target and finalize marks eligibility', () => {
     let s = fresh()
     s = applyAction(s, { type: 'setWinThreshold', value: 3 })
     expect(s.winThreshold).toBe(3)
     s = applyAction(s, { type: 'adjustVP', player: 'p0', delta: 1 }) // start 2 VP + 1 = 3
-    expect(s.winner).toBe('p0')
-    expect(s.phase).toBe('gameover')
+    expect(s.eligible).toBe('p0')
+    expect(s.winner).toBeUndefined() // eligibility is non-blocking; the vote concludes the game
   })
 })
 

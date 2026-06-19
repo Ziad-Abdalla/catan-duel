@@ -52,6 +52,9 @@ function gen(s: GameState, rng: Rng): Action {
     () => ({ type: 'markUsed', player: p, key: `k${ri(4)}` }),
     () => ({ type: 'logNote', player: p, text: 'note' }),
     () => ({ type: 'setWinThreshold', value: 1 + ri(20) }),
+    () => ({ type: 'claimVictory', player: p }),
+    () => ({ type: 'agreeVictory', player: p }),
+    () => ({ type: 'declineVictory' }),
     () => ({ type: 'nextPhase' }),
     () => ({ type: 'endTurn' }),
   ]
@@ -75,8 +78,10 @@ function checkInvariants(prev: GameState, next: GameState) {
     for (const pc of next.players[id].placed) expect(getCard(pc.cardId)).toBeTruthy()
   }
   for (const cid of next.discard) expect(getCard(cid)).toBeTruthy()
-  // a declared winner must actually meet the (current) threshold
-  if (next.winner) expect(computeVP(next.players[next.winner])).toBeGreaterThanOrEqual(next.winThreshold)
+  // eligibility is derived fresh: whoever is flagged eligible must truly meet the
+  // (current) threshold. (The winner itself is vote-driven and may be agreed at any
+  // score in the manual sandbox, so it is not threshold-bound.)
+  if (next.eligible) expect(computeVP(next.players[next.eligible])).toBeGreaterThanOrEqual(next.winThreshold)
 }
 
 describe('engine fuzz — every action combination keeps the state valid', () => {

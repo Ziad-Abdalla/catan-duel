@@ -57,23 +57,23 @@ describe('store snapshot sync', () => {
     peer.connect()
 
     const base = useGame.getState().state
-    // build a newer state (seq advances) where p0 reaches a win
+    // build a newer state (seq advances) where p0 reaches the threshold
     let advanced = base
     advanced = applyAction(advanced, { type: 'adjustVP', player: 'p0', delta: 5 })
     expect(advanced.seq).toBeGreaterThan(base.seq)
 
     peer.send({ t: 'snapshot', from: peer.id, seq: advanced.seq, state: advanced })
     expect(useGame.getState().state.players.p0.victoryPoints).toBe(7)
-    expect(useGame.getState().state.winner).toBe('p0')
+    expect(useGame.getState().state.eligible).toBe('p0')
 
-    // an older snapshot (the base) must NOT clobber the newer adopted one
+    // an older snapshot (the base) must NOT clobber the newer merged one
     peer.send({ t: 'snapshot', from: peer.id, seq: base.seq, state: base })
-    expect(useGame.getState().state.winner).toBe('p0')
+    expect(useGame.getState().state.eligible).toBe('p0')
 
     // a forced snapshot (new-game reset, lower seq) IS adopted
     const reset = applyAction(base, { type: 'adjustVP', player: 'p1', delta: 0 }) // distinct object
     peer.send({ t: 'snapshot', from: peer.id, seq: 0, state: { ...reset, seq: 0 }, force: true })
-    expect(useGame.getState().state.winner).toBeUndefined()
+    expect(useGame.getState().state.eligible).toBeUndefined()
 
     peer.disconnect()
   })

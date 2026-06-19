@@ -60,6 +60,10 @@ export type Action =
   | { type: 'markUsed'; player: PlayerId; key: string } // once-per-turn marker
   | { type: 'logNote'; player: PlayerId; text: string } // free-form table note
   | { type: 'setWinThreshold'; value: number } // configurable VP target (7/12/13/15 or custom)
+  // vote-to-end (no forced freeze): a player claims, the opponent agrees
+  | { type: 'claimVictory'; player: PlayerId }
+  | { type: 'agreeVictory'; player: PlayerId } // the OTHER player agreeing concludes the game
+  | { type: 'declineVictory' }
   // flow
   | { type: 'nextPhase' }
   | { type: 'endTurn' }
@@ -211,27 +215,27 @@ function logged(s: GameState, player: PlayerId, text: string): GameState {
 }
 
 /**
- * Recompute both players' VP from the board and derive the winner FRESH each time
- * (not sticky): the leader at/above the threshold wins; if a later correction
- * (undo, removing a building, raising the threshold) drops everyone back below it,
- * the winner clears and the frozen game-over phase is released. Keeps the manual
- * sandbox honest — nothing stays "won" once the board no longer says so.
+ * Recompute both players' VP from the board and derive ELIGIBILITY fresh each time
+ * (the leader at/above the threshold). Eligibility is a non-blocking signal — it
+ * never freezes the game (that's the goal: no forced game-over). The actual winner
+ * is set only through the vote-to-end flow (claimVictory → opponent agreeVictory).
+ * Deriving fresh means a later correction (undo, removing a building, raising the
+ * threshold) clears stale eligibility automatically.
  */
 export function finalize(s: GameState): GameState {
   const players = { ...s.players }
   const threshold = s.winThreshold ?? WIN_VP
-  let winner: PlayerId | undefined
+  let eligible: PlayerId | undefined
   let bestVp = -Infinity
   for (const id of ['p0', 'p1'] as PlayerId[]) {
     const vp = computeVP(players[id])
     if (vp !== players[id].victoryPoints) players[id] = { ...players[id], victoryPoints: vp }
     if (vp >= threshold && vp > bestVp) {
-      winner = id
+      eligible = id
       bestVp = vp
     }
   }
-  const phase: Phase = winner ? 'gameover' : s.phase === 'gameover' ? 'action' : s.phase
-  return { ...s, players, winner, phase }
+  return { ...s, players, eligible }
 }
 
 /** Parse a region card id like `region-gold-3` → { resource, number }. */
@@ -675,6 +679,24 @@ function reduce(s: GameState, a: Action): GameState {
 
     case 'setWinThreshold':
       return finalize({ ...s, winThreshold: a.value })
+
+    case 'claimVictory':
+      return logged({ ...s, victoryClaim: a.player }, a.player, 'Claims victory — awaiting agreement')
+
+    case 'agreeVictory': {
+      // Only the OPPONENT of the claimer can conclude the game.
+      if (!s.victoryClaim || s.victoryClaim === a.player) return s
+      const winner = s.victoryClaim
+      return logged(
+        { ...s, winner, phase: 'gameover', victoryClaim: undefined },
+        a.player,
+        `Agrees — ${s.players[winner].name} wins`,
+      )
+    }
+
+    case 'declineVictory':
+      if (!s.victoryClaim) return s
+      return { ...s, victoryClaim: undefined }
 
     case 'nextPhase': {
       const i = PHASE_ORDER.indexOf(s.phase)

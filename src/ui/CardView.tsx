@@ -15,7 +15,7 @@ const RES_LABEL: Record<ResourceType, string> = {
 /** Categories that you BUILD/PLAY for a cost — label their cost row "Cost". */
 const COSTED = new Set(['settlement', 'city', 'road', 'building', 'hero-or-unit'])
 
-function CostChips({ card }: { card: Card }) {
+function CostChips({ card, affordable }: { card: Card; affordable?: boolean | null }) {
   const cost = card.cost
   if (!cost || cost.length === 0) {
     // make "free to play" explicit for buildable pieces so the absence isn't ambiguous
@@ -36,6 +36,12 @@ function CostChips({ card }: { card: Card }) {
             {RES_LABEL[c.resource][0]}
           </span>
         )),
+      )}
+      {/* "Requirements Met" flag — flashes the instant your stored resources cover the cost. */}
+      {affordable != null && (
+        <span className={`cv-afford${affordable ? ' ok' : ''}`} aria-live="polite">
+          {affordable ? '✓ Requirements met' : 'Short on resources'}
+        </span>
       )}
     </div>
   )
@@ -84,7 +90,15 @@ function Requirement({ card, met }: { card: Card; met?: boolean | null }) {
   )
 }
 
-export function CardView({ card, requirementMet }: { card: Card; requirementMet?: boolean | null }) {
+export function CardView({
+  card,
+  requirementMet,
+  costMet,
+}: {
+  card: Card
+  requirementMet?: boolean | null
+  costMet?: boolean | null
+}) {
   const art = cardArt(card.id)
   const isCenter = (CENTER_CATEGORIES as readonly string[]).includes(card.category)
   return (
@@ -100,7 +114,7 @@ export function CardView({ card, requirementMet }: { card: Card; requirementMet?
         {card.name}
         {card.copies > 1 && <span className="cv-copies">×{card.copies}</span>}
       </h3>
-      <CostChips card={card} />
+      <CostChips card={card} affordable={costMet} />
       <Requirement card={card} met={requirementMet} />
       <ValueBadges card={card} />
       {card.rules_text && <p className="cv-rules">{card.rules_text}</p>}

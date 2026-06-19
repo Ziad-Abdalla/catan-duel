@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { getCard } from '../../data/cards'
 import { CardView } from '../CardView'
 import { requirementMet } from '../../engine/requirements'
+import { resourceTotalOf } from '../../engine/actions'
 import { useGame } from '../../store/gameStore'
 import { useUI } from '../../store/uiStore'
 import { playSfx } from '../../audio/sfx'
@@ -51,6 +52,10 @@ export function CardZoom() {
   if (!card) return null
   const met = requirementMet(card, state, zoom.player)
   const hasCost = !!card.cost && card.cost.length > 0
+  // Affordability flag: does the owner currently store enough of each cost resource?
+  const costMet = hasCost
+    ? card.cost!.every((c) => resourceTotalOf(state.players[zoom.player], c.resource) >= c.count)
+    : null
 
   const play = (pay: boolean) => {
     const slot = firstOpenSlot(placed ?? [])
@@ -95,7 +100,7 @@ export function CardZoom() {
       <div className="cardzoom" onClick={(e) => e.stopPropagation()}>
         <button className="cardzoom-x" onClick={closeZoom} aria-label="Close">✕</button>
         <div className="cardzoom-card">
-          <CardView card={card} requirementMet={met} />
+          <CardView card={card} requirementMet={met} costMet={costMet} />
         </div>
         <div className="cardzoom-actions">
           {zoom.from === 'build' ? (

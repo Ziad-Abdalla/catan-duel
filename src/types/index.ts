@@ -136,6 +136,11 @@ export interface GameState {
   enabledSets: SetId[]
   /** VP needed to win: 7 intro · 12 single theme · 13 Duel of the Princes · adjustable. */
   winThreshold: number
+  /** Who currently meets the threshold (non-blocking signal — no forced freeze). */
+  eligible?: PlayerId
+  /** A pending "I claim victory" awaiting the opponent's agreement (vote-to-end). */
+  victoryClaim?: PlayerId
+  /** The agreed final winner — set only when the opponent agrees to the claim. */
   winner?: PlayerId
 }
 

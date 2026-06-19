@@ -12,6 +12,7 @@ import { DiceLayer } from './DiceLayer'
 import { CardZoom } from './CardZoom'
 import { ResolutionPanel } from './ResolutionPanel'
 import { AuditLog } from './AuditLog'
+import { VictoryFlow } from './VictoryFlow'
 import { ConnectionBar } from '../net/ConnectionBar'
 import { NetToasts } from '../net/NetToasts'
 import './board.css'
@@ -65,19 +66,10 @@ export function TableBoard({ mode, setMode }: { mode: AppMode; setMode: (m: AppM
       <CardZoom />
       <ResolutionPanel />
       <AuditLog />
+      <VictoryFlow />
       <TurnBanner />
       {online && <NetToasts />}
       {online && <ConnectionBar />}
-
-      {state.winner && (
-        <div className="gameover" role="alertdialog" aria-label="Game over">
-          <div className="gameover-card">
-            <h2>🏆 {state.players[state.winner].name} wins!</h2>
-            <p>{state.players[state.winner].name} reached {state.players[state.winner].victoryPoints} victory points.</p>
-            <button className="btn btn-primary" onClick={() => useGame.getState().newHotseat()}>Play again</button>
-          </div>
-        </div>
-      )}
     </>
   )
 }

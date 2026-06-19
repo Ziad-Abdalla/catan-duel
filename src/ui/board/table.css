@@ -5,27 +5,38 @@
  * always in view. Everything sizes off the viewport (vh/vw/clamp) → fully responsive.
  */
 :root {
-  --wall-h: clamp(102px, 13.5vh, 176px);
-  /* region tile edge — the master unit the whole board scales from */
-  /* width guard (min …vw) keeps an expanded 5-column principality from
-     overflowing on narrow/portrait screens; on landscape the vh term wins */
-  --reg: clamp(80px, min(13.4vh, 16vw), 204px);
+  --wall-h: clamp(80px, 10vh, 132px);
+  /* region tile edge — the master unit the whole board scales from. Sized so BOTH
+     principalities + the wall fit in one viewport (no more scrolling across the table);
+     the width guard keeps a 5-column principality from overflowing narrow screens. */
+  --reg: clamp(46px, min(7vh, 10.5vw), 120px);
   --seat: calc(var(--reg) * 0.86);
-  --site-empty: clamp(22px, 3.4vh, 46px); /* slim drop strip when no building yet */
+  --site-empty: clamp(18px, 2.6vh, 40px); /* slim drop strip when no building yet */
   --road-w: calc(var(--reg) * 0.52);
-  --gap: clamp(8px, 1.4vh, 22px);
-  --pane-h: calc(100dvh - var(--wall-h));
+  --gap: clamp(5px, 1vh, 16px);
+  /* each principality takes half of what's left after the wall → the table fits the screen */
+  --pane-h: calc((100dvh - var(--wall-h)) / 2);
 }
 
 .felt-scroll {
   position: fixed;
   inset: 0;
-  overflow-y: scroll;
+  overflow-y: auto; /* the table fits the screen; a scrollbar only appears on very short screens */
   overflow-x: hidden;
-  /* proximity (not mandatory) — gently rests near a half but never fights or
-     yanks the user's own scrolling up/down */
   scroll-snap-type: y proximity;
 }
+/* slim, unobtrusive scrollbars everywhere (no chunky default "scroll wheels") */
+.felt-scroll, .audit-list, .sb-cards, .cardzoom, .rl-body, .deckwall, .build-row {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(243, 215, 154, 0.35) transparent;
+}
+.felt-scroll::-webkit-scrollbar, .audit-list::-webkit-scrollbar, .sb-cards::-webkit-scrollbar,
+.cardzoom::-webkit-scrollbar, .rl-body::-webkit-scrollbar, .deckwall::-webkit-scrollbar,
+.build-row::-webkit-scrollbar { width: 7px; height: 7px; }
+.felt-scroll::-webkit-scrollbar-thumb, .audit-list::-webkit-scrollbar-thumb, .sb-cards::-webkit-scrollbar-thumb,
+.cardzoom::-webkit-scrollbar-thumb, .rl-body::-webkit-scrollbar-thumb, .deckwall::-webkit-scrollbar-thumb,
+.build-row::-webkit-scrollbar-thumb { background: rgba(243, 215, 154, 0.28); border-radius: 99px; }
+.felt-scroll::-webkit-scrollbar-track, .deckwall::-webkit-scrollbar-track, .build-row::-webkit-scrollbar-track { background: transparent; }
 /* the cool, dim room the felt table sits in — fixed, so it doesn't pan */
 .felt-bg {
   position: fixed;
@@ -83,22 +94,25 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: clamp(6px, 1.4vh, 20px) clamp(10px, 2vw, 40px);
+  padding: clamp(2px, 0.5vh, 8px) clamp(10px, 2vw, 40px);
 }
-.ppane-opp { scroll-snap-align: start; padding-top: calc(clamp(6px, 1.4vh, 20px) + 34px); }
+/* let each half hug its content so the two principalities + wall fit one screen */
+.ppane { min-height: 0; }
+.ppane-opp { padding-bottom: 0; }
+.ppane-opp { scroll-snap-align: start; padding-top: calc(clamp(2px, 0.5vh, 8px) + 30px); }
 .ppane-you { scroll-snap-align: end; }
 
 /* the felt mat each player's territory sits on */
 .pmat {
   position: relative;
   width: min(100%, 1320px);
-  min-height: calc(var(--pane-h) - clamp(14px, 3vh, 38px));
+  min-height: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: clamp(4px, 1vh, 14px);
-  padding: clamp(10px, 2.2vh, 30px) clamp(14px, 3vw, 54px);
+  gap: clamp(3px, 0.7vh, 10px);
+  padding: clamp(6px, 1.2vh, 16px) clamp(14px, 3vw, 54px);
   border-radius: clamp(20px, 3vw, 40px);
   background:
     radial-gradient(60% 50% at 50% 42%, rgba(170, 220, 235, 0.16), transparent 72%),
@@ -120,6 +134,15 @@
   pointer-events: none;
 }
 .pmat.flip { justify-content: center; }
+/* the player whose turn it is gets a clear gold ring so the turn reads at a glance */
+.pmat.active {
+  box-shadow:
+    inset 0 0 0 2px rgba(0, 0, 0, 0.45),
+    inset 0 0 0 4px rgba(243, 215, 154, 0.6),
+    inset 0 0 110px rgba(0, 0, 0, 0.42),
+    0 0 26px -2px rgba(243, 215, 154, 0.5),
+    0 20px 56px rgba(0, 0, 0, 0.62);
+}
 .pboard-wrap {
   position: relative;
   display: grid;
@@ -372,9 +395,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(8px, 1.4vw, 20px);
+  gap: clamp(6px, 1.1vw, 16px);
   width: min(100%, 1000px);
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 .you-bar .player-plate { flex: 1 1 320px; max-width: 600px; }
 
@@ -753,10 +776,10 @@
 /* ===== hand ===== */
 .hand-fan {
   display: flex; justify-content: center; align-items: flex-end;
-  gap: 0; height: clamp(88px, 12.5vh, 168px); padding-bottom: 2px;
+  gap: 0; height: clamp(56px, 7vh, 104px); padding-bottom: 2px;
 }
 .hand-card {
-  width: clamp(80px, 7.6vw, 138px); margin: 0 clamp(-16px, -0.8vw, -10px); cursor: pointer;
+  width: clamp(64px, 6.2vw, 112px); margin: 0 clamp(-16px, -0.8vw, -10px); cursor: pointer;
   transition: transform 0.16s var(--ease-spring), margin 0.16s ease;
   transform-origin: bottom center;
   filter: drop-shadow(0 7px 11px rgba(0, 0, 0, 0.45));
@@ -767,7 +790,7 @@
 .hand-empty { color: rgba(240, 226, 194, 0.6); font-style: italic; align-self: center; }
 .hand-toolbar {
   display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;
-  min-height: 30px; color: #f0e2c2; font-size: clamp(11px, 1.4vh, 14px);
+  min-height: 20px; color: #f0e2c2; font-size: clamp(10px, 1.2vh, 13px);
 }
 
 /* victory-point target control in the table HUD */

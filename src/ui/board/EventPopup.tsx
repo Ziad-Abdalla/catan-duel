@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { getCard } from '../../data/cards'
+import { getCard, cardArt } from '../../data/cards'
 import { useGame } from '../../store/gameStore'
 import { playSfx } from '../../audio/sfx'
 import './event.css'
@@ -21,11 +21,13 @@ export function EventPopup() {
 
   if (!id || !card) return null
   const dismiss = () => dispatch({ type: 'dismissEvent' })
+  const art = cardArt(id)
 
   return (
     <div className="evpop-scrim" role="alertdialog" aria-modal="true" aria-label={`Event: ${card.name}`} onClick={dismiss}>
       <div className="evpop" onClick={(e) => e.stopPropagation()}>
         <div className="evpop-banner">Event</div>
+        {art && <img className="evpop-art" src={art} alt={card.name} />}
         <h3 className="evpop-name">{card.name}</h3>
         {card.rules_text ? (
           <p className="evpop-rules">{card.rules_text}</p>

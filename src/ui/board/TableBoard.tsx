@@ -29,6 +29,9 @@ export function TableBoard({ mode, setMode }: { mode: AppMode; setMode: (m: AppM
   const mySeat = useGame((s) => s.mySeat)
   const bottom = online ? mySeat : state.activePlayer
   const top = bottom === 'p0' ? 'p1' : 'p0'
+  const over = state.phase === 'gameover'
+  const topActive = !over && top === state.activePlayer
+  const bottomActive = !over && bottom === state.activePlayer
 
   return (
     <>
@@ -38,7 +41,7 @@ export function TableBoard({ mode, setMode }: { mode: AppMode; setMode: (m: AppM
         </div>
 
         <section className="ppane ppane-opp" aria-label="Opponent's principality">
-          <div className="pmat flip">
+          <div className={`pmat flip${topActive ? ' active' : ''}`}>
             <PlayerPlate player={top} />
             <div className="pboard-wrap">
               <PrincipalityBoard player={top} flipped />
@@ -51,7 +54,7 @@ export function TableBoard({ mode, setMode }: { mode: AppMode; setMode: (m: AppM
         </div>
 
         <section className="ppane ppane-you" aria-label="Your principality">
-          <div className="pmat">
+          <div className={`pmat${bottomActive ? ' active' : ''}`}>
             <div className="pboard-wrap">
               <PrincipalityBoard player={bottom} interactive />
             </div>

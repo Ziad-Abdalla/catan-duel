@@ -34,6 +34,7 @@ export function TableHud({ mode, setMode }: { mode: AppMode; setMode: (m: AppMod
   const enabledSets = useGame((s) => s.state.enabledSets)
   const winThreshold = useGame((s) => s.state.winThreshold)
   const toggleAudit = useUI((s) => s.toggleAudit)
+  const setHelp = useUI((s) => s.setHelp)
   const muted = useMuted()
 
   // Toggling an era starts a fresh game with that card set folded into the decks.
@@ -78,6 +79,9 @@ export function TableHud({ mode, setMode }: { mode: AppMode; setMode: (m: AppMod
       </label>
       <button className="hud-btn" onClick={() => { toggleAudit(); playSfx('ui') }} title="Action history log">
         ☰ Log
+      </button>
+      <button className="hud-btn" onClick={() => { setHelp(true); playSfx('ui') }} title="How to play" aria-label="How to play">
+        ?
       </button>
       <button
         className="hud-btn hud-mute"

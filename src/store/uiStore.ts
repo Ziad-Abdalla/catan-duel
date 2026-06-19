@@ -57,6 +57,9 @@ interface UIState {
   /** The collapsible action-history ledger (audit log) sidebar. */
   auditOpen: boolean
   toggleAudit: () => void
+  /** The how-to-play overlay (auto-shows once on first run; reopen via the HUD ?). */
+  helpOpen: boolean
+  setHelp: (open: boolean) => void
   /** A player briefly flashed with a negative cue (e.g. just lost an advantage). */
   negativeCue: PlayerId | null
   flashNegative: (player: PlayerId) => void
@@ -91,6 +94,11 @@ export const useUI = create<UIState>((set) => ({
   dice: null,
   auditOpen: false,
   toggleAudit: () => set((s) => ({ auditOpen: !s.auditOpen })),
+  helpOpen: typeof localStorage !== 'undefined' && !localStorage.getItem('cd-help-seen'),
+  setHelp: (open) => {
+    if (!open && typeof localStorage !== 'undefined') localStorage.setItem('cd-help-seen', '1')
+    set({ helpOpen: open })
+  },
   negativeCue: null,
   flashNegative: (player) => {
     set({ negativeCue: player })

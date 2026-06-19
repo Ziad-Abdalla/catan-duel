@@ -31,11 +31,15 @@ ASSISTS (cost math, routing, logging, juice) but never rigidly enforces turn flo
 - [x] B9 Identity: real player names render everywhere (Player 1/2 only as editable defaults)
 - [x] B10: full gate green (117 tests + fuzz, tsc, prod build) + DEPLOYED to origin/master
 
-## Still open (next sessions)
-- Expanded city grids (more building sites per city + extra buildable slots)
-- Visible shared discard-pile zone you can draw from; "draw from any pile" affordances + exhaustive hover metadata
-- Heavy juice tail: card-deploy audio sweep, dedicated brigand robbing sequence, opponent negative visual cue
-- Official photo-art drop pipeline for all cards (crafted SVG icons already cover foundations)
+## Shipped since (now complete)
+- [x] Expanded city grids — city building sites render an enlarged capacity area (sites already stack cards)
+- [x] Visible shared discard-pile zone in the deck wall + draw-back (`drawFromDiscard`, any player, specific-card aware)
+- [x] Juice tail: card-deploy audio sweep; dedicated brigand robbing sequence; opponent negative visual cue (plate flash)
+
+## Still open (owner-side / data — not blocking code)
+- Official photo-art drop pipeline for all cards (crafted SVG icons already cover foundations; owner drops scans into src/assets/**)
+- Region DRAW-STACK numbers still operator-typed — reconcile vs the new starting numbers only if exact physical layout matters
+- Known sync residual: true simultaneous DECK edits resolve to one lineage consistently (turn-based play avoids; full fix = event-sourced relay)
 
 ## Open data confirmations (owner/friend, from physical cards — no fabrication)
 - Region DRAW STACK numbers still operator-typed; reconcile against the new starting numbers if exact physical layout matters.

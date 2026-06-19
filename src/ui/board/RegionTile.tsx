@@ -98,15 +98,20 @@ export function RegionTile({
     })
   }, [region.stored])
 
-  // tactile flash + thunk whenever the stored count changes
+  // tactile flash + thunk whenever the stored count changes, plus a subtle
+  // floating +N / −N so a production or spend reads at a glance (not spammy: one
+  // short float per change, auto-removed on animation end).
   const [flash, setFlash] = useState(false)
+  const [float, setFloat] = useState<{ delta: number; key: number } | null>(null)
   const prev = useRef(region.stored)
   useEffect(() => {
     if (prev.current !== region.stored) {
+      const delta = region.stored - prev.current
       prev.current = region.stored
       setFlash(true)
+      setFloat({ delta, key: Date.now() + index })
     }
-  }, [region.stored])
+  }, [region.stored, index])
 
   const card = regionCardFor(region.resource)
 
@@ -181,6 +186,16 @@ export function RegionTile({
         </button>
         {/* fixed reading bracket at the bottom — what you currently hold */}
         <div className="rt-reading" aria-hidden />
+        {float && (
+          <span
+            key={float.key}
+            className={`rt-float ${float.delta > 0 ? 'gain' : 'loss'}`}
+            aria-hidden
+            onAnimationEnd={() => setFloat(null)}
+          >
+            {float.delta > 0 ? `+${float.delta}` : float.delta}
+          </span>
+        )}
       </div>
       <div className="rt-nameplate">
         <span className="rt-name">{card.name}</span>

@@ -213,3 +213,29 @@
   .rt-card { transition: none; }
   .rtile.produces .rt-card, .rt-card.flash { animation: none; }
 }
+
+/* subtle floating +N / −N when a region's stored count changes (one per change) */
+.rt-stage { position: relative; }
+.rt-float {
+  position: absolute;
+  top: 6%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Cinzel', Georgia, serif;
+  font-weight: 700;
+  font-size: clamp(13px, 1.8vh, 20px);
+  pointer-events: none;
+  z-index: 6;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+  animation: rt-float-rise 0.9s ease-out forwards;
+}
+.rt-float.gain { color: #8fe79a; }
+.rt-float.loss { color: #e89a8f; }
+@keyframes rt-float-rise {
+  0% { opacity: 0; transform: translate(-50%, 6px) scale(0.8); }
+  25% { opacity: 1; transform: translate(-50%, -2px) scale(1.1); }
+  100% { opacity: 0; transform: translate(-50%, -26px) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rt-float { animation-duration: 0.5s; }
+}

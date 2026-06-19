@@ -67,10 +67,10 @@ export function CentralWall() {
     playSfx('flip')
   }
 
-  // Draw the top event card — the synced EventPopup shows it on BOTH screens.
+  // Draw the top event card — the synced EventPopup shows it (and plays the
+  // flip cue) on BOTH screens, so no extra sound here (avoids a double tick).
   const drawEvent = () => {
     dispatch({ type: 'drawEvent' })
-    playSfx('flip')
   }
 
   /** Draw the top of the shared discard pile into the active player's hand. */

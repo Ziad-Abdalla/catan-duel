@@ -52,6 +52,7 @@ Driven by the audits in this folder (see INDEX.md). Each batch verified (tsc + t
 - **Tactile cursors:** grab/grabbing on every pickup-able piece.
 - **Asset guide** `ASSETS.html` (curated CC0/royalty-free music/sfx/texture/city-art download links → exact slots).
 - **Online play:** `PLAY-ONLINE.html` — dead-simple, safe Radmin guide for host + friend + teardown; one-click
+- Fixed RADMIN-ONLINE/OFFLINE.ps1: run non-elevated + write .env via wsl.exe + elevate only the firewall/bridge inline (the old self-elevate-then-write-to-\wsl path would fail in practice).
   `RADMIN-ONLINE.ps1` / `RADMIN-OFFLINE.ps1`.
 
 ## Final verification ✅

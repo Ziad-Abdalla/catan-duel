@@ -1,6 +1,8 @@
 // Tasteful table SFX, fully synthesized with the Web Audio API — no asset files,
 // nothing to license. One lazy AudioContext (created on first sound, after a user
-// gesture, per browser autoplay rules). A persisted mute toggle gates everything.
+// gesture, per browser autoplay rules). Master mute + SFX volume live in shared prefs.
+
+import { getAudio, setAudio, onAudioChange } from './prefs'
 
 export type Sfx =
   | 'rotate' | 'dice' | 'token' | 'place' | 'flip' | 'ui' | 'sweep'
@@ -15,48 +17,43 @@ export type Sfx =
   | 'harvest' // a warm rustle + chime — plenty, grain, mills
   | 'festival' // a bright jingle — celebrations, halls, abbeys
   | 'magic' // a shimmering arpeggio — inventions, universities
+  | 'action' // a short parchment-and-chime flourish — one-shot action cards
 
-const STORE_KEY = 'catan-duel.muted'
-let muted = readMuted()
-const listeners = new Set<(m: boolean) => void>()
-
-function readMuted(): boolean {
-  try {
-    return localStorage.getItem(STORE_KEY) === '1'
-  } catch {
-    return false
-  }
-}
-
+// Master mute lives in shared prefs; these wrappers keep existing callers working.
 export function isMuted(): boolean {
-  return muted
+  return getAudio().muted
 }
 export function setMuted(m: boolean): void {
-  muted = m
-  try {
-    localStorage.setItem(STORE_KEY, m ? '1' : '0')
-  } catch {
-    /* ignore */
-  }
-  listeners.forEach((l) => l(m))
+  setAudio({ muted: m })
 }
 export function toggleMute(): boolean {
-  setMuted(!muted)
-  return muted
+  const m = !getAudio().muted
+  setAudio({ muted: m })
+  return m
 }
 export function onMuteChange(l: (m: boolean) => void): () => void {
-  listeners.add(l)
-  return () => listeners.delete(l)
+  return onAudioChange((p) => l(p.muted))
 }
 
 let ctx: AudioContext | null = null
+let master: GainNode | null = null
 function audio(): AudioContext | null {
   if (typeof window === 'undefined') return null
   const AC = window.AudioContext || (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
   if (!AC) return null
-  if (!ctx) ctx = new AC()
+  if (!ctx) {
+    ctx = new AC()
+    master = ctx.createGain()
+    master.gain.value = getAudio().sfxVol
+    master.connect(ctx.destination)
+    onAudioChange((p) => { if (master) master.gain.value = p.sfxVol }) // live SFX-volume changes
+  }
   if (ctx.state === 'suspended') void ctx.resume()
   return ctx
+}
+/** The node every cue routes through — the master SFX gain (falls back to destination). */
+function out(): AudioNode {
+  return master ?? ctx!.destination
 }
 
 /** A short pitched body with an envelope — the building block for most cues. */
@@ -81,7 +78,7 @@ function tone(
     node = p
   }
   osc.connect(g)
-  node.connect(ac.destination)
+  node.connect(out())
   osc.start(at)
   osc.stop(at + opts.dur + 0.02)
 }
@@ -114,13 +111,13 @@ function noise(
   }
   src.connect(f)
   f.connect(g)
-  node.connect(ac.destination)
+  node.connect(out())
   src.start(at)
   src.stop(at + opts.dur + 0.02)
 }
 
 export function playSfx(kind: Sfx): void {
-  if (muted) return
+  if (getAudio().muted) return
   const ac = audio()
   if (!ac) return
   const t = ac.currentTime
@@ -207,6 +204,11 @@ export function playSfx(kind: Sfx): void {
       for (let i = 0; i < 4; i++) {
         tone(ac, t + i * 0.05, { type: 'sine', freq: 880 * Math.pow(1.26, i), dur: 0.3, gain: 0.06 })
       }
+      break
+    case 'action': // a short parchment rustle + quick two-note chime — one-shot actions
+      noise(ac, t, { dur: 0.09, gain: 0.07, freq: 3000, q: 0.5, type: 'highpass' })
+      tone(ac, t + 0.02, { type: 'triangle', freq: 740, dur: 0.1, gain: 0.09 })
+      tone(ac, t + 0.1, { type: 'triangle', freq: 988, dur: 0.14, gain: 0.08 })
       break
   }
 }

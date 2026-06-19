@@ -60,6 +60,29 @@ Driven by the audits in this folder (see INDEX.md). Each batch verified (tsc + t
   · visual sweep across gold/turmoil/progress (one-screen fit, themed felt, clean city, supply counts) 0 errors.
 - e2e ui-flows updated for the new ⚙ Setup popover.
 
+## Audio system (music + SFX) ✅
+- **Centralised, persisted audio prefs** (`src/audio/prefs.ts`): master mute + SFX volume + music
+  on/off + music volume. Everything ON by default; lower or mute from ⚙ Setup → Sound (Effects + Music
+  sliders) or the quick mute button. SFX route through a master gain so the volume is live.
+- **Background music = a shuffled PLAYLIST** of 4 bundled CC0 medieval tracks (`public/audio/bgm-*.mp3`)
+  that cycle and reshuffle each lap — variety, never a repetitive loop. Starts on first interaction
+  (autoplay policy), yields to mute, volume live. Victory track `public/audio/victory.mp3` + synth fallback.
+  All CC0 1.0 (public domain) from archive.org — safe to commit/share.
+- **Per-card/per-event thematic SFX** (`cardSfx`/`eventSfx`): buildings→build, ships→water, heroes→hero,
+  attacks/brigands→menace, trade/gold→coin, festivals→festival, inventions→magic, harvest→harvest, and
+  **action cards→a short parchment chime**.
+- **No layering** — strictly one sound per action (removed coin+thunk doubling on paid plays; VP chime now
+  only on the manual ± buttons, so a build no longer fires build+VP together).
+- **Every event face has an effect** (sound + animation), via a unified `eventFx` trigger fired both when
+  the dice settle AND when a **card forces** that event (a "Play effect" button in the resolution panel;
+  Brigand keeps its cinematic). Verified: card-forced Brigand cinematic plays with no dice roll.
+- **Tested** (`e2e/audio.spec.ts`): playlist starts on gesture, all SFX-producing actions fire with 0
+  errors, volume/on-off controls take effect. Cursors: grab/grabbing on pickup-able pieces (earlier).
+
+## Owner hub ✅
+- Created `C:\Projects\catan-duel\` (owner hub + repo pointer) matching the other projects, with the
+  online-play guide, asset guide, and current-state overview; added to the top `C:\Projects` index.
+
 ## Status: COMPLETE — shipped to master.
 
 ## (earlier) Pending

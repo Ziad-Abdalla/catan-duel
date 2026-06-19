@@ -66,8 +66,7 @@ export function CardZoom() {
     // The engine spends the cost when pay=true (no manual subtraction here — that
     // would double-charge). pay=false just places it (manual "show your friend").
     dispatch({ type: 'playCard', player: zoom.player, cardId: zoom.cardId, slot, pay })
-    if (pay) playSfx('coin')
-    playSfx(cardSfx(zoom.cardId)) // thematic cue for what was played
+    playSfx(cardSfx(zoom.cardId)) // one thematic cue per play (no stacked coin+thunk)
     closeZoom()
   }
   const exchange = (stackIndex: number) => {

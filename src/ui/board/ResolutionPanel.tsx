@@ -406,6 +406,7 @@ function NoteTool({ owner }: { owner: PlayerId }) {
 export function ResolutionPanel() {
   const resolve = useUI((s) => s.resolve)
   const close = useUI((s) => s.closeResolve)
+  const fireEventFx = useUI((s) => s.fireEventFx)
   const state = useGame((s) => s.state)
   const dispatch = useGame((s) => s.dispatch)
   const undo = useGame((s) => s.undo)
@@ -479,16 +480,16 @@ export function ResolutionPanel() {
         {rules && <p className="rl-rules">{rules}</p>}
 
         <div className="rl-body" ref={scroller}>
-          {resolve.event === 'brigand' && (
+          {resolve.event && (
             <section className="rl-section rl-suggested">
-              <h4 className="rl-h">Brigand attack</h4>
-              <p className="rl-step-text">Anyone holding more than 7 resources loses all their gold and wool.</p>
-              <button
-                className="rl-apply"
-                onClick={() => { dispatch({ type: 'resolveBrigand' }); playSfx('menace') }}
-              >
-                Apply to both players (auto-logs the loss)
-              </button>
+              <h4 className="rl-h">{EVENT_NAME[resolve.event]} effect</h4>
+              <p className="rl-step-text">Play this event's effect (sound + animation) — use it when a card forces this event, or to replay it.</p>
+              <button className="rl-apply" onClick={() => fireEventFx(resolve.event!)}>▶ Play {EVENT_NAME[resolve.event]} effect</button>
+              {resolve.event === 'brigand' && (
+                <button className="rl-apply alt" onClick={() => { dispatch({ type: 'resolveBrigand' }); fireEventFx('brigand') }}>
+                  Apply Brigand to both players (auto-logs the loss)
+                </button>
+              )}
             </section>
           )}
 

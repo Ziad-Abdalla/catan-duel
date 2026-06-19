@@ -29,10 +29,8 @@ export function PlayerPlate({ player }: { player: PlayerId }) {
   const prevVP = useRef(p.victoryPoints)
   useEffect(() => {
     if (prevVP.current !== p.victoryPoints) {
-      const gained = p.victoryPoints > prevVP.current
       prevVP.current = p.victoryPoints
-      setBump(true)
-      if (gained) playSfx('vp') // a bright bell whenever points are scored (build or manual)
+      setBump(true) // the build/play already made its own sound; VP just bumps visually
     }
   }, [p.victoryPoints])
 
@@ -67,14 +65,14 @@ export function PlayerPlate({ player }: { player: PlayerId }) {
         <PlateToken kind="trade" player={player} />
       </div>
       <div className="plate-vprow">
-        <button className="plate-vpbtn" aria-label="decrease VP" onClick={() => dispatch({ type: 'adjustVP', player, delta: -1 })}>
+        <button className="plate-vpbtn" aria-label="decrease VP" onClick={() => { dispatch({ type: 'adjustVP', player, delta: -1 }); playSfx('ui') }}>
           {'−'}
         </button>
         <span className={`plate-vp${bump ? ' bump' : ''}`} onAnimationEnd={() => setBump(false)}>
           {p.victoryPoints}
           <small>/{state.winThreshold}</small>
         </span>
-        <button className="plate-vpbtn" aria-label="increase VP" onClick={() => dispatch({ type: 'adjustVP', player, delta: +1 })}>
+        <button className="plate-vpbtn" aria-label="increase VP" onClick={() => { dispatch({ type: 'adjustVP', player, delta: +1 }); playSfx('vp') }}>
           +
         </button>
       </div>

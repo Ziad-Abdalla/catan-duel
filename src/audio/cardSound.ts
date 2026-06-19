@@ -21,6 +21,7 @@ export function cardSfx(cardId: string): Sfx {
   if (/invent|universit|library|scholar|crane|alchem|pharmac|doctor|mineral|three.?field|parliament|town hall|innovation/.test(text)) return 'magic'
   if (/harvest|grain|wheat|\bmill\b|\bfield|granary|plenty|\bfarm|storehouse|weaver/.test(text)) return 'harvest'
   if (/gold|coin|mint|money|goldsmith|toll|trade|commerce|market/.test(text)) return 'coin'
+  if (c.category === 'action') return 'action' // one-shot action cards get a short parchment chime
   if (c.category === 'building' || c.tag === 'Face-up Expansion') return 'build'
   return 'sweep'
 }

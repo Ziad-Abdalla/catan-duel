@@ -5,6 +5,7 @@
 // the browser — so the celebration always has music with no bundled audio file and
 // no copyright concern. Honors the global mute toggle; never throws.
 import { isMuted } from './sfx'
+import { getAudio } from './prefs'
 
 let ctx: AudioContext | null = null
 let mp3: HTMLAudioElement | null = null
@@ -60,10 +61,10 @@ export function playVictoryMusic(): void {
   if (typeof Audio !== 'undefined') {
     try {
       if (!mp3) {
-        mp3 = new Audio(`${import.meta.env.BASE_URL}victory.mp3`)
+        mp3 = new Audio(`${import.meta.env.BASE_URL}audio/victory.mp3`)
         mp3.loop = true
-        mp3.volume = 0.7
       }
+      mp3.volume = Math.min(1, getAudio().musicVol + 0.3) // celebration sits a touch louder than the bed
       mp3.currentTime = 0
       void mp3
         .play()
@@ -89,34 +90,72 @@ function startSynth() {
 }
 
 // ── Ambient background music ─────────────────────────────────────────────────
-// Plays a looping, low-volume bed from `public/ambient.mp3` IF the owner drops one in
-// (see docs/quality-2026-06-19/ASSETS.html for a curated, royalty-free download). With
-// no file it silently no-ops — there's no synthesized drone (that gets old fast). The
-// player turns it on in ⚙ Setup → Music; it always yields to the global mute.
-let amb: HTMLAudioElement | null = null
+// A shuffled PLAYLIST of bundled CC0 medieval tracks that cycle one after another and
+// reshuffle each lap — variety, so it never gets repetitive (better than one short loop).
+// Low volume, on by default; on/off + volume live in shared prefs and yield to master mute.
+// Browsers only allow it to sound after the first user gesture (handled in AmbientMusic).
+const PLAYLIST = ['audio/bgm-1.mp3', 'audio/bgm-2.mp3', 'audio/bgm-3.mp3', 'audio/bgm-4.mp3']
+let ambEl: HTMLAudioElement | null = null
+let order: number[] = []
+let pos = 0
 
+function reshuffle(): void {
+  order = PLAYLIST.map((_, i) => i)
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[order[i], order[j]] = [order[j], order[i]]
+  }
+  pos = 0
+}
+
+function startTrack(): void {
+  if (!ambEl) return
+  ambEl.src = `${import.meta.env.BASE_URL}${PLAYLIST[order[pos]]}`
+  ambEl.volume = getAudio().musicVol
+  void ambEl.play().catch(() => {
+    /* missing file / autoplay still blocked → stays silent until the next gesture */
+  })
+}
+
+function advance(): void {
+  pos++
+  if (pos >= order.length) reshuffle()
+  startTrack()
+}
+
+/** Start or resume the shuffled background playlist. No-op (and pauses) if music is off
+ *  or muted. */
 export function playAmbient(): void {
-  if (isMuted() || typeof Audio === 'undefined') return
-  try {
-    if (!amb) {
-      amb = new Audio(`${import.meta.env.BASE_URL}ambient.mp3`)
-      amb.loop = true
-      amb.volume = 0.3
-    }
-    void amb.play().catch(() => {
-      /* no file / autoplay blocked → stay silent */
-    })
-  } catch {
-    /* ignore */
+  const p = getAudio()
+  if (!p.musicOn || p.muted || typeof Audio === 'undefined') {
+    stopAmbient()
+    return
+  }
+  if (!ambEl) {
+    ambEl = new Audio()
+    ambEl.loop = false
+    ambEl.onended = advance
+  }
+  ambEl.volume = p.musicVol
+  if (!ambEl.src) {
+    reshuffle()
+    startTrack()
+  } else {
+    void ambEl.play().catch(() => {}) // resume where it left off
   }
 }
 
 export function stopAmbient(): void {
   try {
-    amb?.pause()
+    ambEl?.pause()
   } catch {
     /* ignore */
   }
+}
+
+/** Live volume change without interrupting the current track. */
+export function setAmbientVolume(v: number): void {
+  if (ambEl) ambEl.volume = v
 }
 
 /** Stop whatever victory music is playing (safe to call anytime). */

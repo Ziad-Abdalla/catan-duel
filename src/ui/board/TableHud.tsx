@@ -3,6 +3,7 @@ import type { SetId } from '../../types'
 import { useGame } from '../../store/gameStore'
 import { useUI } from '../../store/uiStore'
 import { isMuted, toggleMute, onMuteChange, playSfx } from '../../audio/sfx'
+import { getAudio, setAudio, onAudioChange, type AudioPrefs } from '../../audio/prefs'
 
 /** Official victory targets per mode + a common tournament value. */
 const VP_TARGETS = [7, 12, 13, 15]
@@ -31,6 +32,13 @@ function useMuted() {
   return m
 }
 
+/** Live-subscribed audio prefs for the Sound settings. */
+function useAudioPrefs(): AudioPrefs {
+  const [p, setP] = useState(getAudio())
+  useEffect(() => onAudioChange(setP), [])
+  return p
+}
+
 /** Slim top strip on the felt: title, the setup popover (sets/win/theme), pay toggle,
  *  log, sound, new game, and the mode tabs. Frequently-used controls stay on the bar;
  *  the game-setup options (which can restart the game) are tucked into ⚙ Setup. */
@@ -49,8 +57,7 @@ export function TableHud({ mode, setMode }: { mode: AppMode; setMode: (m: AppMod
   const setPayCosts = useUI((s) => s.setPayCosts)
   const tableTheme = useUI((s) => s.tableTheme)
   const setTableTheme = useUI((s) => s.setTableTheme)
-  const musicOn = useUI((s) => s.musicOn)
-  const setMusicOn = useUI((s) => s.setMusicOn)
+  const audio = useAudioPrefs()
   const muted = useMuted()
   const [setupOpen, setSetupOpen] = useState(false)
 
@@ -98,10 +105,19 @@ export function TableHud({ mode, setMode }: { mode: AppMode; setMode: (m: AppMod
                 </select>
               </div>
               <div className="hud-pop-group">
-                <span className="hud-pop-label">Music <em>· needs public/ambient.mp3</em></span>
-                <button className={`hud-chip${musicOn ? ' on' : ''}`} aria-pressed={musicOn} onClick={() => { setMusicOn(!musicOn); playSfx('ui') }}>
-                  {musicOn ? '♪ Ambient on' : '♪ Ambient off'}
-                </button>
+                <span className="hud-pop-label">Sound</span>
+                <label className="hud-snd">
+                  <span>Effects</span>
+                  <input type="range" min="0" max="1" step="0.05" value={audio.sfxVol} aria-label="Effects volume"
+                    onChange={(e) => setAudio({ sfxVol: Number(e.target.value) })} onMouseUp={() => playSfx('coin')} onTouchEnd={() => playSfx('coin')} />
+                </label>
+                <label className="hud-snd">
+                  <span>Music</span>
+                  <button className={`hud-mini${audio.musicOn ? ' on' : ''}`} aria-pressed={audio.musicOn}
+                    onClick={() => { setAudio({ musicOn: !audio.musicOn }); playSfx('ui') }}>{audio.musicOn ? 'On' : 'Off'}</button>
+                  <input type="range" min="0" max="1" step="0.05" value={audio.musicVol} aria-label="Music volume"
+                    onChange={(e) => setAudio({ musicVol: Number(e.target.value) })} />
+                </label>
               </div>
             </div>
           </>

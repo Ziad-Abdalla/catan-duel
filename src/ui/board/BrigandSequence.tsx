@@ -3,26 +3,25 @@ import { useUI } from '../../store/uiStore'
 import './brigand.css'
 
 /**
- * A dedicated robbing cinematic for the Brigand event die. Triggers off the UI's
- * `revealedRoll` (set once the dice settle, on BOTH screens) so it plays in sync.
- * It fires once per roll, then fades — purely atmospheric; the actual resource loss
- * stays manual (the resolution panel), keeping the sandbox in the players' hands.
+ * A dedicated robbing cinematic for the Brigand effect. Triggers off the unified
+ * `eventFx` signal — fired when the dice settle on a Brigand AND when a card forces a
+ * Brigand attack — so it plays in sync on both screens. Purely atmospheric; the actual
+ * resource loss stays manual (the resolution panel), keeping the sandbox in players' hands.
  */
 export function BrigandSequence() {
-  const revealedRoll = useUI((s) => s.revealedRoll)
+  const eventFx = useUI((s) => s.eventFx)
   const [show, setShow] = useState(false)
-  const lastKey = useRef<string | null>(null)
+  const lastKey = useRef<number | null>(null)
 
   useEffect(() => {
-    if (!revealedRoll || revealedRoll.event !== 'brigand') return
-    const key = `${revealedRoll.turn}:${revealedRoll.production}`
-    if (key === lastKey.current) return // already played for this roll
-    lastKey.current = key
+    if (!eventFx || eventFx.face !== 'brigand') return
+    if (eventFx.key === lastKey.current) return // already played for this trigger
+    lastKey.current = eventFx.key
     setShow(true)
     // audio is owned by DiceEventCue (brigand → 'menace'); this stays purely visual.
     const t = setTimeout(() => setShow(false), 1900)
     return () => clearTimeout(t)
-  }, [revealedRoll])
+  }, [eventFx])
 
   if (!show) return null
   return (

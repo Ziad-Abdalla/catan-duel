@@ -52,6 +52,10 @@ interface UIState {
   /** The roll outcome currently shown in the wall — set only once the felt dice
    *  have settled, so the wall "writes" the result after the tumble (not during). */
   revealedRoll: { production: number; event: string; turn: number } | null
+  /** A one-shot signal to play an event face's effect (sound + animation), fired both when
+   *  the dice settle AND when a card forces that effect. `key` bumps so it always re-fires. */
+  eventFx: { face: EventFace; key: number } | null
+  fireEventFx: (face: EventFace) => void
   /** Two physical dice tumbling at a random spot on the felt (viewport %). */
   dice: { id: number; x: number; y: number; prod: number; event: string; phase: 'tumble' | 'settle' | 'fade' } | null
   /** The collapsible action-history ledger (audit log) sidebar. */
@@ -69,9 +73,6 @@ interface UIState {
   stackBrowse: number | null
   openStackBrowse: (i: number) => void
   closeStackBrowse: () => void
-  /** Ambient background-music toggle (plays public/ambient.mp3 if present; off by default). */
-  musicOn: boolean
-  setMusicOn: (v: boolean) => void
   /** A player briefly flashed with a negative cue (e.g. just lost an advantage). */
   negativeCue: PlayerId | null
   flashNegative: (player: PlayerId) => void
@@ -93,6 +94,7 @@ interface UIState {
 let flightId = 0
 let diceId = 0
 let diceKey: string | null = null // guards against StrictMode's double trigger
+let eventFxKey = 0
 
 export const useUI = create<UIState>((set) => ({
   dragCardId: null,
@@ -103,6 +105,8 @@ export const useUI = create<UIState>((set) => ({
   zoom: null,
   resolve: null,
   revealedRoll: null,
+  eventFx: null,
+  fireEventFx: (face) => set({ eventFx: { face, key: ++eventFxKey } }),
   dice: null,
   auditOpen: false,
   toggleAudit: () => set((s) => ({ auditOpen: !s.auditOpen })),
@@ -113,8 +117,6 @@ export const useUI = create<UIState>((set) => ({
   stackBrowse: null,
   openStackBrowse: (i) => set({ stackBrowse: i }),
   closeStackBrowse: () => set({ stackBrowse: null }),
-  musicOn: false,
-  setMusicOn: (musicOn) => set({ musicOn }),
   negativeCue: null,
   flashNegative: (player) => {
     set({ negativeCue: player })
@@ -129,7 +131,7 @@ export const useUI = create<UIState>((set) => ({
     const key = `${turn}:${production}:${event}`
     if (key === diceKey) return
     diceKey = key
-    const reveal = () => set({ revealedRoll: { production, event, turn } })
+    const reveal = () => set({ revealedRoll: { production, event, turn }, eventFx: { face: event as EventFace, key: ++eventFxKey } })
     const id = ++diceId
     // spawn near the centre of the viewport (small jitter) so the roll is always
     // seen, whichever half of the table you're looking at

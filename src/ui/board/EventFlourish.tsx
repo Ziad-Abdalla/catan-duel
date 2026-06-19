@@ -14,18 +14,18 @@ const GLYPH: Partial<Record<EventFace, { ch: string; cls: string }>> = {
 }
 
 export function EventFlourish() {
-  const revealedRoll = useUI((s) => s.revealedRoll)
-  const [burst, setBurst] = useState<{ key: string; face: EventFace } | null>(null)
+  const eventFx = useUI((s) => s.eventFx)
+  const [burst, setBurst] = useState<{ key: number; face: EventFace } | null>(null)
 
   useEffect(() => {
-    if (!revealedRoll) return
-    const face = revealedRoll.event as EventFace
-    if (!GLYPH[face]) return // brigand & anything unmapped → no flourish here
-    const key = `${revealedRoll.turn}:${revealedRoll.production}:${face}`
+    if (!eventFx) return
+    const face = eventFx.face
+    if (!GLYPH[face]) return // brigand & anything unmapped → no flourish here (it has its own cinematic)
+    const key = eventFx.key
     setBurst({ key, face })
     const t = setTimeout(() => setBurst((b) => (b?.key === key ? null : b)), 1500)
     return () => clearTimeout(t)
-  }, [revealedRoll])
+  }, [eventFx])
 
   if (!burst) return null
   const g = GLYPH[burst.face]!

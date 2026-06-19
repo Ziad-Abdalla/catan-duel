@@ -239,6 +239,11 @@
 .hud-pop-label em { font-style: italic; text-transform: none; opacity: 0.6; letter-spacing: 0; }
 .hud-chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .hud-pay.on { background: var(--gold); color: #2a1c08; border-color: var(--gold); }
+.hud-snd { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #cdbf9d; }
+.hud-snd > span { width: 52px; flex: none; }
+.hud-snd input[type="range"] { flex: 1; accent-color: var(--gold); height: 4px; cursor: pointer; }
+.hud-mini { font-size: 11px; padding: 2px 9px; border-radius: 8px; border: 1px solid rgba(243, 215, 154, 0.3); background: rgba(0, 0, 0, 0.22); color: #cdbb94; cursor: pointer; flex: none; }
+.hud-mini.on { background: var(--gold); color: #2a1c08; border-color: var(--gold); }
 
 /* card-set picker */
 .hud-sets { display: flex; align-items: center; gap: 5px; }

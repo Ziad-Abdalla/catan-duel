@@ -1,21 +1,32 @@
 import { useEffect, useState } from 'react'
-import { useUI } from '../../store/uiStore'
-import { isMuted, onMuteChange } from '../../audio/sfx'
-import { playAmbient, stopAmbient } from '../../audio/music'
+import { getAudio, onAudioChange, type AudioPrefs } from '../../audio/prefs'
+import { playAmbient, stopAmbient, setAmbientVolume } from '../../audio/music'
 
 /**
- * Drives the ambient background-music loop from the ⚙ Setup → Music toggle, always
- * yielding to the global mute. Plays `public/ambient.mp3` if the owner dropped one in
- * (see ASSETS.html); otherwise it's a silent no-op. Renders nothing.
+ * Drives the shuffled background-music playlist from the shared audio prefs. Music is on
+ * by default, but browsers block autoplay until the first interaction, so we also kick it
+ * off on the first pointer/key event. Starts/stops on music+mute changes and updates the
+ * volume live. Renders nothing.
  */
 export function AmbientMusic() {
-  const musicOn = useUI((s) => s.musicOn)
-  const [muted, setMuted] = useState(isMuted())
-  useEffect(() => onMuteChange(setMuted), [])
+  const [p, setP] = useState<AudioPrefs>(getAudio())
+  useEffect(() => onAudioChange(setP), [])
+
+  // start on the first user gesture (autoplay policy)
   useEffect(() => {
-    if (musicOn && !muted) playAmbient()
-    else stopAmbient()
+    const kick = () => playAmbient()
+    window.addEventListener('pointerdown', kick, { once: true })
+    window.addEventListener('keydown', kick, { once: true })
+    return () => {
+      window.removeEventListener('pointerdown', kick)
+      window.removeEventListener('keydown', kick)
+    }
+  }, [])
+
+  useEffect(() => {
+    playAmbient() // no-op if off/muted; resumes/starts otherwise
     return () => stopAmbient()
-  }, [musicOn, muted])
+  }, [p.musicOn, p.muted])
+  useEffect(() => setAmbientVolume(p.musicVol), [p.musicVol])
   return null
 }

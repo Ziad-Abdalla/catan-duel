@@ -93,8 +93,10 @@
 .evpop-close:hover { background: rgba(168, 48, 46, 0.6); transform: scale(1.08); color: #fff; }
 
 /* ── card showcase popup (a played/shown card, big, for BOTH players) ───────── */
-.sc-scrim { z-index: 97; }
+/* non-blocking: you can keep playing behind it; it auto-dismisses (or close it early) */
+.sc-scrim { z-index: 97; background: transparent; pointer-events: none; align-items: flex-start; padding-top: 8vh; }
 .sc-pop {
+  pointer-events: auto;
   position: relative;
   background: linear-gradient(180deg, #1d2b2c, #14201f);
   border: 1px solid rgba(243, 215, 154, 0.4);

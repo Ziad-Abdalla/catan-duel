@@ -27,6 +27,14 @@ export function ShowcasePopup() {
     if (open && id) playSfx(cardSfx(id))
   }, [open, nonce, id])
 
+  // auto-dismiss after a few seconds so it never blocks the player who played the card;
+  // either player can still close it early with the button.
+  useEffect(() => {
+    if (!open) return
+    const t = setTimeout(() => mark(nonce), 5000)
+    return () => clearTimeout(t)
+  }, [open, nonce, mark])
+
   if (!open || !card) return null
   const dismiss = () => mark(nonce)
   const met = requirementMet(card, state, state.activePlayer)

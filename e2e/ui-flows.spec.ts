@@ -17,9 +17,18 @@ test('click through the real UI surfaces', async ({ page }) => {
   await d.shot('01-rolled')
   await d.check('rolled')
 
-  // the wall now shows outcome actions
-  const produce = page.locator('.wo-actions .wbtn-sm').first()
-  if (await produce.count()) { await produce.click(); await d.shot('02-produced'); await d.check('produced') }
+  // on the event-card face the wall offers "Draw event card" — drawing pops the event for
+  // both players (a deliberate, click-to-close modal), so dismiss it before moving on.
+  const drawEvt = page.locator('.wo-actions .wbtn-sm').first()
+  if (await drawEvt.count()) {
+    await drawEvt.click()
+    await page.waitForTimeout(250)
+    await d.shot('02-event-drawn')
+    await d.check('event-drawn')
+    const evClose = page.locator('.evpop-close')
+    if (await evClose.count()) await evClose.click()
+    await page.waitForTimeout(150)
+  }
 
   // open the action log, screenshot, close
   await page.locator('.hud-btn[title="Action history log"]').click()
@@ -55,11 +64,10 @@ test('click through the real UI surfaces', async ({ page }) => {
   await page.waitForTimeout(150)
   await d.shot('07-took-card')
   await d.check('took-card')
-  await page.locator('.sb-btn', { hasText: 'Shuffle' }).click()
-  await page.waitForTimeout(150)
+  await page.locator('.sb-btn', { hasText: 'Shuffle' }).click() // shuffling now auto-closes the browser
+  await page.waitForTimeout(200)
   await d.shot('08-shuffled')
   await d.check('shuffled')
-  await page.locator('.sb-x').click()
 
   // open a hand card → CardZoom → play it
   await page.locator('.hand-card').first().click()
@@ -71,6 +79,9 @@ test('click through the real UI surfaces', async ({ page }) => {
   await page.waitForTimeout(200)
   await d.shot('10-played')
   await d.check('played')
+  // playing a card now showcases it to both players (non-blocking) — close it before moving on
+  const showc = page.locator('.sc-pop .evpop-close')
+  if (await showc.count()) await showc.click()
 
   // open the resolution panel from another hand card and nudge a resource
   const hand = page.locator('.hand-card')

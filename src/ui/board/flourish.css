@@ -1,31 +1,76 @@
-/* Brief, non-blocking event-die flourish — particles rise from table centre and fade. */
+/* Brief, full-screen event-die flourish: a themed flash, a shower of glyphs, and a title. */
 .flourish {
   position: fixed;
-  left: 50%;
-  top: 46%;
+  inset: 0;
   z-index: 65;
   pointer-events: none;
-  transform: translate(-50%, -50%);
+  overflow: hidden;
 }
+
+/* themed colour flash sweeping the whole screen, then fading */
+.fl-flash {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  animation: fl-flash 1.6s ease-out both;
+}
+@keyframes fl-flash {
+  0% { opacity: 0; }
+  14% { opacity: 0.55; }
+  100% { opacity: 0; }
+}
+
+/* a title word that scales in at centre and fades */
+.fl-title {
+  position: absolute;
+  left: 50%;
+  top: 38%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-head, Georgia, serif);
+  font-size: clamp(28px, 6vh, 72px);
+  letter-spacing: 0.04em;
+  color: #fff;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.6), 0 0 26px var(--fl-accent, #f3d27a);
+  opacity: 0;
+  white-space: nowrap;
+  animation: fl-title 1.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes fl-title {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.7); }
+  18% { opacity: 1; transform: translate(-50%, -50%) scale(1.06); }
+  70% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -52%) scale(1); }
+}
+
+/* glyphs falling the full height of the screen */
 .fl-particle {
   position: absolute;
-  font-size: clamp(18px, 2.4vh, 30px);
+  top: -8vh;
+  font-size: clamp(20px, 3vh, 40px);
   opacity: 0;
   will-change: transform, opacity;
-  animation: fl-rise 1.4s cubic-bezier(0.2, 0.7, 0.3, 1) var(--d, 0s) both;
-  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.5));
+  animation: fl-fall var(--dur, 1.5s) cubic-bezier(0.3, 0.5, 0.4, 1) var(--d, 0s) both;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
 }
-@keyframes fl-rise {
-  0% { transform: translate(0, 18px) scale(0.5) rotate(0deg); opacity: 0; }
-  22% { opacity: 1; }
-  100% { transform: translate(calc(var(--fx, 0) * 26vw), -34vh) scale(1.05) rotate(calc(var(--r, 0) * 40deg)); opacity: 0; }
+@keyframes fl-fall {
+  0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+  12% { opacity: 1; }
+  88% { opacity: 1; }
+  100% { transform: translate(calc(var(--drift, 0) * 6vw), 112vh) rotate(var(--rot, 200deg)); opacity: 0; }
 }
-/* per-face tint */
-.fl-trade .fl-particle { color: #f3d27a; }
-.fl-celebration .fl-particle { color: #ffd9f0; text-shadow: 0 0 10px rgba(255, 200, 240, 0.8); }
-.fl-harvest .fl-particle { color: #e7c66a; }
-.fl-event .fl-particle { color: #bfe2f4; text-shadow: 0 0 10px rgba(160, 210, 240, 0.8); }
+
+/* per-face accents */
+.fl-trade { --fl-accent: #f3d27a; }
+.fl-trade .fl-flash { background: radial-gradient(60% 60% at 50% 40%, rgba(243, 210, 122, 0.5), transparent 70%); }
+.fl-celebration { --fl-accent: #ffc8e6; }
+.fl-celebration .fl-flash { background: radial-gradient(60% 60% at 50% 40%, rgba(255, 200, 230, 0.5), rgba(180, 140, 255, 0.2) 50%, transparent 72%); }
+.fl-celebration .fl-particle { text-shadow: 0 0 12px rgba(255, 200, 240, 0.9); }
+.fl-harvest { --fl-accent: #e7c66a; }
+.fl-harvest .fl-flash { background: radial-gradient(60% 60% at 50% 45%, rgba(190, 210, 90, 0.42), rgba(231, 198, 106, 0.25) 55%, transparent 74%); }
+.fl-event { --fl-accent: #bfe2f4; }
+.fl-event .fl-flash { background: radial-gradient(60% 60% at 50% 40%, rgba(140, 200, 255, 0.45), rgba(150, 130, 240, 0.2) 55%, transparent 74%); }
+.fl-event .fl-particle { color: #bfe2f4; text-shadow: 0 0 12px rgba(160, 210, 240, 0.9); }
 
 @media (prefers-reduced-motion: reduce) {
-  .fl-particle { animation-duration: 0.6s; }
+  .fl-particle, .fl-flash, .fl-title { animation-duration: 0.5s; }
 }

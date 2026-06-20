@@ -23,15 +23,18 @@ function topUp(s: GameState, player: 'p0' | 'p1'): GameState {
 }
 
 describe('build cost spending (assist, trust-based)', () => {
-  it('buildPiece road spends the road cost (lumber + brick) from regions by default', () => {
-    const s0 = fresh()
+  it('buildPiece road spends the road cost (1 lumber + 2 brick) from regions by default', () => {
+    let s0 = fresh()
+    // road costs 2 brick; ensure the brick region holds enough first
+    const bi = s0.players.p0.regions.findIndex((r) => r.resource === 'brick')
+    s0 = applyAction(s0, { type: 'setStored', player: 'p0', regionIndex: bi, stored: 3 })
     const lumber0 = resourceTotalOf(s0.players.p0, 'lumber')
     const brick0 = resourceTotalOf(s0.players.p0, 'brick')
     expect(lumber0).toBeGreaterThan(0)
-    expect(brick0).toBeGreaterThan(0)
+    expect(brick0).toBeGreaterThan(1)
     const s1 = applyAction(s0, { type: 'buildPiece', player: 'p0', piece: 'road' })
     expect(resourceTotalOf(s1.players.p0, 'lumber')).toBe(lumber0 - 1)
-    expect(resourceTotalOf(s1.players.p0, 'brick')).toBe(brick0 - 1)
+    expect(resourceTotalOf(s1.players.p0, 'brick')).toBe(brick0 - 2)
   })
 
   it('buildPiece with pay:false does NOT spend resources (manual override)', () => {

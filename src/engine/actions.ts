@@ -7,7 +7,6 @@
 
 import type { GameState, PlayerId, PlayerState, Phase, RegionSlot, ResourceType, Stat } from '../types'
 import { getCard } from '../data/cards'
-import { startingStored } from '../data/setup'
 import { makeRng, shuffle } from './rng'
 import type { EventFace } from './dice'
 
@@ -309,7 +308,10 @@ function parseRegionId(id: string): { resource: ResourceType; number: number | n
 /** Build a region slot from a region card id (new regions start at setup storage). */
 function makeRegionSlot(id: string): RegionSlot {
   const { resource, number } = parseRegionId(id)
-  return { cardId: id, resource, number, stored: startingStored(resource) }
+  // A region acquired DURING play (drawn / placed by building) starts EMPTY — you
+  // only collect from it on a matching roll. Only the fixed starting regions begin
+  // with 1 stored (that uses startingStored directly in newGame).
+  return { cardId: id, resource, number, stored: 0 }
 }
 
 /** An open landscape slot — created when a settlement is built, filled later by the player. */

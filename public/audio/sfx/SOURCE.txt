@@ -1,0 +1,4 @@
+Sound effects: "RPG Sound Pack" by artisticdude — CC0 (Public Domain).
+Source: https://opengameart.org/content/rpg-sound-pack
+Curated + renamed per game cue. No attribution required (CC0); credited here as courtesy.
+Played via src/audio/sfx.ts (samples through the master gain; synth fallback if a file is missing).

@@ -47,6 +47,7 @@ function audio(): AudioContext | null {
     master.gain.value = getAudio().sfxVol
     master.connect(ctx.destination)
     onAudioChange((p) => { if (master) master.gain.value = p.sfxVol }) // live SFX-volume changes
+    loadSamples(ctx) // begin fetching + decoding the recorded samples
   }
   if (ctx.state === 'suspended') void ctx.resume()
   return ctx
@@ -54,6 +55,43 @@ function audio(): AudioContext | null {
 /** The node every cue routes through — the master SFX gain (falls back to destination). */
 function out(): AudioNode {
   return master ?? ctx!.destination
+}
+
+// ── Recorded sample layer ─────────────────────────────────────────────────────
+// CC0 "RPG Sound Pack" (artisticdude, OpenGameArt) — richer than the pure synth.
+// Each voice that has a file in public/audio/sfx/ plays the sample; anything missing
+// (e.g. dice, deny) falls back to the synth voice below. Routed through the same master
+// gain so mute + SFX volume apply uniformly. Loaded + decoded once, on the first sound.
+const SAMPLE_VOICES: Sfx[] = [
+  'ui', 'flip', 'coin', 'build', 'place', 'hero', 'magic', 'water', 'menace',
+  'harvest', 'vp', 'token', 'festival', 'rotate', 'turn', 'action', 'sweep',
+]
+const buffers = new Map<Sfx, AudioBuffer>()
+let samplesRequested = false
+function loadSamples(ac: AudioContext): void {
+  if (samplesRequested) return
+  samplesRequested = true
+  const base = import.meta.env.BASE_URL
+  for (const v of SAMPLE_VOICES) {
+    fetch(`${base}audio/sfx/${v}.wav`)
+      .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject(new Error('404'))))
+      .then((b) => ac.decodeAudioData(b))
+      .then((buf) => buffers.set(v, buf))
+      .catch(() => { /* keep the synth fallback for this voice */ })
+  }
+}
+/** Play the recorded sample for a voice if one is loaded; returns false to fall back to synth. */
+function playSample(ac: AudioContext, kind: Sfx): boolean {
+  const buf = buffers.get(kind)
+  if (!buf) return false
+  const src = ac.createBufferSource()
+  src.buffer = buf
+  const g = ac.createGain()
+  g.gain.value = 0.8 // samples sit a touch under unity; sfxVol still scales via the master gain
+  src.connect(g)
+  g.connect(out())
+  src.start()
+  return true
 }
 
 /** A short pitched body with an envelope — the building block for most cues. */
@@ -120,6 +158,7 @@ export function playSfx(kind: Sfx): void {
   if (getAudio().muted) return
   const ac = audio()
   if (!ac) return
+  if (playSample(ac, kind)) return // recorded sample if loaded, else fall through to the synth
   const t = ac.currentTime
   switch (kind) {
     case 'rotate': // a soft wooden tick as the tile turns

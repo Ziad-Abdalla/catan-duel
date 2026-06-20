@@ -4,7 +4,7 @@ import { regionCardFor } from '../../data/cards'
 import { ResourceIcon } from '../CenterArt'
 import { useGame } from '../../store/gameStore'
 import { useUI } from '../../store/uiStore'
-import { playSfx } from '../../audio/sfx'
+import { playSfx, type Sfx } from '../../audio/sfx'
 import './region.css'
 
 // Terrain art lives in src/assets/regions/<resource>.webp (final art — read, never edited).
@@ -176,7 +176,11 @@ export function RegionTile({
   const step = (delta: number) => {
     const next = ((region.stored + delta + 4) % 4) as 0 | 1 | 2 | 3
     dispatch({ type: 'setStored', player, regionIndex: index, stored: next })
-    playSfx('rotate')
+    // Adding a resource plays its thematic gather cue (chop/shear/mine…); taking
+    // one off is a quiet wooden tick (well under the gather cue) so spending stays
+    // unobtrusive and never sounds like harvesting.
+    if (delta > 0) playSfx(`res-${region.resource}` as Sfx)
+    else playSfx('rotate', undefined, 0.35)
   }
 
   // click the LEFT half to take a resource off (−1), the RIGHT half to add one (+1)

@@ -1,5 +1,4 @@
-/* ===== Phase 3 — game-feel polish. Pure CSS, GPU-friendly transforms.
-   All motion is gated behind prefers-reduced-motion at the bottom. ===== */
+/* ===== Phase 3 — game-feel polish. Pure CSS, GPU-friendly transforms. ===== */
 
 /* dice roll: tumbling die during the suspense window */
 .pipdie.tumbling,
@@ -131,27 +130,6 @@
   100% { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .pipdie.tumbling,
-  .pipdie.settled,
-  .die.tumbling,
-  .die.settled,
-  .roll-event,
-  .mini,
-  .hand-card,
-  .pb-site-card,
-  .pb-seat,
-  .pb-road,
-  .pb-region,
-  .vp-num.bump,
-  .plate-vp.bump,
-  .turn-banner span,
-  .toast,
-  .gameover-card {
-    animation: none !important;
-  }
-}
-
 /* ── Card-deploy pop: a card scales in dramatically when first placed ──────── */
 .mini.deploy { animation: card-deploy 0.42s cubic-bezier(0.2, 1.25, 0.4, 1); }
 .foundation { animation: card-deploy 0.42s cubic-bezier(0.2, 1.25, 0.4, 1); }
@@ -159,9 +137,6 @@
   0% { transform: scale(0.55) translateY(10px) rotateX(35deg); opacity: 0; }
   60% { transform: scale(1.06) translateY(0) rotateX(0); opacity: 1; }
   100% { transform: scale(1); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .mini.deploy, .foundation { animation: none; }
 }
 
 /* ── Living water beneath placed ships ────────────────────────────────────── */
@@ -183,7 +158,6 @@
   0%, 100% { transform: translateY(0) scaleX(1); opacity: 0.55; }
   50% { transform: translateY(1.5px) scaleX(1.08); opacity: 0.8; }
 }
-@media (prefers-reduced-motion: reduce) { .mini-water { animation: none; } }
 
 /* ── Idle life + interaction polish (subtle — adds life without clutter) ────── */
 /* your hand cards lift on hover and dim their neighbours, so the hand feels alive */
@@ -211,9 +185,4 @@
 @keyframes vbanner-pulse {
   0%, 100% { box-shadow: 0 0 0 0 rgba(243, 215, 154, 0); }
   50% { box-shadow: 0 0 18px -2px rgba(243, 215, 154, 0.45); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .pmat.active, .vbanner { animation: none; }
-  .hand-card:hover { transform: none; }
 }

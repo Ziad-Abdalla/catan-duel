@@ -18,6 +18,14 @@ export type Sfx =
   | 'festival' // a bright jingle — celebrations, halls, abbeys
   | 'magic' // a shimmering arpeggio — inventions, universities
   | 'action' // a short parchment-and-chime flourish — one-shot action cards
+  // Per-resource "gather" cues — played when you ADD a resource to a region.
+  // Each maps to a thematic action: chop / kiln / shear / scythe / mine / coins.
+  | 'res-lumber' // axe chop into wood
+  | 'res-brick' // wet clay slap / kiln
+  | 'res-wool' // shears snipping
+  | 'res-grain' // scythe swish through wheat
+  | 'res-ore' // pickaxe striking stone
+  | 'res-gold' // coins / gold clink
 
 // Master mute lives in shared prefs; these wrappers keep existing callers working.
 export function isMuted(): boolean {
@@ -65,6 +73,8 @@ function out(): AudioNode {
 const SAMPLE_VOICES: Sfx[] = [
   'ui', 'flip', 'coin', 'build', 'place', 'hero', 'magic', 'water', 'menace',
   'harvest', 'vp', 'token', 'festival', 'rotate', 'turn', 'action', 'sweep',
+  // per-resource gather cues — drop your own files at public/audio/sfx/res-<resource>.wav
+  'res-lumber', 'res-brick', 'res-wool', 'res-grain', 'res-ore', 'res-gold',
 ]
 // Some voices have extra variants so repeated card types don't all sound identical;
 // a card's id deterministically picks one (so the same card always sounds the same).
@@ -97,8 +107,9 @@ function hash(s: string): number {
   return h >>> 0
 }
 /** Play the recorded sample for a voice if one is loaded; returns false to fall back to synth.
- *  `seed` (e.g. a card id) deterministically chooses among that voice's variants. */
-function playSample(ac: AudioContext, kind: Sfx, seed?: string): boolean {
+ *  `seed` (e.g. a card id) deterministically chooses among that voice's variants.
+ *  `vol` scales this one cue (1 = default) — used to soften incidental cues. */
+function playSample(ac: AudioContext, kind: Sfx, seed?: string, vol = 1): boolean {
   const variants = VARIANTS[kind]
   const stem = variants && seed ? variants[hash(seed) % variants.length] : kind
   const buf = buffers.get(stem) ?? buffers.get(kind)
@@ -106,7 +117,7 @@ function playSample(ac: AudioContext, kind: Sfx, seed?: string): boolean {
   const src = ac.createBufferSource()
   src.buffer = buf
   const g = ac.createGain()
-  g.gain.value = 0.8 // samples sit a touch under unity; sfxVol still scales via the master gain
+  g.gain.value = 0.8 * vol // samples sit a touch under unity; sfxVol still scales via the master gain
   src.connect(g)
   g.connect(out())
   src.start()
@@ -173,11 +184,11 @@ function noise(
   src.stop(at + opts.dur + 0.02)
 }
 
-export function playSfx(kind: Sfx, seed?: string): void {
+export function playSfx(kind: Sfx, seed?: string, vol = 1): void {
   if (getAudio().muted) return
   const ac = audio()
   if (!ac) return
-  if (playSample(ac, kind, seed)) return // recorded sample if loaded, else fall through to the synth
+  if (playSample(ac, kind, seed, vol)) return // recorded sample if loaded, else fall through to the synth
   const t = ac.currentTime
   switch (kind) {
     case 'rotate': // a soft wooden tick as the tile turns
@@ -267,6 +278,32 @@ export function playSfx(kind: Sfx, seed?: string): void {
       noise(ac, t, { dur: 0.09, gain: 0.07, freq: 3000, q: 0.5, type: 'highpass' })
       tone(ac, t + 0.02, { type: 'triangle', freq: 740, dur: 0.1, gain: 0.09 })
       tone(ac, t + 0.1, { type: 'triangle', freq: 988, dur: 0.14, gain: 0.08 })
+      break
+    // ── Per-resource gather fallbacks (placeholders until real recordings land) ──
+    case 'res-lumber': // axe chop: a sharp crack into a low woody thunk
+      noise(ac, t, { dur: 0.05, gain: 0.18, freq: 2200, q: 0.8, type: 'highpass' })
+      tone(ac, t, { type: 'sine', freq: 150, to: 60, dur: 0.16, gain: 0.26 })
+      break
+    case 'res-brick': // wet clay slap: a dull damp lowpass thud
+      noise(ac, t, { dur: 0.12, gain: 0.16, freq: 380, q: 0.5, type: 'lowpass' })
+      tone(ac, t, { type: 'sine', freq: 110, to: 70, dur: 0.12, gain: 0.16 })
+      break
+    case 'res-wool': // shears: two quick metallic snips
+      noise(ac, t, { dur: 0.04, gain: 0.12, freq: 4200, q: 1.4, type: 'highpass' })
+      noise(ac, t + 0.09, { dur: 0.04, gain: 0.1, freq: 4600, q: 1.4, type: 'highpass' })
+      break
+    case 'res-grain': // scythe: a swishy sweep through wheat
+      noise(ac, t, { dur: 0.18, gain: 0.12, freq: 2000, q: 0.5, type: 'bandpass' })
+      noise(ac, t + 0.06, { dur: 0.16, gain: 0.08, freq: 3000, q: 0.5, type: 'highpass' })
+      break
+    case 'res-ore': // pickaxe on stone: a bright metallic ping + grit
+      noise(ac, t, { dur: 0.05, gain: 0.12, freq: 3000, q: 1.2, type: 'highpass' })
+      tone(ac, t, { type: 'triangle', freq: 1240, to: 880, dur: 0.14, gain: 0.12 })
+      break
+    case 'res-gold': // coins: bright clinking
+      tone(ac, t, { type: 'triangle', freq: 1180, dur: 0.09, gain: 0.11 })
+      tone(ac, t + 0.06, { type: 'triangle', freq: 1560, dur: 0.1, gain: 0.09 })
+      tone(ac, t + 0.12, { type: 'triangle', freq: 1980, dur: 0.12, gain: 0.07 })
       break
   }
 }

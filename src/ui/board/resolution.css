@@ -365,6 +365,3 @@
   .rl-gutter { flex-direction: row; flex-wrap: wrap; justify-content: center; }
   .rl-stats-grid { grid-template-columns: 1fr; }
 }
-@media (prefers-reduced-motion: reduce) {
-  .rl-scrim, .rl-panel { animation: none; }
-}

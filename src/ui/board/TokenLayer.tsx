@@ -4,9 +4,6 @@ import { AdvantageToken } from './AdvantageToken'
 import { useGame } from '../../store/gameStore'
 import { playSfx } from '../../audio/sfx'
 
-const REDUCED = () =>
-  typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-
 const KEY = { hero: 'hasHeroToken', trade: 'hasTradeToken' } as const
 
 function useAdvantage(kind: 'hero' | 'trade') {
@@ -67,7 +64,7 @@ export function PlateToken({ kind, player }: { kind: 'hero' | 'trade'; player: P
   const mine = holder === player
 
   useEffect(() => {
-    if (mine && ref.current && !REDUCED()) {
+    if (mine && ref.current) {
       ref.current.animate(
         [
           { transform: 'translateY(-22px) scale(1.4) rotate(-12deg)', opacity: 0 },

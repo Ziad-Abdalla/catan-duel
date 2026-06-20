@@ -70,7 +70,3 @@
 .fl-event { --fl-accent: #bfe2f4; }
 .fl-event .fl-flash { background: radial-gradient(60% 60% at 50% 40%, rgba(140, 200, 255, 0.45), rgba(150, 130, 240, 0.2) 55%, transparent 74%); }
 .fl-event .fl-particle { color: #bfe2f4; text-shadow: 0 0 12px rgba(160, 210, 240, 0.9); }
-
-@media (prefers-reduced-motion: reduce) {
-  .fl-particle, .fl-flash, .fl-title { animation-duration: 0.5s; }
-}

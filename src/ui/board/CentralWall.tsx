@@ -7,9 +7,6 @@ import { useGame } from '../../store/gameStore'
 import { useUI } from '../../store/uiStore'
 import { playSfx } from '../../audio/sfx'
 
-const prefersReducedMotion = () =>
-  typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-
 const SET_LABEL: Record<'base' | 'gold' | 'turmoil' | 'progress', string> = {
   base: 'Basic',
   gold: 'Era of Gold',
@@ -42,7 +39,7 @@ export function CentralWall() {
     const top = stack?.[stack.length - 1]
     const art = top && cardArt(top)
     const handEl = document.getElementById('hand-target')
-    if (art && handEl && !prefersReducedMotion()) {
+    if (art && handEl) {
       const d = e.currentTarget.getBoundingClientRect()
       const h = handEl.getBoundingClientRect()
       addFlight({

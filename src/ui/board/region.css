@@ -209,11 +209,6 @@
   40% { filter: brightness(1.28) saturate(1.15); box-shadow: 0 0 0 3px rgba(243, 215, 154, 0.8), 0 9px 12px rgba(0, 0, 0, 0.5); }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .rt-card { transition: none; }
-  .rtile.produces .rt-card, .rt-card.flash { animation: none; }
-}
-
 /* subtle floating +N / −N when a region's stored count changes (one per change) */
 .rt-stage { position: relative; }
 .rt-float {
@@ -236,10 +231,6 @@
   25% { opacity: 1; transform: translate(-50%, -2px) scale(1.1); }
   100% { opacity: 0; transform: translate(-50%, -26px) scale(1); }
 }
-@media (prefers-reduced-motion: reduce) {
-  .rt-float { animation-duration: 0.5s; }
-}
-
 /* region swap: a small grip on the nameplate you drag onto another of your regions */
 .rt-grip {
   cursor: grab;

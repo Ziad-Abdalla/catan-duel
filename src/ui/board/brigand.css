@@ -52,7 +52,3 @@
   opacity: 0.85;
   margin-top: 4px;
 }
-@media (prefers-reduced-motion: reduce) {
-  .brigand-shade, .brigand-rider { animation-duration: 1.9s; animation-name: brigand-shade; }
-  .brigand-rider { transform: none; }
-}

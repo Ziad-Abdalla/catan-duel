@@ -54,17 +54,18 @@
 .sb-empty { opacity: 0.6; padding: 24px; }
 .sb-card {
   position: relative;
-  width: 92px;
+  width: clamp(116px, 12.5vw, 164px);
   padding: 0;
   border: 1px solid rgba(0, 0, 0, 0.4);
   border-radius: 8px;
   background: #0c1414;
   cursor: pointer;
-  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  transition: transform 0.14s ease, box-shadow 0.14s ease;
 }
 .sb-card img { width: 100%; border-radius: 7px; display: block; }
-.sb-card span { display: block; padding: 18px 6px; font-size: 0.7rem; }
-.sb-card:hover { transform: translateY(-4px) scale(1.04); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5); z-index: 2; }
+.sb-card span { display: block; padding: 18px 6px; font-size: 0.8rem; }
+/* hover lifts the card well clear so the printed art + numbers are readable before you take it */
+.sb-card:hover { transform: translateY(-8px) scale(1.5); box-shadow: 0 16px 36px rgba(0, 0, 0, 0.65); z-index: 5; }
 .sb-card.sb-top { outline: 2px solid var(--gold, #c8922a); }
 .sb-toptag {
   position: absolute; top: 3px; right: 3px;

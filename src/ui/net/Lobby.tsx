@@ -33,7 +33,9 @@ export function Lobby() {
 
   const [name, setName] = useState('')
   const [room, setRoom] = useState(q.room || randomCode())
-  const [seat, setSeat] = useState<PlayerId>('p0')
+  // Arriving via a shared ?room link means you're the joiner → default to Seat 2.
+  // (If you both still pick the same seat, the store auto-resolves it on connect.)
+  const [seat, setSeat] = useState<PlayerId>(q.room ? 'p1' : 'p0')
   const [kind, setKind] = useState<Kind>(q.kind)
 
   const start = () => {

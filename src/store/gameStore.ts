@@ -114,11 +114,21 @@ export const useGame = create<GameStore>((set, get) => {
           return { state: merged }
         })
         break
-      case 'hello':
+      case 'hello': {
         set((s) => ({ peers: { ...s.peers, [m.from]: { name: m.name, seat: m.seat } } }))
+        // Smart seat assignment: if the newcomer took the seat I'm on, the player with the
+        // larger client id politely slides to the open seat. Deterministic (both sides run
+        // it and agree), so two players who both picked "Player 1" auto-resolve to 1 & 2.
+        const myId = transport?.id
+        if (myId && m.seat === st.mySeat && myId > m.from) {
+          const moved: PlayerId = st.mySeat === 'p0' ? 'p1' : 'p0'
+          set({ mySeat: moved })
+          transport?.send({ t: 'hello', from: myId, name: st.myName, seat: moved })
+        }
         // someone joined → reply with our state so they sync to us
         broadcast(st.state, true)
         break
+      }
       case 'sync-request':
         broadcast(st.state, true)
         break

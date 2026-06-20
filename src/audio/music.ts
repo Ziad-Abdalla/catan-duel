@@ -91,30 +91,30 @@ function startSynth() {
 }
 
 // ── Ambient background music ─────────────────────────────────────────────────
-// A shuffled PLAYLIST of bundled CC0 medieval tracks that cycle one after another and
-// reshuffle each lap — variety, so it never gets repetitive (better than one short loop).
-// Low volume, on by default; on/off + volume live in shared prefs and yield to master mute.
-// Browsers only allow it to sound after the first user gesture (handled in AmbientMusic).
-// ~30 minutes of bundled CC0 medieval/folk tracks (archive.org public-domain collection):
-// tavern dances, courtly ayres, pavanes and epic pieces — shuffled for a long, varied bed.
-const PLAYLIST = [
-  'audio/bgm-1.mp3',
-  'audio/bgm-2.mp3',
-  'audio/bgm-3.mp3',
-  'audio/bgm-4.mp3',
-  'audio/bgm-5.mp3',
-  'audio/bgm-6.mp3',
-  'audio/bgm-7.mp3',
-  'audio/bgm-8.mp3',
-  'audio/bgm-9.mp3',
-  'audio/bgm-10.mp3',
-]
+// 18 bundled CC0 medieval/folk tracks (archive.org public-domain collection), grouped
+// into a mood-matched, shuffled playlist PER ERA — so the felt sounds different in the
+// intro vs Gold vs Turmoil vs Innovation vs the full Duel. Each era's list reshuffles
+// every lap so it never gets repetitive. On by default; on/off + volume in shared prefs.
+const ALL = Array.from({ length: 18 }, (_, i) => `audio/bgm-${i + 1}.mp3`)
+
+export type MusicEra = 'base' | 'gold' | 'turmoil' | 'progress' | 'duel'
+// indices into ALL, chosen by mood; lists overlap so each era has 5-6 tracks and never runs dry.
+const ERA_TRACKS: Record<MusicEra, number[]> = {
+  base: [0, 3, 2, 13, 17, 4], // intro: tavern dance, calm folk, renaissance airs
+  gold: [1, 7, 8, 14, 9, 15], // courtly + stately pavanes, dances, ayres
+  turmoil: [5, 6, 10, 12, 4], // tense + epic + sacre/dramatic
+  progress: [9, 11, 15, 16, 2], // bright baroque + concertino
+  duel: [5, 12, 6, 11, 1, 0], // epic mix for the full game
+}
+
 let ambEl: HTMLAudioElement | null = null
+let currentEra: MusicEra = 'base'
+let pool: number[] = ERA_TRACKS.base // the current era's track indices
 let order: number[] = []
 let pos = 0
 
 function reshuffle(): void {
-  order = PLAYLIST.map((_, i) => i)
+  order = pool.map((_, i) => i)
   for (let i = order.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
     ;[order[i], order[j]] = [order[j], order[i]]
@@ -124,7 +124,7 @@ function reshuffle(): void {
 
 function startTrack(): void {
   if (!ambEl) return
-  ambEl.src = `${import.meta.env.BASE_URL}${PLAYLIST[order[pos]]}`
+  ambEl.src = `${import.meta.env.BASE_URL}${ALL[pool[order[pos]]]}`
   ambEl.volume = getAudio().musicVol
   void ambEl.play().catch(() => {
     /* missing file / autoplay still blocked → stays silent until the next gesture */
@@ -137,9 +137,9 @@ function advance(): void {
   startTrack()
 }
 
-/** Start or resume the shuffled background playlist. No-op (and pauses) if music is off
- *  or muted. */
-export function playAmbient(): void {
+/** Start or resume the era's shuffled playlist. Pass an era to switch the music to that
+ *  era's mood (restarts with a fresh shuffle). No-op (and pauses) if music is off/muted. */
+export function playAmbient(era?: MusicEra): void {
   const p = getAudio()
   if (!p.musicOn || p.muted || typeof Audio === 'undefined') {
     stopAmbient()
@@ -151,6 +151,14 @@ export function playAmbient(): void {
     ambEl.onended = advance
   }
   ambEl.volume = p.musicVol
+  if (era && era !== currentEra) {
+    // era changed → swap to that era's mood and start a fresh track
+    currentEra = era
+    pool = ERA_TRACKS[era] ?? ERA_TRACKS.base
+    reshuffle()
+    startTrack()
+    return
+  }
   if (!ambEl.src) {
     reshuffle()
     startTrack()

@@ -21,7 +21,7 @@ test('background music plays + advances, controls work, SFX never error', async 
   // music is on by default → a gesture kicks off the playlist
   await page.mouse.click(700, 400)
   await page.waitForTimeout(1200)
-  expect(audioReqs.some((u) => /bgm-\d\.mp3/.test(u)), 'playlist track requested after gesture').toBeTruthy()
+  expect(audioReqs.some((u) => /bgm-\d+\.mp3/.test(u)), 'playlist track requested after gesture').toBeTruthy()
 
   // SFX-producing actions must fire without throwing (roll, build, upgrade, play, end turn)
   await page.evaluate(() => {

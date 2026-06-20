@@ -30,6 +30,7 @@ export type Action =
   // regions
   | { type: 'rotateRegion'; player: PlayerId; regionIndex: number } // cycle stored 0→1→2→3→0
   | { type: 'setStored'; player: PlayerId; regionIndex: number; stored: 0 | 1 | 2 | 3 }
+  | { type: 'swapRegions'; player: PlayerId; from: number; to: number } // exchange two region positions
   | { type: 'drawRegion'; player: PlayerId } // pop region stack → new region in the principality
   // cards
   | { type: 'drawToHand'; player: PlayerId; stackIndex: number }
@@ -438,6 +439,22 @@ function reduce(s: GameState, a: Action): GameState {
         }),
         a.player,
         `Set ${resLabel(r0.resource)} = ${a.stored}`,
+      )
+    }
+
+    case 'swapRegions': {
+      const regs = s.players[a.player].regions
+      if (a.from === a.to || a.from < 0 || a.to < 0 || a.from >= regs.length || a.to >= regs.length) return s
+      const ra = regs[a.from]
+      const rb = regs[a.to]
+      return logged(
+        withPlayer(s, a.player, (p) => {
+          const t = p.regions[a.from]
+          p.regions[a.from] = p.regions[a.to]
+          p.regions[a.to] = t
+        }),
+        a.player,
+        `Swapped ${resLabel(ra.resource)} ⇄ ${resLabel(rb.resource)}`,
       )
     }
 

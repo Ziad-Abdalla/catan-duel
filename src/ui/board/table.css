@@ -383,9 +383,9 @@
  * card (settlement-sized, aligned to its column) once a building is placed */
 .pb-site {
   width: var(--reg);
-  min-height: var(--site-empty);
-  border-radius: 9px;
-  border: 1.5px dashed rgba(243, 222, 178, 0.16);
+  aspect-ratio: 1; /* a proper SQUARE drop zone (not a thin strip) — easier to read + aim at */
+  border-radius: 11px;
+  border: 1.5px dashed rgba(243, 222, 178, 0.2);
   background: rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
@@ -394,7 +394,8 @@
   gap: 4px;
   transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s var(--ease-snap);
 }
-.pb-site.filled { border-color: transparent; background: transparent; min-height: 0; }
+/* once a card sits in it, it hugs the portrait card instead of staying a square */
+.pb-site.filled { border-color: transparent; background: transparent; aspect-ratio: auto; min-height: 0; }
 /* a settlement exposes 1 site per side, a city 2 — they stack within the seat column,
  * growing away from the spine (up-group upward, down-group downward). */
 .pb-sitegroup { width: var(--reg); display: flex; flex-direction: column; align-items: center; gap: 4px; }

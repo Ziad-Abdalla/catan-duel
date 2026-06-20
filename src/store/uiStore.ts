@@ -45,6 +45,9 @@ interface UIState {
   dragBuild: BuildKind | null
   /** A placed piece being dragged BACK off the board to remove it. */
   dragRemove: { placedIndex: number; player: 'p0' | 'p1' } | null
+  /** A region tile being dragged to swap positions with another of your own regions. */
+  dragRegion: { player: 'p0' | 'p1'; index: number } | null
+  setDragRegion: (r: { player: 'p0' | 'p1'; index: number } | null) => void
   selectedCardId: string | null
   flights: Flight[]
   zoom: Zoom | null
@@ -104,6 +107,8 @@ export const useUI = create<UIState>((set) => ({
   dragCardId: null,
   dragBuild: null,
   dragRemove: null,
+  dragRegion: null,
+  setDragRegion: (dragRegion) => set({ dragRegion }),
   selectedCardId: null,
   flights: [],
   zoom: null,

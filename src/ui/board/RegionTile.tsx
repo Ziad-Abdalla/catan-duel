@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from 'react'
+import { useEffect, useRef, useState, type MouseEvent as ReactMouseEvent, type DragEvent as ReactDragEvent } from 'react'
 import type { PlayerId, RegionSlot, ResourceType } from '../../types'
 import { regionCardFor } from '../../data/cards'
 import { ResourceIcon } from '../CenterArt'
@@ -83,8 +83,39 @@ export function RegionTile({
   const revealedRoll = useUI((s) => s.revealedRoll)
   const produces = !!revealedRoll && revealedRoll.turn === turn && rolledNumber === region.number
   const dragBuild = useUI((s) => s.dragBuild)
+  const dragRegion = useUI((s) => s.dragRegion)
+  const setDragRegion = useUI((s) => s.setDragRegion)
   const clearUI = useUI((s) => s.clear)
   const [over, setOver] = useState(false)
+  const [swapOver, setSwapOver] = useState(false)
+
+  // a region of YOURS being dragged here (and it isn't this same tile) → drop swaps them
+  const swapArmed = !!dragRegion && dragRegion.player === player && dragRegion.index !== index
+  const swapProps = {
+    onDragOver: swapArmed ? (e: ReactDragEvent) => { e.preventDefault(); setSwapOver(true) } : undefined,
+    onDragLeave: swapArmed ? () => setSwapOver(false) : undefined,
+    onDrop: swapArmed
+      ? (e: ReactDragEvent) => {
+          e.preventDefault()
+          setSwapOver(false)
+          dispatch({ type: 'swapRegions', player, from: dragRegion!.index, to: index })
+          playSfx('place')
+          setDragRegion(null)
+        }
+      : undefined,
+  }
+  const grip = (
+    <span
+      className="rt-grip"
+      draggable
+      title="Drag to swap this region with another of yours"
+      onDragStart={(e) => { e.stopPropagation(); e.dataTransfer.effectAllowed = 'move'; setDragRegion({ player, index }) }}
+      onDragEnd={() => setDragRegion(null)}
+      aria-label="Drag to swap region"
+    >
+      ⠿
+    </span>
+  )
 
   // Continuous rotation: derive the angle from `stored`, but always pick the
   // equivalent angle CLOSEST to the previous one so the tile spins the short way
@@ -157,7 +188,7 @@ export function RegionTile({
   const src = terrainSrc(region.resource)
 
   return (
-    <div className={`rtile${produces ? ' produces' : ''}`}>
+    <div className={`rtile${produces ? ' produces' : ''}${swapArmed ? ' swap-armed' : ''}${swapOver ? ' swap-over' : ''}`} {...swapProps}>
       <div className="rt-stage">
         <button
           type="button"
@@ -198,6 +229,7 @@ export function RegionTile({
         )}
       </div>
       <div className="rt-nameplate">
+        {grip}
         <span className="rt-name">{card.name}</span>
         <span className={`rt-count r-${region.resource}`}>{region.stored}<i>/3</i></span>
       </div>

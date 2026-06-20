@@ -239,3 +239,17 @@
 @media (prefers-reduced-motion: reduce) {
   .rt-float { animation-duration: 0.5s; }
 }
+
+/* region swap: a small grip on the nameplate you drag onto another of your regions */
+.rt-grip {
+  cursor: grab;
+  font-size: 12px;
+  line-height: 1;
+  color: rgba(243, 215, 154, 0.5);
+  padding: 0 4px;
+  user-select: none;
+}
+.rt-grip:hover { color: var(--gold, #e0b341); }
+.rt-grip:active { cursor: grabbing; }
+.rtile.swap-armed .rt-card { outline: 2px dashed rgba(243, 215, 154, 0.5); outline-offset: 2px; }
+.rtile.swap-over .rt-card { outline: 2px solid var(--gold, #e0b341); box-shadow: 0 0 18px rgba(200, 146, 42, 0.6); transform: scale(1.04); }

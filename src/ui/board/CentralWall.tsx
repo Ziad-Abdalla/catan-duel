@@ -28,7 +28,6 @@ export function CentralWall() {
   const over = state.phase === 'gameover'
 
   const addFlight = useUI((s) => s.addFlight)
-  const openResolve = useUI((s) => s.openResolve)
   const openStackBrowse = useUI((s) => s.openStackBrowse)
   const revealedRoll = useUI((s) => s.revealedRoll)
 
@@ -151,21 +150,14 @@ export function CentralWall() {
               <PipDie n={shown.production} />
               <span className="wo-evt-name">rolled {shown.production}</span>
             </div>
-            <div className="wo-actions">
-              <button className="wbtn wbtn-sm" onClick={() => { dispatch({ type: 'applyProduction' }); playSfx('place') }}>
-                Produce {shown.production}
-              </button>
-              <button
-                className="wbtn wbtn-sm wbtn-resolve"
-                title="Open the resolution panel for this event"
-                onClick={() => openResolve({ player: active, from: 'event', event: shown.event as EventFace })}
-              >
-                Resolve {EVENT_NAME[shown.event as EventFace]}
-              </button>
-              {shown.event === 'event-card' && (
+            {/* Production + event effects are applied BY HAND (rotate your regions, resolve the
+                event yourselves) — per owner. Only the event-card draw stays, since drawing is
+                its own action that pops the card up for both players. */}
+            {shown.event === 'event-card' && (
+              <div className="wo-actions">
                 <button className="wbtn wbtn-sm" onClick={drawEvent}>Draw event card</button>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         ) : (
           <span className="wo-pending">rolled this turn</span>

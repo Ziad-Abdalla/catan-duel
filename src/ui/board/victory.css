@@ -91,3 +91,22 @@
 .celebrate-trophy { font-size: 84px; line-height: 1; filter: drop-shadow(0 6px 18px rgba(243, 215, 154, 0.5)); }
 .celebrate-name { font-family: 'Cinzel', Georgia, serif; font-size: 40px; margin: 10px 0 4px; color: #f3d79a; }
 .celebrate-sub { font-family: 'IM Fell English', Georgia, serif; font-size: 16px; opacity: 0.85; margin: 0 0 22px; }
+
+/* falling confetti on the victory screen — a proper celebration */
+.celebrate-confetti { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 1; }
+.cf-piece {
+  position: absolute;
+  top: -6vh;
+  width: 10px;
+  height: 14px;
+  border-radius: 2px;
+  opacity: 0.95;
+  will-change: transform;
+  animation: cf-fall var(--cf-dur, 3s) linear var(--cf-d, 0s) infinite;
+}
+@keyframes cf-fall {
+  0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+  8% { opacity: 0.95; }
+  100% { transform: translate(calc(var(--cf-x, 0) * 4vw), 112vh) rotate(var(--cf-r, 360deg)); opacity: 0.9; }
+}
+@media (prefers-reduced-motion: reduce) { .cf-piece { animation: none; display: none; } }

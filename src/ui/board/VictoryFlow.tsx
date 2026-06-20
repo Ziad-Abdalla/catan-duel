@@ -20,6 +20,22 @@ function Celebration({ winner }: { winner: PlayerId }) {
   return (
     <div className="celebrate" role="alertdialog" aria-label="Victory">
       <div className="celebrate-rays" aria-hidden />
+      <div className="celebrate-confetti" aria-hidden>
+        {Array.from({ length: 40 }, (_, i) => (
+          <span
+            key={i}
+            className="cf-piece"
+            style={{
+              left: `${(i * 2.5) % 100}%`,
+              ['--cf-d' as string]: `${(i % 10) * 0.18}s`,
+              ['--cf-x' as string]: `${((i * 53) % 11) - 5}`,
+              ['--cf-r' as string]: `${(i % 2 ? 1 : -1) * (360 + (i % 4) * 180)}deg`,
+              ['--cf-dur' as string]: `${2.4 + ((i * 7) % 16) / 10}s`,
+              background: ['#e0b341', '#c75c54', '#5a86c4', '#7fd99a', '#ffd9f0', '#f3d79a'][i % 6],
+            }}
+          />
+        ))}
+      </div>
       <div className="celebrate-card">
         <div className="celebrate-trophy" aria-hidden>🏆</div>
         <h2 className="celebrate-name">{name} wins!</h2>

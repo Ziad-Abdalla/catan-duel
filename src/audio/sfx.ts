@@ -66,23 +66,42 @@ const SAMPLE_VOICES: Sfx[] = [
   'ui', 'flip', 'coin', 'build', 'place', 'hero', 'magic', 'water', 'menace',
   'harvest', 'vp', 'token', 'festival', 'rotate', 'turn', 'action', 'sweep',
 ]
-const buffers = new Map<Sfx, AudioBuffer>()
+// Some voices have extra variants so repeated card types don't all sound identical;
+// a card's id deterministically picks one (so the same card always sounds the same).
+const VARIANTS: Partial<Record<Sfx, string[]>> = {
+  hero: ['hero', 'hero-2', 'hero-3'],
+  menace: ['menace', 'menace-2'],
+  magic: ['magic', 'magic-2'],
+  coin: ['coin', 'coin-2'],
+  build: ['build', 'build-2'],
+}
+const buffers = new Map<string, AudioBuffer>() // keyed by file stem (voice or 'voice-2')
 let samplesRequested = false
 function loadSamples(ac: AudioContext): void {
   if (samplesRequested) return
   samplesRequested = true
   const base = import.meta.env.BASE_URL
-  for (const v of SAMPLE_VOICES) {
-    fetch(`${base}audio/sfx/${v}.wav`)
+  const stems = new Set<string>(SAMPLE_VOICES as string[])
+  for (const list of Object.values(VARIANTS)) for (const s of list ?? []) stems.add(s)
+  for (const stem of stems) {
+    fetch(`${base}audio/sfx/${stem}.wav`)
       .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject(new Error('404'))))
       .then((b) => ac.decodeAudioData(b))
-      .then((buf) => buffers.set(v, buf))
+      .then((buf) => buffers.set(stem, buf))
       .catch(() => { /* keep the synth fallback for this voice */ })
   }
 }
-/** Play the recorded sample for a voice if one is loaded; returns false to fall back to synth. */
-function playSample(ac: AudioContext, kind: Sfx): boolean {
-  const buf = buffers.get(kind)
+function hash(s: string): number {
+  let h = 2166136261
+  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) }
+  return h >>> 0
+}
+/** Play the recorded sample for a voice if one is loaded; returns false to fall back to synth.
+ *  `seed` (e.g. a card id) deterministically chooses among that voice's variants. */
+function playSample(ac: AudioContext, kind: Sfx, seed?: string): boolean {
+  const variants = VARIANTS[kind]
+  const stem = variants && seed ? variants[hash(seed) % variants.length] : kind
+  const buf = buffers.get(stem) ?? buffers.get(kind)
   if (!buf) return false
   const src = ac.createBufferSource()
   src.buffer = buf
@@ -154,11 +173,11 @@ function noise(
   src.stop(at + opts.dur + 0.02)
 }
 
-export function playSfx(kind: Sfx): void {
+export function playSfx(kind: Sfx, seed?: string): void {
   if (getAudio().muted) return
   const ac = audio()
   if (!ac) return
-  if (playSample(ac, kind)) return // recorded sample if loaded, else fall through to the synth
+  if (playSample(ac, kind, seed)) return // recorded sample if loaded, else fall through to the synth
   const t = ac.currentTime
   switch (kind) {
     case 'rotate': // a soft wooden tick as the tile turns

@@ -24,7 +24,7 @@ export function ShowcasePopup() {
   const open = !!id && !!card && nonce !== seen
 
   useEffect(() => {
-    if (open && id) playSfx(cardSfx(id))
+    if (open && id) playSfx(cardSfx(id), id)
   }, [open, nonce, id])
 
   // auto-dismiss after a few seconds so it never blocks the player who played the card;

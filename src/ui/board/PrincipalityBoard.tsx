@@ -188,7 +188,7 @@ function Site({
     // Honour the global auto-pay toggle — on by default so face-up buildings actually
     // spend their cost; off lets you place freely in the manual sandbox.
     dispatch({ type: 'playCard', player, cardId, slot, pay: payCosts })
-    playSfx(cardSfx(cardId)) // thematic cue for what was played (ship→water, hero→flourish…)
+    playSfx(cardSfx(cardId), cardId) // thematic cue (ship→water, hero→sword…), varied per card
     clear()
   }
   // Dropping a piece you dragged off the board (dragRemove) into an empty site MOVES it.

@@ -68,7 +68,7 @@ export function CardZoom() {
     dispatch({ type: 'playCard', player: zoom.player, cardId: zoom.cardId, slot, pay })
     // show BOTH players the card that was just played (big popup, dismissed per-player)
     dispatch({ type: 'showcaseCard', player: zoom.player, cardId: zoom.cardId })
-    playSfx(cardSfx(zoom.cardId)) // one thematic cue per play (no stacked coin+thunk)
+    playSfx(cardSfx(zoom.cardId), zoom.cardId) // one thematic cue per play, varied per card
     closeZoom()
   }
   // Manually show this card big to both players (without playing it).

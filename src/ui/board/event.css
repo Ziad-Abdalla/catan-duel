@@ -91,3 +91,31 @@
   transition: background 0.14s ease, transform 0.12s ease;
 }
 .evpop-close:hover { background: rgba(168, 48, 46, 0.6); transform: scale(1.08); color: #fff; }
+
+/* ── card showcase popup (a played/shown card, big, for BOTH players) ───────── */
+.sc-scrim { z-index: 97; }
+.sc-pop {
+  position: relative;
+  background: linear-gradient(180deg, #1d2b2c, #14201f);
+  border: 1px solid rgba(243, 215, 154, 0.4);
+  border-radius: 16px;
+  padding: 16px 18px 18px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  max-width: min(94vw, 420px);
+  animation: sc-in 0.28s cubic-bezier(0.2, 1.1, 0.3, 1) both;
+}
+@keyframes sc-in { from { opacity: 0; transform: scale(0.86) translateY(8px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+.sc-banner {
+  font-family: var(--font-head, Georgia, serif);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #f3d79a;
+}
+.sc-card { width: clamp(220px, 64vw, 330px); }
+.sc-card .cv { width: 100%; }
+.cz-show { background: rgba(127, 200, 230, 0.16) !important; border-color: rgba(127, 200, 230, 0.5) !important; }

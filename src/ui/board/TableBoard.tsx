@@ -19,6 +19,7 @@ import { DiceEventCue } from './DiceEventCue'
 import { EventFlourish } from './EventFlourish'
 import { AmbientMusic } from './AmbientMusic'
 import { EventPopup } from './EventPopup'
+import { ShowcasePopup } from './ShowcasePopup'
 import { TableNav } from './TableNav'
 import { VictoryFlow } from './VictoryFlow'
 import { ConnectionBar } from '../net/ConnectionBar'
@@ -79,6 +80,7 @@ export function TableBoard({ mode, setMode }: { mode: AppMode; setMode: (m: AppM
       <ResolutionPanel />
       <AuditLog />
       <EventPopup />
+      <ShowcasePopup />
       <VictoryFlow />
       <AdvantageAudio />
       <BrigandSequence />

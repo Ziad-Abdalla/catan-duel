@@ -66,7 +66,15 @@ export function CardZoom() {
     // The engine spends the cost when pay=true (no manual subtraction here — that
     // would double-charge). pay=false just places it (manual "show your friend").
     dispatch({ type: 'playCard', player: zoom.player, cardId: zoom.cardId, slot, pay })
+    // show BOTH players the card that was just played (big popup, dismissed per-player)
+    dispatch({ type: 'showcaseCard', player: zoom.player, cardId: zoom.cardId })
     playSfx(cardSfx(zoom.cardId)) // one thematic cue per play (no stacked coin+thunk)
+    closeZoom()
+  }
+  // Manually show this card big to both players (without playing it).
+  const showOpponent = () => {
+    dispatch({ type: 'showcaseCard', player: zoom.player, cardId: zoom.cardId })
+    playSfx('flip')
     closeZoom()
   }
   const exchange = (stackIndex: number) => {
@@ -107,6 +115,7 @@ export function CardZoom() {
           <CardView card={card} requirementMet={met} costMet={costMet} />
         </div>
         <div className="cardzoom-actions">
+          <button className="cz-btn cz-show" onClick={showOpponent} title="Show this card big to both players">📢 Show opponent</button>
           {zoom.from === 'build' ? (
             <>
               <p className="cz-hint">Drag this onto the board to place it. Settlements go at either end,

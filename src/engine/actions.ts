@@ -57,6 +57,8 @@ export type Action =
   // misc
   | { type: 'renamePlayer'; player: PlayerId; name: string }
   | { type: 'setAvatar'; player: PlayerId; avatar: string }
+  | { type: 'showcaseCard'; player: PlayerId; cardId: string } // show a card big to BOTH players
+  | { type: 'dismissShowcase' }
   // scoring
   | { type: 'adjustVP'; player: PlayerId; delta: number }
   | { type: 'setToken'; player: PlayerId | null; token: AdvantageToken }
@@ -715,6 +717,16 @@ function reduce(s: GameState, a: Action): GameState {
 
     case 'dismissEvent':
       return s.revealedEvent ? { ...s, revealedEvent: undefined } : s
+
+    case 'showcaseCard':
+      return logged(
+        { ...s, showcase: a.cardId, showcaseNonce: (s.showcaseNonce ?? 0) + 1 },
+        a.player,
+        `Showed ${getCard(a.cardId)?.name ?? a.cardId}`,
+      )
+
+    case 'dismissShowcase':
+      return s.showcase ? { ...s, showcase: undefined } : s
 
     case 'drawFromDiscard': {
       if (s.discard.length === 0) return s

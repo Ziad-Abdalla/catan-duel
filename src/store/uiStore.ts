@@ -63,6 +63,9 @@ interface UIState {
    *  event popup without closing the other player's (online). */
   seenEventNonce: number
   markEventSeen: (nonce: number) => void
+  /** Same idea for the "showcase" popup (a card shown to both players). */
+  seenShowcaseNonce: number
+  markShowcaseSeen: (nonce: number) => void
   /** Two physical dice tumbling at a random spot on the felt (viewport %). */
   dice: { id: number; x: number; y: number; prod: number; event: string; phase: 'tumble' | 'settle' | 'fade' } | null
   /** The collapsible action-history ledger (audit log) sidebar. */
@@ -118,6 +121,8 @@ export const useUI = create<UIState>((set) => ({
   fireEventFx: (face) => set({ eventFx: { face, key: ++eventFxKey } }),
   seenEventNonce: 0,
   markEventSeen: (nonce) => set({ seenEventNonce: nonce }),
+  seenShowcaseNonce: 0,
+  markShowcaseSeen: (nonce) => set({ seenShowcaseNonce: nonce }),
   dice: null,
   auditOpen: false,
   toggleAudit: () => set((s) => ({ auditOpen: !s.auditOpen })),

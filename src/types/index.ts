@@ -143,6 +143,10 @@ export interface GameState {
   /** Increments on every reveal, so each client can dismiss its OWN popup independently
    *  (local `seenEventNonce`) without closing it for the other player. */
   eventNonce?: number
+  /** A card a player chose to SHOW to both players (an action they played, or a manual
+   *  "show opponent") — a big read-only popup, dismissed per-player like an event. */
+  showcase?: string
+  showcaseNonce?: number
   log: LogEntry[]
   enabledSets: SetId[]
   /** VP needed to win: 7 intro · 12 single theme · 13 Duel of the Princes · adjustable. */

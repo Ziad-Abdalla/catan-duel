@@ -53,9 +53,11 @@ All work below is committed + pushed to `Ziad-Abdalla/catan-duel` master; 142 un
 - **Compound requirements** — `requirementMet` evaluates "City and (Abbey or Library)" style clauses.
 - **Building-card size** bumped for readability.
 
-## Genuinely optional (future polish, not blocking)
-- Real one-shot SFX files to augment the synth palette (synth already covers every action + the
-  full-screen event flourishes); per-hero unique persona cues.
+## Everything is WIRED INTO THE LIVE GAME (nothing optional)
+- Real recorded CC0 SFX for every action are downloaded + wired (`public/audio/sfx/*.wav`), with per-card
+  variety (hero/menace/magic/coin) chosen by card id; the synth is only a one-shot fallback before decode.
+- The ONLY thing not bundled is the specific copyrighted victory song (legal constraint, not a choice) —
+  a fitting CC0 victory track plays instead, with a drop-in at `public/audio/victory.mp3` for your own file.
 
 Gate at HEAD `6203639`: 142 unit tests + production build green; e2e (every reducer, random orders,
 all eras, UI flows, audio) all green with 0 console errors.

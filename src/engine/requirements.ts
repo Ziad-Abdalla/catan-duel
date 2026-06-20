@@ -25,10 +25,31 @@ function hasHeroWithStrength(s: GameState, player: PlayerId): boolean {
 
 /**
  * @returns true (met) / false (not met) / null (can't tell — e.g. "card placement rules").
+ * Handles compound "X and Y" prerequisites (e.g. "City and (Abbey or Library)") by requiring
+ * EVERY and-clause to be met. Trust-based: this only drives the UI hint, never blocks a play.
  */
 export function requirementMet(card: Card, s: GameState, player: PlayerId): boolean | null {
   const req = requirementOf(card)
   if (!req) return null
+  // split on " and " (outside the "fewer VP" escape) → all clauses must be met
+  const clauses = req
+    .replace(/[()]/g, '')
+    .split(/\band\b/i)
+    .map((c) => c.trim())
+    .filter(Boolean)
+  if (clauses.length > 1) {
+    let anyNull = false
+    for (const c of clauses) {
+      const r = evalClause(c, s, player)
+      if (r === false) return false
+      if (r === null) anyNull = true
+    }
+    return anyNull ? null : true
+  }
+  return evalClause(req, s, player)
+}
+
+function evalClause(req: string, s: GameState, player: PlayerId): boolean | null {
   const r = req.toLowerCase()
   const opp: PlayerId = player === 'p0' ? 'p1' : 'p0'
   const me = computeStats(s.players[player])

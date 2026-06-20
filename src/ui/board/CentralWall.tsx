@@ -1,6 +1,6 @@
 import { type MouseEvent as ReactMouseEvent } from 'react'
 import { EVENT_TEXT, type EventFace } from '../../engine/dice'
-import { cardArt, getCard } from '../../data/cards'
+import { cardArt } from '../../data/cards'
 import { AdvantageControl } from './TokenLayer'
 import { PipDie, EventSymbol, EVENT_COLOR, EVENT_NAME } from './diceart'
 import { useGame } from '../../store/gameStore'
@@ -64,11 +64,11 @@ export function CentralWall() {
     dispatch({ type: 'drawEvent' })
   }
 
-  /** Draw the top of the shared discard pile into the active player's hand. */
-  const drawFromDiscard = () => {
+  const setDiscardOpen = useUI((s) => s.setDiscardOpen)
+  /** Open the discard pile to look through it and take ANY card (not just the top). */
+  const openDiscard = () => {
     if (state.discard.length === 0) return
-    dispatch({ type: 'drawFromDiscard', player: active })
-    playSfx('flip')
+    setDiscardOpen(true)
   }
 
   return (
@@ -120,10 +120,10 @@ export function CentralWall() {
           disabled={state.discard.length === 0 || over}
           title={
             state.discard.length
-              ? `Discard pile — draw the top card (${getCard(state.discard[state.discard.length - 1])?.name ?? '?'}) to ${state.players[active].name}`
+              ? `Discard pile (${state.discard.length}) — look through it and take any card`
               : 'Discard pile (empty)'
           }
-          onClick={drawFromDiscard}
+          onClick={openDiscard}
         >
           <span className="cs-face">♺</span>
           <span className="cs-count">{state.discard.length}</span>

@@ -83,6 +83,9 @@ interface UIState {
   stackBrowse: number | null
   openStackBrowse: (i: number) => void
   closeStackBrowse: () => void
+  /** Whether the discard-pile browser is open (look through it, take any card). */
+  discardOpen: boolean
+  setDiscardOpen: (v: boolean) => void
   /** A player briefly flashed with a negative cue (e.g. just lost an advantage). */
   negativeCue: PlayerId | null
   flashNegative: (player: PlayerId) => void
@@ -133,6 +136,8 @@ export const useUI = create<UIState>((set) => ({
   stackBrowse: null,
   openStackBrowse: (i) => set({ stackBrowse: i }),
   closeStackBrowse: () => set({ stackBrowse: null }),
+  discardOpen: false,
+  setDiscardOpen: (discardOpen) => set({ discardOpen }),
   negativeCue: null,
   flashNegative: (player) => {
     set({ negativeCue: player })

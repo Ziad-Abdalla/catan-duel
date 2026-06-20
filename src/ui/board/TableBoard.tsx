@@ -11,6 +11,7 @@ import { FlightLayer } from './FlightLayer'
 import { DiceLayer } from './DiceLayer'
 import { CardZoom } from './CardZoom'
 import { StackBrowser } from './StackBrowser'
+import { DiscardBrowser } from './DiscardBrowser'
 import { ResolutionPanel } from './ResolutionPanel'
 import { AuditLog } from './AuditLog'
 import { AdvantageAudio } from './AdvantageAudio'
@@ -77,6 +78,7 @@ export function TableBoard({ mode, setMode }: { mode: AppMode; setMode: (m: AppM
       <DiceLayer />
       <CardZoom />
       <StackBrowser />
+      <DiscardBrowser />
       <ResolutionPanel />
       <AuditLog />
       <EventPopup />

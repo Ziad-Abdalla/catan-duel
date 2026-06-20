@@ -50,10 +50,10 @@
   animation: piece-drop 0.4s var(--ease-spring) both;
 }
 @keyframes piece-drop {
-  0% { opacity: 0; transform: translateY(-22px) scale(1.14); }
+  0% { opacity: 0; transform: translateY(-22px) scale(1.14); filter: drop-shadow(0 0 16px rgba(243, 215, 154, 0.95)); }
   60% { opacity: 1; }
-  78% { transform: translateY(0) scale(0.97); }
-  100% { transform: translateY(0) scale(1); }
+  78% { transform: translateY(0) scale(0.97); filter: drop-shadow(0 0 9px rgba(243, 215, 154, 0.5)); }
+  100% { transform: translateY(0) scale(1); filter: drop-shadow(0 0 0 rgba(243, 215, 154, 0)); }
 }
 /* the travelling advantage token lands with a little bounce shadow */
 .travel-token { transition: filter 0.2s ease; }

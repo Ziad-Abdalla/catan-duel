@@ -33,15 +33,20 @@ export function AuditLog() {
       </header>
       <ol className="audit-list" role="log" aria-live="polite" aria-relevant="additions" aria-label="Game action history">
         {log.length === 0 && <li className="audit-empty">No actions yet.</li>}
-        {log.map((e, i) => (
-          <li key={i} className={`audit-row seat-${e.player}${e.manual ? ' manual' : ''}`}>
-            <span className="audit-turn">T{e.turn}</span>
-            <span className="audit-who" style={{ color: e.player === 'p0' ? 'var(--p1-red, #c75c54)' : 'var(--p2-blue, #5a86c4)' }}>
-              {names[e.player]}
-            </span>
-            <span className="audit-text">{e.text}</span>
-          </li>
-        ))}
+        {log.map((e, i) => {
+          const newTurn = i === 0 || log[i - 1].turn !== e.turn
+          return (
+            <li key={i} className={`audit-row seat-${e.player}${e.manual ? ' manual' : ''}${newTurn ? ' turn-start' : ''}`}>
+              {newTurn && <span className="audit-turnhead">Turn {e.turn}</span>}
+              <span className="audit-line">
+                <span className="audit-who" style={{ color: e.player === 'p0' ? 'var(--p1-red, #c75c54)' : 'var(--p2-blue, #5a86c4)' }}>
+                  {names[e.player]}
+                </span>
+                <span className="audit-text">{e.text}</span>
+              </span>
+            </li>
+          )
+        })}
         <li ref={endRef} aria-hidden className="audit-end" />
       </ol>
     </aside>

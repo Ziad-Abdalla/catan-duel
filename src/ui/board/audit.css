@@ -56,15 +56,30 @@
   font-size: 13px;
 }
 .audit-row {
-  display: grid;
-  grid-template-columns: 28px auto 1fr;
+  display: block;
+  padding: 3px 14px;
+  font-size: 13px;
+}
+.audit-row.turn-start { margin-top: 4px; }
+/* one header per turn, so the log reads turn-by-turn instead of repeating T1 on every line */
+.audit-turnhead {
+  display: block;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #b59b5e;
+  margin: 7px 0 3px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(243, 215, 154, 0.14);
+}
+.audit-row.turn-start:first-child .audit-turnhead { border-top: 0; margin-top: 0; }
+.audit-line {
+  display: flex;
   gap: 8px;
   align-items: baseline;
-  padding: 5px 14px;
-  font-size: 13px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  padding: 2px 0;
 }
-.audit-row.manual { background: rgba(243, 215, 154, 0.06); }
-.audit-turn { color: #8a7f66; font-size: 11px; }
-.audit-who { font-weight: 600; white-space: nowrap; font-size: 12px; }
+.audit-row.manual .audit-line { background: rgba(243, 215, 154, 0.06); border-radius: 5px; padding: 2px 6px; margin: 0 -6px; }
+.audit-who { font-weight: 600; white-space: nowrap; font-size: 12px; flex: none; }
 .audit-text { color: #e4dac3; }

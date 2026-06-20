@@ -425,7 +425,7 @@ function reduce(s: GameState, a: Action): GameState {
           p.regions[a.regionIndex].stored = next
         }),
         a.player,
-        `${resLabel(r0.resource)} → ${next}`,
+        `${r0.stored}→${next} ${resLabel(r0.resource)}`,
       )
     }
 
@@ -438,7 +438,7 @@ function reduce(s: GameState, a: Action): GameState {
           if (r) r.stored = a.stored
         }),
         a.player,
-        `Set ${resLabel(r0.resource)} = ${a.stored}`,
+        `${r0.stored}→${a.stored} ${resLabel(r0.resource)}`,
       )
     }
 

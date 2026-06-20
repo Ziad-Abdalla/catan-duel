@@ -143,6 +143,17 @@ export function TableHud({ mode, setMode }: { mode: AppMode; setMode: (m: AppMod
       >
         {muted ? '🔇' : '🔊'}
       </button>
+      <button
+        className="hud-btn"
+        title="Toggle fullscreen (optional — the table fits without it too)"
+        onClick={() => {
+          if (document.fullscreenElement) void document.exitFullscreen()
+          else void document.documentElement.requestFullscreen?.()
+          playSfx('ui')
+        }}
+      >
+        ⛶
+      </button>
       {!online && (
         <button className="hud-btn" title="Start a new game" onClick={() => newHotseat({ p0Name: names.p0, p1Name: names.p1 })}>⟳ New</button>
       )}

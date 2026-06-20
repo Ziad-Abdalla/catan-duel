@@ -56,8 +56,9 @@ function fanfare() {
 
 /** Loop the celebration music — owner mp3 if present, else the synth fanfare. */
 export function playVictoryMusic(): void {
+  stopVictoryMusic() // never stack two celebrations (fixes "victory sound stuck on replay")
+  stopAmbient() // duck the background bed while the fanfare plays
   if (isMuted()) return
-  stopVictoryMusic()
   if (typeof Audio !== 'undefined') {
     try {
       if (!mp3) {
@@ -178,8 +179,13 @@ export function stopVictoryMusic(): void {
     loop = null
   }
   try {
-    mp3?.pause()
+    if (mp3) {
+      mp3.pause()
+      mp3.currentTime = 0 // reset so a replay restarts it cleanly instead of stacking/sticking
+    }
   } catch {
     /* ignore */
   }
+  // bring the background bed back once the celebration ends
+  playAmbient()
 }

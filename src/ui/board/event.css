@@ -70,3 +70,24 @@
   cursor: pointer;
 }
 .evpop-ok:hover { background: #efc457; }
+
+/* explicit close button — the only way to dismiss (no click-outside), per player */
+.evpop { position: relative; }
+.evpop-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid rgba(243, 215, 154, 0.4);
+  background: rgba(0, 0, 0, 0.35);
+  color: #f3d79a;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background 0.14s ease, transform 0.12s ease;
+}
+.evpop-close:hover { background: rgba(168, 48, 46, 0.6); transform: scale(1.08); color: #fff; }

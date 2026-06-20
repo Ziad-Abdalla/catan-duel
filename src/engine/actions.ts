@@ -685,14 +685,15 @@ function reduce(s: GameState, a: Action): GameState {
       const name = getCard(id)?.name ?? id
       // `revealedEvent` is part of the synced snapshot, so the pop-up appears on
       // BOTH screens simultaneously.
+      const nonce = (s.eventNonce ?? 0) + 1
       if (id === YULE_ID) {
         // Yule/festival: reshuffle the rest and re-seat Yule 4th from the bottom.
         // Deterministic (seeded by seq) so both online clients stay in sync.
         const reshuffled = shuffle(eventDeck, makeRng((s.seq + 1) ^ 0x59c1e))
-        return logged({ ...s, eventDeck: seatYule(reshuffled), revealedEvent: id }, s.activePlayer, `Event: ${name}`)
+        return logged({ ...s, eventDeck: seatYule(reshuffled), revealedEvent: id, eventNonce: nonce }, s.activePlayer, `Event: ${name}`)
       }
       eventDeck.unshift(id) // other events cycle to the bottom after resolving
-      return logged({ ...s, eventDeck, revealedEvent: id }, s.activePlayer, `Event: ${name}`)
+      return logged({ ...s, eventDeck, revealedEvent: id, eventNonce: nonce }, s.activePlayer, `Event: ${name}`)
     }
 
     case 'dismissEvent':

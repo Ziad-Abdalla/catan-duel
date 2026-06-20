@@ -56,6 +56,10 @@ interface UIState {
    *  the dice settle AND when a card forces that effect. `key` bumps so it always re-fires. */
   eventFx: { face: EventFace; key: number } | null
   fireEventFx: (face: EventFace) => void
+  /** The reveal nonce this client has dismissed locally — so each player closes their OWN
+   *  event popup without closing the other player's (online). */
+  seenEventNonce: number
+  markEventSeen: (nonce: number) => void
   /** Two physical dice tumbling at a random spot on the felt (viewport %). */
   dice: { id: number; x: number; y: number; prod: number; event: string; phase: 'tumble' | 'settle' | 'fade' } | null
   /** The collapsible action-history ledger (audit log) sidebar. */
@@ -107,6 +111,8 @@ export const useUI = create<UIState>((set) => ({
   revealedRoll: null,
   eventFx: null,
   fireEventFx: (face) => set({ eventFx: { face, key: ++eventFxKey } }),
+  seenEventNonce: 0,
+  markEventSeen: (nonce) => set({ seenEventNonce: nonce }),
   dice: null,
   auditOpen: false,
   toggleAudit: () => set((s) => ({ auditOpen: !s.auditOpen })),

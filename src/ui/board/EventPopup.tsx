@@ -1,31 +1,38 @@
 import { useEffect } from 'react'
 import { getCard, cardArt } from '../../data/cards'
 import { useGame } from '../../store/gameStore'
+import { useUI } from '../../store/uiStore'
 import { playSfx } from '../../audio/sfx'
 import './event.css'
 
 /**
- * Simultaneous event resolution. When an event card is drawn, `state.revealedEvent`
- * is part of the synced snapshot, so this pop-up appears on BOTH players' screens at
- * once. It shows ONLY the drawn card's own rule text — no scrolling or hunting through
- * a rules sheet. Dismissing is shared too, so both sides clear together.
+ * Simultaneous event resolution. When an event is drawn, `state.revealedEvent` +
+ * `state.eventNonce` are part of the synced snapshot, so this pop-up appears on BOTH
+ * players' screens at once. Dismissal is LOCAL (each client records the nonce it has
+ * seen), so one player closing their popup does NOT close the other's. It only closes
+ * via the explicit button — clicking the backdrop does nothing, so it can't be lost by a
+ * stray click while you read it.
  */
 export function EventPopup() {
   const id = useGame((s) => s.state.revealedEvent)
-  const dispatch = useGame((s) => s.dispatch)
+  const nonce = useGame((s) => s.state.eventNonce ?? 0)
+  const seen = useUI((s) => s.seenEventNonce)
+  const markEventSeen = useUI((s) => s.markEventSeen)
   const card = id ? getCard(id) : null
+  const open = !!id && !!card && nonce !== seen
 
   useEffect(() => {
-    if (id) playSfx('flip')
-  }, [id])
+    if (open) playSfx('flip')
+  }, [open, nonce])
 
-  if (!id || !card) return null
-  const dismiss = () => dispatch({ type: 'dismissEvent' })
-  const art = cardArt(id)
+  if (!open || !card) return null
+  const dismiss = () => markEventSeen(nonce)
+  const art = cardArt(id!)
 
   return (
-    <div className="evpop-scrim" role="alertdialog" aria-modal="true" aria-label={`Event: ${card.name}`} onClick={dismiss}>
-      <div className="evpop" onClick={(e) => e.stopPropagation()}>
+    <div className="evpop-scrim" role="alertdialog" aria-modal="true" aria-label={`Event: ${card.name}`}>
+      <div className="evpop">
+        <button className="evpop-close" onClick={dismiss} aria-label="Close event" title="Close">✕</button>
         <div className="evpop-banner">Event</div>
         {art && <img className="evpop-art" src={art} alt={card.name} />}
         <h3 className="evpop-name">{card.name}</h3>

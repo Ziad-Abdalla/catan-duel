@@ -138,8 +138,11 @@ export interface GameState {
    *  here, never in the draw stacks, so building one truly leaves the public supply. */
   supply: Record<string, number>
   lastRoll?: { production: number; event: string }
-  /** The event card just revealed by `drawEvent` — pops up on BOTH screens until dismissed. */
+  /** The event card just revealed by `drawEvent` — pops up on BOTH screens. */
   revealedEvent?: string
+  /** Increments on every reveal, so each client can dismiss its OWN popup independently
+   *  (local `seenEventNonce`) without closing it for the other player. */
+  eventNonce?: number
   log: LogEntry[]
   enabledSets: SetId[]
   /** VP needed to win: 7 intro · 12 single theme · 13 Duel of the Princes · adjustable. */

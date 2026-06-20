@@ -45,10 +45,17 @@ All work below is committed + pushed to `Ziad-Abdalla/catan-duel` master; 142 un
 - Victory: a fitting CC0 celebration track + the synth fanfare fallback. NOTE: the specific requested
   song is copyrighted, so it is NOT bundled — drop your own file at `public/audio/victory.mp3` to use it.
 
-## Remaining / deferred (next pass)
-- "Showcase" an active played card to BOTH players (like the event popup) — not yet built.
-- Browse the whole discard pile (top-card draw works today).
-- Hero/road-specific placement cues beyond the shared build glow+SFX; more subtle ambient touches.
-- Possible: exact AND-logic for "City and (Abbey or Library)" style requirements (engine currently
-  surfaces the City via hasCity; the compound is shown but not strictly enforced).
-- Tunable: building-card size, any residual vertical tightness with a very full hand.
+## Second wave — all explicit items now done
+- **Card showcase** — a played card (or "Show opponent") pops big on BOTH screens like an event,
+  dismissed per-player (`ShowcasePopup`).
+- **Discard browser** — look through the whole pile + take ANY card (`DiscardBrowser`).
+- **Bigger browse cards** — stack/discard cards hover-zoom 1.5× so effects are readable when swapping.
+- **Compound requirements** — `requirementMet` evaluates "City and (Abbey or Library)" style clauses.
+- **Building-card size** bumped for readability.
+
+## Genuinely optional (future polish, not blocking)
+- Real one-shot SFX files to augment the synth palette (synth already covers every action + the
+  full-screen event flourishes); per-hero unique persona cues.
+
+Gate at HEAD `6203639`: 142 unit tests + production build green; e2e (every reducer, random orders,
+all eras, UI flows, audio) all green with 0 console errors.

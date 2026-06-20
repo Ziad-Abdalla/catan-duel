@@ -55,7 +55,19 @@ export function StackBrowser() {
     if (!ready) return
     dispatch({ type: 'takeFromStack', player: active, stackIndex: idx, position })
     playSfx('flip')
-    if (search) { dispatch({ type: 'shuffleStack', stackIndex: idx }); setSearch(false); setPaidRes([]) } // cost consumed, no refund
+    if (search) {
+      // search consumes the cost, reshuffles, and CLOSES — so you never see the new order
+      dispatch({ type: 'shuffleStack', stackIndex: idx })
+      setSearch(false)
+      setPaidRes([])
+      closeStackBrowse()
+    }
+  }
+  // Shuffling closes the browser so the shuffler can't see/memorise the new order.
+  const shuffleAndClose = () => {
+    dispatch({ type: 'shuffleStack', stackIndex: idx })
+    playSfx('flip')
+    closeStackBrowse()
   }
 
   return (
@@ -69,7 +81,7 @@ export function StackBrowser() {
             ) : (
               <button className="sb-btn" onClick={cancelSearch}>Cancel search</button>
             )}
-            <button className="sb-btn" title="Shuffle this stack" onClick={() => { dispatch({ type: 'shuffleStack', stackIndex: idx }); playSfx('flip') }}>⤮ Shuffle</button>
+            <button className="sb-btn" title="Shuffle this stack and close (you won't see the new order)" onClick={shuffleAndClose}>⤮ Shuffle</button>
             <button className="sb-x" onClick={close} aria-label="Close">✕</button>
           </div>
         </header>

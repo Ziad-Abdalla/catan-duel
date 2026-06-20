@@ -184,3 +184,36 @@
   50% { transform: translateY(1.5px) scaleX(1.08); opacity: 0.8; }
 }
 @media (prefers-reduced-motion: reduce) { .mini-water { animation: none; } }
+
+/* ── Idle life + interaction polish (subtle — adds life without clutter) ────── */
+/* your hand cards lift on hover and dim their neighbours, so the hand feels alive */
+.hand-card { transition: transform 0.16s var(--ease-snap, cubic-bezier(.2,.9,.3,1.2)), filter 0.16s ease; }
+.hand-cards:hover .hand-card { filter: brightness(0.9); }
+.hand-card:hover { transform: translateY(-12px) scale(1.06); filter: brightness(1.1); z-index: 6; }
+
+/* the active player's mat breathes a soft gold glow so whose turn it is reads at a glance */
+.pmat.active { animation: active-breathe 3.6s ease-in-out infinite; }
+@keyframes active-breathe {
+  0%, 100% { filter: drop-shadow(0 0 5px rgba(243, 215, 154, 0.22)); }
+  50% { filter: drop-shadow(0 0 17px rgba(243, 215, 154, 0.5)); }
+}
+
+/* press feedback across the common buttons */
+.wbtn:active:not(:disabled), .cz-btn:active, .hud-btn:active, .hud-tab:active,
+.sb-btn:active, .mini:active, .vbtn:active, .cz-show:active, .plate-vpbtn:active { transform: scale(0.93); }
+
+/* draw stacks invite a hover */
+.cardstack-wrap { transition: transform 0.14s var(--ease-snap, ease); }
+.cardstack-wrap:hover { transform: translateY(-4px); }
+
+/* the eligible-victory banner gently pulses to draw the eye */
+.vbanner { animation: vbanner-pulse 1.8s ease-in-out infinite; }
+@keyframes vbanner-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(243, 215, 154, 0); }
+  50% { box-shadow: 0 0 18px -2px rgba(243, 215, 154, 0.45); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pmat.active, .vbanner { animation: none; }
+  .hand-card:hover { transform: none; }
+}

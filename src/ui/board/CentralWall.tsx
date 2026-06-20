@@ -114,10 +114,8 @@ export function CentralWall() {
             </div>
           )
         })}
-        <div className="cardstack cs-event" title="Event deck">
-          <span className="cs-face">?</span>
-          <span className="cs-count">{state.eventDeck.length}</span>
-        </div>
+        {/* The event deck still drives the event die, but it isn't interactive, so it
+            shows no card here (keeps the wall clean — per owner request). */}
         <button
           className="cardstack cs-discard"
           disabled={state.discard.length === 0 || over}

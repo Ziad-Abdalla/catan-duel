@@ -80,6 +80,10 @@ export function PlayerPlate({ player }: { player: PlayerId }) {
         <PlateToken kind="hero" player={player} />
         <PlateToken kind="trade" player={player} />
       </div>
+      <div className="plate-keytally" title="Attack (strength) · Commerce — these win the advantage tokens">
+        <span className={`kt kt-att${suggest.hero === player ? ' kt-lead' : ''}`}>⚔ {stats.strength}</span>
+        <span className={`kt kt-com${suggest.trade === player ? ' kt-lead' : ''}`}>⚖ {stats.commerce}</span>
+      </div>
       <div className="plate-vprow">
         <button className="plate-vpbtn" aria-label="decrease VP" onClick={() => { dispatch({ type: 'adjustVP', player, delta: -1 }); playSfx('ui') }}>
           {'−'}

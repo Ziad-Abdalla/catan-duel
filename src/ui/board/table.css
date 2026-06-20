@@ -1024,3 +1024,20 @@
 .table-nav:active { transform: translateY(-50%) scale(0.97); }
 .table-nav-arrow { font-size: 15px; line-height: 1; color: #e0b341; }
 .table-nav-label { writing-mode: vertical-rl; text-orientation: mixed; font-size: 10.5px; opacity: 0.92; }
+
+/* attack + commerce key tally, right by the VP (these win the advantage tokens) */
+.plate-keytally { display: flex; gap: 6px; align-items: center; margin-left: auto; }
+.plate-keytally + .plate-vprow { margin-left: clamp(6px, 0.8vw, 12px); }
+.kt {
+  font-family: var(--font-head);
+  font-size: clamp(12px, 1.55vh, 16px);
+  line-height: 1;
+  padding: 4px 8px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(243, 215, 154, 0.22);
+  color: #e7d2a4;
+  white-space: nowrap;
+}
+.kt-att.kt-lead { color: #ffd9a0; border-color: rgba(224, 120, 90, 0.7); box-shadow: 0 0 8px rgba(224, 120, 90, 0.4); }
+.kt-com.kt-lead { color: #cfe9c0; border-color: rgba(120, 200, 130, 0.7); box-shadow: 0 0 8px rgba(120, 200, 130, 0.4); }

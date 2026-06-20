@@ -403,7 +403,7 @@
 .pb-sitegroup-down { flex-direction: column; }
 /* tucked building cards: smaller than the tile so even a city's 2 stacked buildings stay
  * tidy and the principality doesn't balloon. Click any card to zoom in and read it. */
-.pb-sitegroup .pb-site { width: calc(var(--reg) * 0.72); }
+.pb-sitegroup .pb-site { width: calc(var(--reg) * 0.82); }
 /* glow the legal drop targets while dragging/placing */
 .pb-site.droppable { border-color: rgba(243, 215, 154, 0.6); background: rgba(243, 215, 154, 0.08); cursor: pointer; }
 .pb-site.over { border-color: var(--gold); background: rgba(200, 146, 42, 0.28); transform: scale(1.06); box-shadow: 0 0 18px rgba(200, 146, 42, 0.5); }

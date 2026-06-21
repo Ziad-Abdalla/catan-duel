@@ -17,10 +17,13 @@ export function AuditLog() {
     p0: useGame((s) => s.state.players.p0.name),
     p1: useGame((s) => s.state.players.p1.name),
   }
-  const endRef = useRef<HTMLLIElement>(null)
-  // Keep the newest entry in view as the log grows.
+  const listRef = useRef<HTMLOListElement>(null)
+  // Keep the newest entry in view as the log grows — by scrolling the LIST itself,
+  // never scrollIntoView (which would also nudge the whole table, e.g. on every one
+  // of the AI's many actions).
   useEffect(() => {
-    if (open) endRef.current?.scrollIntoView({ block: 'end' })
+    const el = listRef.current
+    if (open && el) el.scrollTop = el.scrollHeight
   }, [open, log.length])
 
   if (!open) return null
@@ -31,7 +34,7 @@ export function AuditLog() {
         <span className="audit-title">Action Log</span>
         <button className="audit-x" onClick={toggle} aria-label="Close action log">✕</button>
       </header>
-      <ol className="audit-list" role="log" aria-live="polite" aria-relevant="additions" aria-label="Game action history">
+      <ol ref={listRef} className="audit-list" role="log" aria-live="polite" aria-relevant="additions" aria-label="Game action history">
         {log.length === 0 && <li className="audit-empty">No actions yet.</li>}
         {log.map((e, i) => {
           const newTurn = i === 0 || log[i - 1].turn !== e.turn
@@ -47,7 +50,7 @@ export function AuditLog() {
             </li>
           )
         })}
-        <li ref={endRef} aria-hidden className="audit-end" />
+        <li aria-hidden className="audit-end" />
       </ol>
     </aside>
   )

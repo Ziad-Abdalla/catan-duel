@@ -24,7 +24,6 @@
   inset: 0;
   overflow-y: auto; /* the table fits the screen; a scrollbar only appears on very short screens */
   overflow-x: hidden;
-  scroll-snap-type: y proximity;
 }
 /* the table itself scrolls by wheel / snap — NO visible scrollbar (clean, no ugly "scroll wheels") */
 .felt-scroll, .deckwall, .build-row { scrollbar-width: none; }
@@ -111,10 +110,8 @@
   justify-content: center;
   padding: clamp(2px, 0.5vh, 8px) clamp(10px, 2vw, 40px);
 }
-/* each half is a full snap "page" — your whole principality shows at once, big */
-.ppane-opp { padding-bottom: 0; }
-.ppane-opp { scroll-snap-align: start; padding-top: calc(clamp(2px, 0.5vh, 8px) + 30px); }
-.ppane-you { scroll-snap-align: end; }
+/* each half is a full "page" — your whole principality shows at once, big */
+.ppane-opp { padding-bottom: 0; padding-top: calc(clamp(2px, 0.5vh, 8px) + 30px); }
 
 /* the felt mat each player's territory sits on */
 .pmat {
@@ -751,6 +748,10 @@
   border: 1.5px solid rgba(255, 235, 200, 0.4);
   background: radial-gradient(60% 60% at 50% 45%, rgba(255, 240, 210, 0.18), transparent 70%);
 }
+/* The card-back has a faux-stack drop shadow offset down-right (box-shadow), so the
+ * deck LOOKS ~4px bigger than the clickable button. This transparent ::after extends
+ * the hit target over that shadow so clicking anywhere on the visible deck draws. */
+.cardstack::after { content: ''; position: absolute; inset: 0 -4px -4px 0; }
 .cardstack:hover:not(:disabled) { transform: translateY(-3px); }
 .cardstack:disabled { opacity: 0.4; cursor: not-allowed; }
 /* emblem in the centre of each back */

@@ -17,15 +17,10 @@ import type { SetId, PlayerId } from '../../types'
 import {
   rollForAi, productionTotals, eventTotals, cardEventTotals, planAiActions,
   reconcileDeltas, structuralActions, refillActions, exchangeActions,
-  humanEventChoice, opponentHas, handLimit, liveCenters, freeBuildingSlot, LIVE_TO_SIM,
-  RESOURCES, type Seat, type Choice,
+  humanEventChoice, handLimit, liveCenters, freeBuildingSlot, LIVE_TO_SIM, type Seat,
 } from './aiController'
 import type { Difficulty } from '../agent/difficulty'
-import type { ResourceType } from '../../types'
 import '../ui/ai-mode.css'
-
-const RES_ICON: Record<string, string> = { lumber: '🪵', brick: '🧱', wool: '🐑', grain: '🌾', ore: '⛰️', gold: '🪙' }
-const CHOICE_VERB: Record<Choice['kind'], string> = { gain: 'Take', steal: 'Take from opponent', buy: 'Buy (1🪙 each)' }
 
 const ERAS: { id: SetId; label: string }[] = [
   { id: 'gold', label: 'Era of Gold' }, { id: 'turmoil', label: 'Era of Turmoil' }, { id: 'progress', label: 'Era of Progress' },
@@ -47,8 +42,6 @@ export default function AiTableMode() {
   const [working, setWorkingState] = useState(false)
   const [rollResolved, setRollResolvedState] = useState(false)
   const [banner, setBanner] = useState('')
-  const [choice, setChoice] = useState<{ kind: Choice['kind']; remaining: number; eventLive: string } | null>(null)
-  const choiceResolver = useRef<(() => void) | null>(null)
 
   const cfg = useRef<Config>({ aiSeat: 'p1', difficulty: 'medium' })
   const rng = useRef({ v: 1 })
@@ -57,11 +50,35 @@ export default function AiTableMode() {
   const workingRef = useRef(false)
   const rollResolvedRef = useRef(false)
   const turnRef = useRef(0)
+  // a "you still owe yourself this by hand" reminder for the current turn (from a
+  // choice event); kept visible until the turn ends.
+  const manualNote = useRef('')
   const stopped = useRef(false)
   const nextRef = useRef<() => void>(() => {})
 
   const winner = useGame((s) => s.state.winner)
   const activePlayer = useGame((s) => s.state.activePlayer)
+  const hostRef = useRef<HTMLDivElement>(null)
+
+  // During the AI's turn, block only ACTION inputs (clicks/drags) on the board so a
+  // stray click can't act for the AI — but leave scrolling, hovering and inspecting
+  // fully free, so you can watch and look around.
+  useEffect(() => {
+    if (!started) return
+    const isAiTurn = activePlayer === cfg.current.aiSeat && !winner
+    const host = hostRef.current
+    if (!isAiTurn || !host) return
+    // Block only GAME-ACTION clicks (inside a principality or the central wall) so a
+    // stray click can't build/roll/end for the AI. Everything else — the top HUD
+    // (Log, music, settings), the audit drawer, card zoom, scrolling — stays usable.
+    const block = (e: Event) => {
+      const t = e.target as HTMLElement | null
+      if (t && t.closest('.pboard, .wall')) { e.stopPropagation(); e.preventDefault() }
+    }
+    const types = ['click', 'dblclick', 'mousedown', 'pointerdown', 'dragstart', 'contextmenu']
+    for (const t of types) host.addEventListener(t, block, true)
+    return () => { for (const t of types) host.removeEventListener(t, block, true) }
+  }, [started, activePlayer, winner])
 
   const setPhase = (p: Phase) => { phaseRef.current = p; setPhaseState(p) }
   const setWorking = (w: boolean) => { workingRef.current = w; setWorkingState(w) }
@@ -89,34 +106,33 @@ export default function AiTableMode() {
       dispatch({ type: 'setToken', player: tokens.trade, token: 'trade' })
     }
 
-    // pause the flow until the human finishes a resource choice (set by the picker)
-    function awaitHumanChoice(spec: Choice, eventLive: string) {
-      return new Promise<void>((resolve) => {
-        choiceResolver.current = resolve
-        setChoice({ kind: spec.kind, remaining: spec.count, eventLive })
-      })
-    }
-
-    // apply ONE event's effects: AI auto-resolves; the human PICKS any free-choice gain
-    async function applyEvent(eventLive: string, eventSim: string, cardId: string | undefined, ev: ReturnType<typeof eventTotals>) {
+    // apply ONE event's effects: the AI auto-takes its own resources; whatever YOU get
+    // to choose ("take any resource") is left for you to add BY HAND on the board — a
+    // banner tells you what. Forced/deterministic effects (Brigand loss, Plague, fixed
+    // gains) still resolve automatically for both.
+    function applyEvent(eventLive: string, eventSim: string, cardId: string | undefined, ev: ReturnType<typeof eventTotals>) {
       applyStructural(get(), ev.sim, aiSeat())
       applyStructural(get(), ev.sim, human())
       applyTokens(ev.tokens)
       const c = humanEventChoice(get(), eventSim, cardId, human(), aiSeat())
       if (c?.kind === 'steal') {
-        // the human's pick transfers from the AI — don't auto-apply either side
-        setBanner(`✨ ${EVENT_NAME[eventLive]} — choose what to take from the AI`)
-        await awaitHumanChoice(c, eventLive)
+        // a steal is a transfer — leave BOTH sides for you to do by hand
+        const note = `${EVENT_NAME[eventLive]}: take ${c.count} from the AI by hand`
+        manualNote.current = note; setBanner(`✨ ${note} (rotate a region up, the AI's down)`)
+        return
+      }
+      reconcileResources(aiSeat(), ev.totals[aiSeat() as Seat]) // AI takes its own
+      if (c) {
+        const n = c.count
+        const note = c.kind === 'buy'
+          ? `${EVENT_NAME[eventLive]}: you may buy up to ${n} (1🪙 each) by hand`
+          : `${EVENT_NAME[eventLive]}: take ${n} resource${n > 1 ? 's' : ''} of your choice by hand`
+        manualNote.current = note; setBanner(`✨ ${note}`)
       } else {
-        reconcileResources(aiSeat(), ev.totals[aiSeat() as Seat]) // AI auto-picks its own
-        if (c) {
-          setBanner(`✨ ${EVENT_NAME[eventLive]} — your choice`)
-          await awaitHumanChoice(c, eventLive)
-        } else {
-          reconcileResources(human(), ev.totals[human() as Seat]) // forced/deterministic → auto
-        }
+        reconcileResources(human(), ev.totals[human() as Seat]) // forced/deterministic → auto
       }
     }
+    const withNote = (base: string) => (manualNote.current ? `${base}  ·  📝 ${manualNote.current}` : base)
 
     // ── Roll-phase resolution: production (auto, both) + die event (AI auto / you pick) ──
     async function resolveRoll(prod: number, eventLive: string) {
@@ -140,7 +156,8 @@ export default function AiTableMode() {
         dispatch({ type: 'drawEvent' }); await sleep(1300); if (stale()) return
         const id = get().revealedEvent
         if (id) { await applyEvent(eventLive, 'event', id, cardEventTotals(get(), id, roller as Seat)); if (stale()) return }
-        await sleep(700); dispatch({ type: 'dismissEvent' })
+        // leave the event card on screen — YOU close it when you've read it (it's
+        // replaced automatically the next time an event card is drawn)
       } else if (eventSim === 'trade' || eventSim === 'celebration' || eventSim === 'plenty') {
         setBanner(`✨ ${EVENT_NAME[eventLive]}`)
         await applyEvent(eventLive, eventSim, undefined, eventTotals(get(), prod, eventSim, roller as Seat))
@@ -158,7 +175,7 @@ export default function AiTableMode() {
       setBanner('🎲 Rolling…'); await sleep(T_DICE); if (stale()) return
       await resolveRoll(roll.production, roll.eventLive); if (stale()) return
       setRollResolved(true); setWorking(false)
-      setBanner('🤖 AI rolled & collected — press Next when ready ▶')
+      setBanner(withNote('🤖 AI rolled & collected — press Next when ready ▶'))
     }
     async function aiBuildPhase() {
       setWorking(true); setBanner('🤖 AI is building…')
@@ -195,13 +212,13 @@ export default function AiTableMode() {
 
     async function enterPhase(p: Phase) {
       const ai = get().activePlayer === aiSeat()
-      if (p === 'build') { if (ai) await aiBuildPhase(); else setBanner('🔨 Build — build & trade on the board, then Next ▶') }
+      if (p === 'build') { if (ai) await aiBuildPhase(); else setBanner(withNote('🔨 Build — build & trade on the board, then Next ▶')) }
       else if (p === 'refill') await refillPhase(ai)
       else if (p === 'exchange') await exchangePhase(ai)
     }
 
     async function startTurn() {
-      setWorking(false); setRollResolved(false); setPhase('roll')
+      setWorking(false); setRollResolved(false); setPhase('roll'); manualNote.current = ''
       if (get().winner) { setBanner(''); return }
       if (get().activePlayer === aiSeat()) await aiRollPhase()
       else setBanner('🎲 Roll — press Roll on the board')
@@ -216,7 +233,7 @@ export default function AiTableMode() {
       await sleep(T_DICE); if (stale()) { setWorking(false); return }
       await resolveRoll(prod, event); if (stale()) return
       setRollResolved(true); setWorking(false)
-      setBanner('✅ Production & event done — press Next: Build ▶')
+      setBanner(withNote('✅ Production & event done — press Next: Build ▶'))
     }
 
     nextRef.current = () => {
@@ -240,29 +257,6 @@ export default function AiTableMode() {
     return () => { stopped.current = true; unsub() }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [started])
-
-  // resource picker (human's free event choices)
-  const finishChoice = () => { setChoice(null); choiceResolver.current?.(); choiceResolver.current = null }
-  const pickResource = (r: ResourceType) => {
-    if (!choice) return
-    const st = useGame.getState()
-    const ai = cfg.current.aiSeat, you = human(ai)
-    if (choice.kind === 'gain') st.dispatch({ type: 'addResource', player: you, resource: r, count: 1 })
-    else if (choice.kind === 'steal') st.dispatch({ type: 'transferResource', from: ai, to: you, resource: r, count: 1 })
-    else { st.dispatch({ type: 'addResource', player: you, resource: 'gold', count: -1 }); st.dispatch({ type: 'addResource', player: you, resource: r, count: 1 }) }
-    const remaining = choice.remaining - 1
-    if (remaining <= 0) finishChoice()
-    else setChoice({ ...choice, remaining })
-  }
-  const canPick = (r: ResourceType): boolean => {
-    if (!choice) return false
-    const live = useGame.getState().state
-    const ai = cfg.current.aiSeat, you = human(ai)
-    if (choice.kind === 'steal') return (opponentHas(live, ai)[r] ?? 0) > 0
-    if (choice.kind === 'buy') return r !== 'gold'
-    void you
-    return true
-  }
 
   if (!started) {
     return <Setup onStart={(c, sets) => {
@@ -294,27 +288,9 @@ export default function AiTableMode() {
         </button>
         <a href="#/" className="ai-table-exit">exit</a>
       </div>
-      {banner && <div className="ai-banner-row">{banner}</div>}
-      <div className="ai-table-host">
+      <div className="ai-banner-row" title={banner}>{banner || ' '}</div>
+      <div className={`ai-table-host${aiTurn ? ' ai-watching' : ''}`} ref={hostRef}>
         <TableBoard mode="local" setMode={(m) => { if (m !== 'local') window.location.hash = '#/' }} fixedBottom={human(cfg.current.aiSeat)} />
-        {aiTurn && <div className="ai-table-shield" aria-hidden />}
-        {choice && (
-          <div className="ai-choice-overlay">
-            <div className="ai-choice-box">
-              <div className="ai-choice-title">
-                {EVENT_NAME[choice.eventLive]} — {CHOICE_VERB[choice.kind]} · {choice.remaining} left
-              </div>
-              <div className="ai-choice-grid">
-                {(RESOURCES as ResourceType[]).map((r) => (
-                  <button key={r} className="ai-choice-btn" disabled={!canPick(r)} onClick={() => pickResource(r)}>
-                    <span className="ai-choice-ic">{RES_ICON[r]}</span>{r}
-                  </button>
-                ))}
-              </div>
-              {choice.kind === 'buy' && <button className="ai-choice-done" onClick={finishChoice}>Done</button>}
-            </div>
-          </div>
-        )}
       </div>
     </div>
   )

@@ -52,13 +52,27 @@
 .ai-next:disabled { opacity: 0.4; cursor: not-allowed; }
 .ai-table-exit { color: #f3d79a; text-decoration: underline; font-size: 12px; }
 .ai-banner-row {
-  padding: 5px 16px; font-size: 14px; color: #f6ecd2; background: rgba(40, 32, 22, 0.85);
-  border-bottom: 1px solid rgba(243,215,154,0.15); text-align: center; position: sticky; top: 38px; z-index: 49;
+  padding: 5px 16px; font-size: 14px; color: #f6ecd2; background: rgba(40, 32, 22, 0.95);
+  border-bottom: 1px solid rgba(243,215,154,0.15); text-align: center; z-index: 49;
+  height: 28px; box-sizing: border-box; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
 }
 .ai-table-host { position: relative; flex: 1; min-height: 0; }
-/* transparent shield blocks stray board input during the AI's turn (the phase bar
-   stays clickable so you can advance phases) */
-.ai-table-shield { position: absolute; inset: 0; z-index: 40; cursor: progress; background: rgba(10,8,5,0.06); }
+
+/* The board (felt + its top HUD strip + the audit drawer) is position:fixed and
+ * covers the whole viewport, so it would sit BEHIND the AI header bar at the top.
+ * Push it down below the header (phase bar ~40px + banner 28px) so the Log / music /
+ * settings controls and the board top are visible, not hidden under the phase bar. */
+.ai-table-wrap { --ai-header: 68px; }
+.ai-table-wrap .felt-scroll { top: var(--ai-header); }
+.ai-table-wrap .tc-hud { top: var(--ai-header); }
+.ai-table-wrap .audit { top: var(--ai-header); }
+/* During the AI's turn, action-clicks are blocked in JS (see AiTableMode) so a stray
+   click can't act for the AI — but scrolling, hovering and inspecting stay free. This
+   is just a subtle, non-blocking visual cue (no overlay, no pointer capture). */
+.ai-table-host.ai-watching::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 30;
+  box-shadow: inset 0 0 0 2px rgba(160, 200, 240, 0.35);
+}
 
 /* resource picker for the human's free event choices */
 .ai-choice-overlay { position: absolute; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center; background: rgba(8,6,3,0.55); }

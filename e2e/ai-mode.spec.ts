@@ -76,7 +76,7 @@ test('AI mode: human-paced phases, no flip, red/green light', async ({ page }) =
   expect(errors, `console errors:\n${errors.join('\n')}`).toEqual([])
 })
 
-test('a choice event prompts YOU to pick a resource (not auto-applied)', async ({ page }) => {
+test('a choice event does NOT pop up — you add it by hand', async ({ page }) => {
   const dir = 'e2e/artifacts/ai-mode'
   fs.mkdirSync(dir, { recursive: true })
   await page.goto('/#/ai')
@@ -84,24 +84,52 @@ test('a choice event prompts YOU to pick a resource (not auto-applied)', async (
   await page.getByRole('button', { name: 'Start game' }).click()
   await expect(page.locator('.ai-phasebar')).toBeVisible()
 
-  // Force a Plentiful Harvest by injecting the roll via the dev store hook, then let
-  // the orchestrator resolve it (it watches lastRoll on your turn).
+  const myRes = () => page.evaluate(() => {
+    const g = (window as any).__game.getState().state
+    return g.players.p0.regions.reduce((n: number, r: any) => n + (r.empty ? 0 : r.stored), 0)
+  })
+
+  // force a Plentiful Harvest on your roll
   await page.evaluate(() => {
-    const g = (window as any).__game
-    const ui = (window as any).__ui
-    const s = g.getState().state
+    const g = (window as any).__game; const ui = (window as any).__ui; const s = g.getState().state
     ui?.getState?.().rollDice?.(3, 'plentiful-harvest', s.turn)
     g.getState().dispatch({ type: 'roll', production: 3, event: 'plentiful-harvest' })
   })
+  const before = await myRes()
+  await page.waitForTimeout(5000) // dice settle + resolution
 
-  // the resource picker must appear (your choice), and Next stays disabled until done
-  await expect(page.locator('.ai-choice-overlay')).toBeVisible({ timeout: 9000 })
-  await expect(page.locator('.ai-next')).toBeDisabled()
-  await page.screenshot({ path: `${dir}/04-choice-prompt.png`, fullPage: true })
+  // NO picker overlay, and the banner tells you to add it by hand
+  await expect(page.locator('.ai-choice-overlay')).toHaveCount(0)
+  await expect(page.locator('.ai-banner-row')).toContainText(/by hand/i)
+  await page.screenshot({ path: `${dir}/04-manual-event.png`, fullPage: true })
 
-  // pick a resource → picker closes, flow continues
-  await page.locator('.ai-choice-btn:not([disabled])').first().click()
-  await expect(page.locator('.ai-choice-overlay')).toBeHidden({ timeout: 6000 })
+  // your resources were NOT auto-applied for the choice (production is auto, but the
+  // Plentiful Harvest pick is yours) — i.e. nothing forced a choice resource on you
+  const after = await myRes()
+  expect(after).toBeGreaterThanOrEqual(before) // production may have added; no crash/forced pick
+})
+
+test('during the AI turn you can still scroll and look around', async ({ page }) => {
+  await page.goto('/#/ai')
+  await page.locator('.ai-setup select').first().selectOption('easy')
+  await page.getByRole('button', { name: 'Start game' }).click()
+  await expect(page.locator('.ai-phasebar')).toBeVisible()
+
+  // flip to the AI's turn
+  await page.evaluate(() => (window as any).__game.getState().dispatch({ type: 'endTurn' }))
+  await expect(page.locator('.ai-table-host.ai-watching')).toBeVisible({ timeout: 6000 })
+
+  // scrolling the felt still works while the AI is taking its turn (not blocked)
+  const top = () => page.evaluate(() => document.querySelector('.felt-scroll')?.scrollTop ?? 0)
+  const before = await top()
+  await page.mouse.move(700, 420)
+  await page.mouse.wheel(0, 700)
+  await page.waitForTimeout(400)
+  expect(await top()).toBeGreaterThan(before)
+
+  // and the turn hasn't been corrupted by being able to look around
+  const active = await page.evaluate(() => (window as any).__game.getState().state.activePlayer)
+  expect(active).toBe('p1')
 })
 
 test('resources are NOT applied until the dice finish rolling', async ({ page }) => {

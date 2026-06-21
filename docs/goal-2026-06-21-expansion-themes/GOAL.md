@@ -63,12 +63,28 @@ point icons + rules text** (AoD cards were given AoE-only point types; rules gar
 - [x] P3 Wire 6 set ids through all era-reference points (types + live + sim-data + UI) — tsc/tests green
 - [x] P4a cards.json entries for all 6 themes (selectable + playable in hot-seat, real art)
 - [x] Deck-back colors per new theme (table.css `.cs-set-*`)
-- [~] P4b QA pass vs rulebook Card Index: face-up flags, copies, categories, point types (in progress)
-- [ ] P4c Per-card rules_text polish from the rulebook (functional summaries)
-- [ ] P5 New mechanics UI: point icons (owl/star/sail/cannon), markers (Triumph/Manifesto/Public
-      Feeling), foreign cards, metropolis, the 3×3 sea board (full fidelity)
-- [ ] P6 Per-theme verification (tsc, tests, hot-seat playthrough)
+- [x] P4b QA pass vs rulebook Card Index: face-up flags, copies, categories (9cb8dbc; remaining
+      non-rules_text data flags captured in `rules-work/data-discrepancy-notes.json` for a later pass)
+- [x] P4c Per-card rules_text polish from the rulebook (all 6 themes): Intrigue/Merchants (2aebecd),
+      Barbarians/Explorers/Sages/Prosperity (6f90494, via a 6-agent rulebook fan-out)
+- [~] P5 New mechanics UI:
+  - [x] Point icons owl/star/sail/cannon — render infra on CardView + PlayerPlate (78ac71c).
+        DATA PENDING: no card carries point values yet (printed icons are below 271px vision
+        threshold; rulebook states only requirements). Lights up once values are populated.
+  - [x] Per-era felt theming for all 6 themes (f7dea6e)
+  - [x] Marker tracks Triumph/Manifesto/Public Feeling — state + setMarker + plate strip (b58e82d)
+  - [x] Foreign cards — `owner` on PlacedCard + place/overlay + VP/stats exclusion (17d173b)
+  - [x] EFFECTS resolution guidance for all themes' action/event cards (2aebecd + 16897fc)
+  - [~] Metropolis: Commercial Metropolis exists as a +2VP card (2aebecd); the city→metropolis
+        upgrade variant + Explorer Metropolis belong with the sea board
+  - [ ] **3×3 sea board (full fidelity)** — NOT STARTED (the big remaining item: GameState.seaGrid,
+        explorer ships, islands/pirates/shipwrecks, sail/cannon combat, Explorer Metropolis)
+  - [ ] Owl/star spendable-pool economy — gap noted: action cards gain/spend owls & stars, but
+        only the auto-derived card tallies exist (no per-player pool to spend from yet)
+- [~] P6 Per-theme verification: tsc + 195 unit tests green throughout; live e2e for felt + markers
+      (`e2e/expansion-themes.spec.ts`). Full hot-seat playthrough per theme still to do.
 - [x] P7 HTML report (`report.html`) — to refresh as themes complete
+- [ ] P8 AI-opponent support for the 6 new themes (deferred follow-up; sim/agent/evaluate)
 
 ## Progress log
 - 2026-06-21: P0–P4a + deck colors + report shipped (commits 056aa94…4c0dc1c). All 6 themes
@@ -77,6 +93,13 @@ point icons + rules text** (AoD cards were given AoE-only point types; rules gar
 - Known data caveats from the auto-generated baseline (being fixed in P4b): `copies` mostly 1
   (vision deduped by name), `face_up` over-applied (only the per-theme face-up stack should be
   flagged), some categories collapsed to `building`, rules_text is best-effort.
+- 2026-06-21 (session 2): ran alongside a parallel instance (it owned Intrigue/Merchants +
+  foreign cards; commits 2aebecd, 17d173b). This instance: rulebook-accurate rules_text for the
+  other 4 themes, AoE point-icon render infra, per-era felt theming, the 3 marker tracks, and
+  EFFECTS guidance for the 4 themes' action/event cards (6f90494, 78ac71c, f7dea6e, b58e82d,
+  16897fc). Coordinated by staying in a non-overlapping lane after detecting the shared worktree.
+  REMAINING (next session, fresh context): the 3×3 sea board (#8, biggest), the owl/star spendable
+  pool, and point-value DATA population (needs the physical cards). AI support is the deferred P8.
 
 ## Notes
 - Commit as you go (owner directive this session). No AI-mode regressions.

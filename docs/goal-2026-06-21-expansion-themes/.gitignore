@@ -3,3 +3,7 @@ sources/
 art-staging/
 montages/
 probe/
+
+# intermediate generated data (derived from transcripts)
+generated/
+pages.json

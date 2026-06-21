@@ -776,6 +776,13 @@
 .cs-set-gold { --back: #b07f1e; --back-hi: #e0b03a; }      /* gold */
 .cs-set-turmoil { --back: #5e2a66; --back-hi: #8a3f8f; }   /* turmoil violet */
 .cs-set-progress { --back: #1f5f6b; --back-hi: #2f8a99; }  /* innovation teal */
+/* the six expansion themes — hues chosen distinct from the four above and each other */
+.cs-set-intrigue { --back: #3b3a8f; --back-hi: #5b59c0; }    /* intrigue indigo (faith/secrecy) */
+.cs-set-merchants { --back: #1f7a4f; --back-hi: #2fa56a; }   /* merchant emerald (opulent trade) */
+.cs-set-barbarians { --back: #586273; --back-hi: #7d8a9e; }  /* barbarian iron-steel (war) */
+.cs-set-explorers { --back: #1d6fb0; --back-hi: #3f97da; }   /* explorer ocean blue (the sea) */
+.cs-set-sages { --back: #6f8a3c; --back-hi: #93b057; }       /* sage olive-green (groves/wisdom) */
+.cs-set-prosperity { --back: #a8406e; --back-hi: #c8628f; }  /* prosperity rose (arts/contentment) */
 .cs-event { --back: #3a2f5e; --back-hi: #5a4a8a; cursor: default; }
 
 .tray { display: flex; align-items: center; gap: 10px; }

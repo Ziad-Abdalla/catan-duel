@@ -180,6 +180,42 @@ export const EFFECTS: Record<string, EffectStep[]> = {
   'merchants-hour-of-the-master-merchants': [{ text: 'Rotate each of your Residences up 1 level; for each already at the top level, receive 1 resource in its adjacent region.', quick: [gain(1, 'Gain 1 (max-level Residence)')] }],
   'merchants-fortunate-trade-voyage': [{ text: 'Each player receives resources according to their trade ships.', quick: [gain(1, 'You gain 1'), oppGain(1, 'Opponent gains 1')] }],
   'merchants-capricious-sea': [{ text: 'Trade is disrupted: resources you cannot store are lost. A Lighthouse is immune. Resolve by hand.' }],
+
+  // ===== Era of Barbarians ===== (Triumph rotates on the plate marker strip)
+  'barbarians-siegfried-vanquisher-of-the-barbarians': [{ text: 'Take 1 or 2 resources of your choice — OR rotate your Triumph track up a level (use the plate). Requires: Castle and 2+ heroes.', quick: [gain(1, 'Gain 1'), gain(1, 'Gain another')] }],
+  'barbarians-alliance-against-the-barbarians': [{ text: 'Each player with 1+ unit takes any 1 resource; the player with the most units takes 1 more. Requires: Triumph at 1 VP.', quick: [gain(1, 'You gain 1'), oppGain(1, 'Opponent gains 1'), gain(1, 'Most units: +1')] }],
+  'barbarians-castellan': [{ text: 'Each of the 2 regions adjacent to your Castle gains 1 resource (if storage allows). Requires: Castle.', quick: [gain(1, 'Region +1'), gain(1, 'Region +1')] }],
+  'barbarians-relocation': [{ text: 'Swap 2 of your own regions, or 2 of your own expansion cards — stored resources and legal placement unchanged. Resolve on the board.' }],
+  'barbarians-contest-of-the-heroes': [{ text: 'Name 1 of your heroes and 1 opponent hero; each rolls the die and adds strength. Roll for each (tie: roll again).', quick: [{ kind: 'setDie', label: 'Roll the die' }] }, { text: 'The winner gains 1 resource and may take 1 from the loser.', quick: [gain(1, 'Winner gains 1'), steal(1, 'Take 1 from loser')] }],
+  'barbarians-barbarian-attack': [{ text: 'Fewer units than your city/metropolis/expansion VP → discard 2 resources. More units and 1+ city → gain 2 resources. Then the card goes under the event stack.', quick: [gain(1, 'Defender gains 1'), gain(1, 'Defender +1')] }],
+  'barbarians-retreat-of-the-barbarians': [{ text: 'Each player with 1+ unit chooses 1 card from a draw stack; with 1+ unit AND strength advantage, up to 2 cards.', quick: [{ kind: 'grant', label: 'Take a card' }, { kind: 'grant', label: 'Take another' }] }],
+
+  // ===== Era of Explorers ===== (sea cards / ships resolve on the sea board)
+  'explorers-cartographer': [{ text: 'View up to 2 face-down sea cards and/or swap the positions of 2 sea cards in your principality. Requires: 1 sail point. Resolve on the sea board.' }],
+  'explorers-broadside': [{ text: 'Your choice: the opponent rotates 1 island card down a level, or loses 1 explorer ship. Requires: 2 cannon points. Resolve on the sea board.' }],
+  'explorers-friendship-between-peoples': [{ text: 'Ongoing: resources you receive but cannot store are lost (overflow gives no benefit).' }],
+  'explorers-most-successful-explorer': [{ text: 'Discovery tie-break: the active player picks the first stack, the opponent the second; both may draw from the same stack.', quick: [{ kind: 'grant', label: 'Draw a card' }] }],
+
+  // ===== Era of Sages ===== (owls are spent/tracked on the plate; pools are manual)
+  'sages-great-foresight': [{ text: 'Pay 1 owl: view the event stack and remove 1 event card (not Yule) without changing the order. Resolve by hand.' }],
+  'sages-dispute-of-the-sages': [{ text: "Pay 1 owl: you and the opponent roll the production die, each adding their sages' owls. Roll the die.", quick: [{ kind: 'setDie', label: 'Roll the die' }] }, { text: 'The winner takes any 2 resources (on a tie, both do).', quick: [gain(1, 'Gain 1'), gain(1, 'Gain another')] }],
+  'sages-wise-compensation': [{ text: 'Pay 3 owls: build 1 city for free (no resources). Requires: fewer cities or fewer VP than the opponent. Build on the board.' }],
+  'sages-power-of-the-groves': [{ text: 'Pay 1 owl: gain 1 owl per grove in your principality, distributed among your sages. Requires: 2+ sages. (Track owls on the plate.)' }],
+  'sages-wise-protection': [{ text: 'Pay 1 owl: the opponent shows their hand; if it holds an action-attack card, they place their whole hand under their matching draw stacks. Resolve by hand.' }],
+  'sages-famine': [{ text: 'Each player without a Granary discards 1 grain (or 2 resources of choice if they have no grain).', quick: [{ kind: 'gainFixed', who: 'owner', resource: 'grain', count: -1, label: 'Discard 1 grain' }] }],
+  'sages-council-of-the-sages': [{ text: 'Distribute up to 2 owls among your sages (track on the plate), OR up to 2 resources among regions next to a sage.', quick: [gain(1, 'Region +1'), gain(1, 'Region +1')] }],
+
+  // ===== Era of Prosperity ===== (stars are gained/spent; track on the plate)
+  'prosperity-feeding-the-poor': [{ text: 'Pay 1 grain; receive up to 2 stars (track on the plate).', quick: [{ kind: 'gainFixed', who: 'owner', resource: 'grain', count: -1, label: 'Pay 1 grain' }] }],
+  'prosperity-artwork-sculpture': [{ text: "Receive 1 star; +1 more if you have a Builders' Hut. Requires: Prince or Princess. (Track stars on the plate.)" }],
+  'prosperity-artwork-epic': [{ text: 'Receive 1 star; +1 more if you have a Theater. Requires: Prince or Princess. (Track stars on the plate.)' }],
+  'prosperity-artwork-fountain': [{ text: 'Receive 1 star; +1 more if you have an Aqueduct. Requires: Prince or Princess. (Track stars on the plate.)' }],
+  'prosperity-artwork-relief': [{ text: 'Receive 1 star; +1 more if you have a City Palace. Requires: Prince or Princess. (Track stars on the plate.)' }],
+  'prosperity-court-astrologer': [{ text: 'Pay 1 star: once more this turn, set an event-die result. Requires: Prince or Princess.', quick: [{ kind: 'setDie', label: 'Set the event die' }] }],
+  'prosperity-bera-the-insurrectionist': [{ text: 'You choose: the opponent gives you up to 2 stars, OR 1 resource per VP they lead you by (max 3). Requires: Public Feeling.', quick: [steal(1, 'Take 1'), steal(1, 'Take 1'), steal(1, 'Take 1')] }],
+  'prosperity-prosperity': [{ text: 'Ongoing: building a city costs you only 1 ore and 2 grain. Requires: Aqueduct.' }],
+  'prosperity-insurrection': [{ text: 'Each player places 1 building costing 2+ resources under a matching draw stack, then tucks this card under the top 4 event cards. Resolve by hand.' }],
+  'prosperity-taxation': [{ text: 'Each player who pays 1 star receives any 1 resource and 1 gold.', quick: [gain(1, 'You gain 1'), { kind: 'gainFixed', who: 'owner', resource: 'gold', count: 1, label: '+1 gold' }, oppGain(1, 'Opponent gains 1')] }],
 }
 
 // every "X-ship" base/gold 2:1 trader → info step

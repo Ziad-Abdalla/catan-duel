@@ -2247,7 +2247,7 @@
       }
     ],
     "values": {},
-    "rules_text": "If by means of an event or an action played by your opponent—you lose any of the cards in your hand, draw as many cards from any of the draw stacks from the new era as you would have lost.",
+    "rules_text": "If an event or an opponent's action makes you lose cards from your hand, immediately draw back up to your hand limit.",
     "image": "intrigue-pilgrimage-site.webp",
     "copies": 1,
     "confidence": "medium"
@@ -2274,7 +2274,7 @@
     "values": {
       "requires": "Church and Odin's Temple"
     },
-    "rules_text": "Both players discard 1 card each from their hand. The event Religious Dispute no longer affects any of the players.",
+    "rules_text": "Neither player may play action-attack cards, and the event Religious Dispute no longer affects either player. Requires: Church and Odin's Temple.",
     "image": "intrigue-great-thingstead.webp",
     "copies": 1,
     "confidence": "medium"
@@ -2299,7 +2299,7 @@
       }
     ],
     "values": {},
-    "rules_text": "At the head of your turn, instead of drawing 2 cards, draw 4 cards instead of 1. If you choose the cards, each time instead of you must pay the respective costs.",
+    "rules_text": "At the end of your turn you may exchange 2 cards instead of 1.",
     "image": "intrigue-odins-fountain.webp",
     "copies": 1,
     "confidence": "low"
@@ -2322,7 +2322,7 @@
     "values": {
       "commerce": 1
     },
-    "rules_text": "Place adjacent to a field region. You may trade grain of this field's region for resources of different types at a 2:1 rate. The field must still be in your field region. Trading your turns you may also trade at a 1:1 rate.",
+    "rules_text": "Place on a fields region. Trade that region's grain 2:1 for any resource; once per turn 1:1 if it borders a Grain Mill.",
     "image": "intrigue-reiner-the-miller.webp",
     "copies": 1,
     "confidence": "low"
@@ -2343,10 +2343,10 @@
       }
     ],
     "values": {
-      "commerce": 2,
+      "commerce": 1,
       "requires": "City"
     },
-    "rules_text": "Place adjacent to a region for every 2 grain from the adjacent fields region, you may rotate the Abbey Brewery to any side of your building. Requires: City.",
+    "rules_text": "Place on a fields region. Pay 2 grain to rotate it to any side of your principality. Requires: City.",
     "image": "intrigue-abbey-brewery.webp",
     "copies": 1,
     "confidence": "low"
@@ -2369,7 +2369,7 @@
     "values": {
       "strength": 1
     },
-    "rules_text": "Place on a forest of an adjacent settlement/city, for each unit featuring strength points in the settlement, all other properties remain unchanged. Removal: The opponent has at least 3 fortifies.",
+    "rules_text": "Foreign card built on the opponent's free road. The opponent's units count as only 1 strength. Removed automatically once the opponent has 3 heroines.",
     "image": "intrigue-red-light-tavern.webp",
     "copies": 1,
     "confidence": "low"
@@ -2390,9 +2390,11 @@
       }
     ],
     "values": {
-      "commerce": 1
+      "commerce": 1,
+      "strength": 1,
+      "victory_points": 1
     },
-    "rules_text": "Place on your Church. Your Church is protected against all action cards, effects of expansion cards, and events. In during your turn, you receive up to 2 gold.",
+    "rules_text": "Place on your Church to protect it from actions, expansion effects and events. Once per turn, pay 1 non-gold resource to receive up to 2 gold. Judith + Church are worth 2 VP together.",
     "image": "intrigue-judith-guardian-of-the-church.webp",
     "copies": 1,
     "confidence": "medium"
@@ -2413,9 +2415,11 @@
       }
     ],
     "values": {
-      "commerce": 1
+      "commerce": 1,
+      "strength": 1,
+      "victory_points": 1
     },
-    "rules_text": "Place on your Temple. Draw immediately 2 cards from the draw stacks (from your own draw stacks). Your Temple is protected against effects of expansion cards, and events.",
+    "rules_text": "Place on your Odin's Temple. Draw 2 cards when built. Protects the Temple. Bran + Temple are worth 2 VP together.",
     "image": "intrigue-bran-defender-of-the-temple.webp",
     "copies": 1,
     "confidence": "medium"
@@ -2436,9 +2440,12 @@
       }
     ],
     "values": {
-      "strength": 1
+      "strength": 1,
+      "progress": 1,
+      "skill": 1,
+      "requires": "no Abbey"
     },
-    "rules_text": "If one opponent wants to play a facet fact that could cause the loss of 1 card of your land or 1 of the cards you placed, he first must pay 2 gold to each opponent. If you do not pay the required gold the opponent keeps your facet land. You may use this with Requires: not having an Intrigue.",
+    "rules_text": "Caps how much gold an opponent's action card can cost you, and you receive up to 1 gold. Requires: not owning or building an Abbey.",
     "image": "intrigue-master-of-the-brotherhood.webp",
     "copies": 1,
     "confidence": "medium"
@@ -2459,9 +2466,10 @@
       }
     ],
     "values": {
-      "skill": 1
+      "skill": 1,
+      "strength": 1
     },
-    "rules_text": "If you build Godfrey, during your next turn you may pay 1 gold to view the cards in your opponent's hand and take 1 card of your choice from it. Place Godfrey on the discard pile (on your own discard pile).",
+    "rules_text": "On a later turn, pay 1 gold to view the opponent's hand and take 1 card; if you take one, discard Godfrey afterwards.",
     "image": "intrigue-godfrey-the-intriguer.webp",
     "copies": 1,
     "confidence": "medium"
@@ -2482,7 +2490,7 @@
       }
     ],
     "values": {},
-    "rules_text": "After building the Church, you immediately receive up to 2 gold.",
+    "rules_text": "When built, immediately receive up to 2 gold. Prerequisite for several Intrigue cards.",
     "image": "intrigue-church.webp",
     "copies": 2,
     "confidence": "high"
@@ -2503,7 +2511,7 @@
       }
     ],
     "values": {},
-    "rules_text": "After building the Temple, immediately draw 1 card from any draw stack (from any of your own draw stacks).",
+    "rules_text": "When built, immediately draw 1 card from any draw stack. Prerequisite for several Intrigue cards.",
     "image": "intrigue-odins-temple.webp",
     "copies": 2,
     "confidence": "medium"
@@ -2528,9 +2536,9 @@
       }
     ],
     "values": {
-      "requires": "Odin's Fountain or Temple"
+      "requires": "Odin's Fountain or Odin's Temple"
     },
-    "rules_text": "You may trade wool for a resource of a different type at a 2:1 rate. Wolf from neighboring pasture regions if another opponent can be found. Attack occurs.",
+    "rules_text": "Trade wool 2:1 for any resource. Wool on adjacent pastures is safe from the Brigand. Requires: Odin's Fountain or Odin's Temple.",
     "image": "intrigue-sacrificial-site.webp",
     "copies": 1,
     "confidence": "low"
@@ -2555,9 +2563,9 @@
       }
     ],
     "values": {
-      "requires": "Church, Abbey, or Chapel"
+      "requires": "Church, Abbey or Chapel"
     },
-    "rules_text": "If you build the Bishop's See, you may choose 3 of your opponent's units and put them on the discard pile (on his own discard pile).",
+    "rules_text": "When built, choose 3 of the opponent's units; they remove 1 of them. Requires: Church, Abbey or Chapel.",
     "image": "intrigue-bishops-see.webp",
     "copies": 2,
     "confidence": "medium"
@@ -2569,9 +2577,9 @@
     "name": "Missionary",
     "cost": [],
     "values": {
-      "requires": "Church of Bishop's See"
+      "requires": "Church or Bishop's See"
     },
-    "rules_text": "Your opponent must remove any 1 of the heroes he placed. Place the removed hero in your hand and put one of your own discard pile.",
+    "rules_text": "The opponent removes 1 of their heroes; place it in your principality or discard it. Requires: Church or Bishop's See.",
     "image": "intrigue-missionary.webp",
     "copies": 1,
     "confidence": "medium"
@@ -2583,9 +2591,9 @@
     "name": "Bishop",
     "cost": [],
     "values": {
-      "requires": "Church of Bishop's See"
+      "requires": "Church or Bishop's See"
     },
-    "rules_text": "Demand 1 gold from your opponent. In addition, you receive any cards in buildings he can accomplish in any gold fields or in the Cold Castle.",
+    "rules_text": "Demand 1 gold from the opponent, then receive as much gold as one gold field can hold. Requires: Church or Bishop's See.",
     "image": "intrigue-bishop.webp",
     "copies": 2,
     "confidence": "low"
@@ -2599,7 +2607,7 @@
     "values": {
       "requires": "Odin's Temple"
     },
-    "rules_text": "Your opponent must show you the card in his hand and place it on 1 of your stacks (under his own matching stacks).",
+    "rules_text": "The opponent reveals their hand and places all action cards and units under matching draw stacks. Requires: Odin's Temple.",
     "image": "intrigue-odins-priest.webp",
     "copies": 1,
     "confidence": "low"
@@ -2608,12 +2616,12 @@
     "id": "intrigue-priestess-of-the-horns",
     "set": "intrigue",
     "category": "action",
-    "name": "Priestess of the Horns",
+    "name": "Priestess of the Norns",
     "cost": [],
     "values": {
-      "requires": "Odin's Fountain or Temple"
+      "requires": "Odin's Fountain or Odin's Temple"
     },
-    "rules_text": "Choose 1 draw stack and select up to 2 cards from it.",
+    "rules_text": "Choose a draw stack and take up to 2 cards from it. Requires: Odin's Fountain or Odin's Temple.",
     "image": "intrigue-priestess-of-the-horns.webp",
     "copies": 2,
     "confidence": "medium"
@@ -2625,7 +2633,7 @@
     "name": "Michael the Master Builder",
     "cost": [],
     "values": {},
-    "rules_text": "Play this card when you build a building. Substitute 1, 2, or 3 of the resources required for building with 1 gold each.",
+    "rules_text": "When building, you may replace 1-3 of the required resources with 1 gold each.",
     "image": "intrigue-michael-the-master-builder.webp",
     "copies": 1,
     "confidence": "high"
@@ -2637,10 +2645,10 @@
     "name": "Good Neighbors",
     "cost": [],
     "values": {},
-    "rules_text": "Reveal the top cards of all draw stacks. The player who has the more cards wins. That player takes 1 draw stack from 1 of the other draw stacks into his hand.",
+    "rules_text": "A peaceful event - no attack occurs. (See the card for its effect on face-up cards left on the draw stacks.)",
     "image": "intrigue-good-neighbors.webp",
     "copies": 2,
-    "confidence": "low"
+    "confidence": "medium"
   },
   {
     "id": "intrigue-religious-dispute",
@@ -2649,7 +2657,7 @@
     "name": "Religious Dispute",
     "cost": [],
     "values": {},
-    "rules_text": "Players who have at least 1 city place all cards in their hands under the matching expansion card stacks. The Church and the temple each decrease two 2+p. If the result matches an expansion card stack, if you receive it 1 card. If you have a Bishop's See, you receive up to 3 gold.",
+    "rules_text": "Each player with at least 1 city loses cards from their hand (placed under matching draw stacks). A Church and an Odin's Temple each reduce how many you lose.",
     "image": "intrigue-religious-dispute.webp",
     "copies": 2,
     "confidence": "medium"
@@ -2672,7 +2680,7 @@
     "values": {
       "commerce": 1
     },
-    "rules_text": "1x during your turn: Take 1 resource or trade between two regions of the same type or trade 2 resources of your choice for 1 different resource.",
+    "rules_text": "Once per turn, move resources between two of your regions of the same type, or trade 3:1.",
     "image": "merchants-wainwright.webp",
     "copies": 1,
     "confidence": "high"
@@ -2689,10 +2697,10 @@
       }
     ],
     "values": {
-      "commerce": 2,
+      "commerce": 1,
       "requires": "City"
     },
-    "rules_text": "Place this building card from the adjacent pasture region, you may rotate the Residence to the next higher level. Requires: City.",
+    "rules_text": "Place above or below a pasture region. Rotate up through levels for more commerce; at higher levels gain 2 wool. Requires: City.",
     "image": "merchants-cloth-merchants-residence.webp",
     "copies": 1,
     "confidence": "medium"
@@ -2709,10 +2717,10 @@
       }
     ],
     "values": {
-      "commerce": 2,
+      "commerce": 1,
       "requires": "City"
     },
-    "rules_text": "Place this building card from the adjacent forest region, you may rotate the Residence to the next higher level. Requires: City.",
+    "rules_text": "Place above or below a forest region. Rotate up through levels for more commerce; at higher levels gain 2 lumber. Requires: City.",
     "image": "merchants-paper-merchants-residence.webp",
     "copies": 1,
     "confidence": "medium"
@@ -2735,7 +2743,7 @@
     "values": {
       "commerce": 1
     },
-    "rules_text": "1x during your turn: You may trade 1 resource between the two adjacent regions at a 1:1 ratio.",
+    "rules_text": "Road complement on your own free road. Once per turn, convert 1 resource between its two adjacent regions 1:1.",
     "image": "merchants-trading-post.webp",
     "copies": 2,
     "confidence": "high"
@@ -2756,7 +2764,7 @@
       }
     ],
     "values": {},
-    "rules_text": "Place on a free road of your opponent. Your opponent's commerce points are reduced by 1. If your opponent is robbed in this location, share 1 resource, you receive 1 gold.",
+    "rules_text": "Foreign card built on the opponent's free road. The opponent's commerce is reduced by 1, and whenever they store a resource gained via their Marketplace you receive 1 gold.",
     "image": "merchants-brigand-camp.webp",
     "copies": 1,
     "confidence": "medium"
@@ -2776,8 +2784,10 @@
         "count": 1
       }
     ],
-    "values": {},
-    "rules_text": "Each ship you build costs you either 1 lumber or 1 wool less. For 1 gold, you may take 1 trade ship from the discard pile (from your own discard pile).",
+    "values": {
+      "skill": 1
+    },
+    "rules_text": "Each of your trade ships costs 1 lumber or 1 wool less. Once, pay 1 gold to retrieve a trade ship from the discard pile.",
     "image": "merchants-ship-builder.webp",
     "copies": 1,
     "confidence": "high"
@@ -2797,8 +2807,11 @@
         "count": 2
       }
     ],
-    "values": {},
-    "rules_text": "During one of your following turns, you may disband 1 or 2 resources from your opponent and give him any 1 resource of your choice. Afterwards, place Olaf on the discard pile (on your own discard pile).",
+    "values": {
+      "commerce": 1,
+      "skill": 1
+    },
+    "rules_text": "On a later turn, demand 1-2 resources and give 1 back, then discard Olaf.",
     "image": "merchants-olaf-the-merchant-ship-captain.webp",
     "copies": 1,
     "confidence": "medium"
@@ -2823,7 +2836,7 @@
       }
     ],
     "values": {},
-    "rules_text": "Your opponent must remove 1 trade ship of his choice from the discard pile (on his own discard pile). Event: Plaintiff finished, you receive 1 gold.",
+    "rules_text": "When built, the opponent removes 1 trade ship to the discard. On Plentiful Harvest, gain 1 gold.",
     "image": "merchants-pirate-ship.webp",
     "copies": 1,
     "confidence": "medium"
@@ -2844,9 +2857,10 @@
       }
     ],
     "values": {
-      "requires": "1 Residence of the highest level or 6 commerce points"
+      "requires": "top-level Residence or 6 commerce",
+      "victory_points": 2
     },
-    "rules_text": "Place on a 'City' card.",
+    "rules_text": "Place on one of your cities. Worth 2 VP (4 total with the city). Cannot be removed or attacked. Requires: a top-level Residence or 6 commerce points.",
     "image": "merchants-commercial-metropolis.webp",
     "copies": 1,
     "confidence": "high"
@@ -2868,9 +2882,9 @@
     ],
     "values": {
       "commerce": 1,
-      "requires": "Commercial Harvest"
+      "requires": "Commercial Harbor"
     },
-    "rules_text": "Place on a building site of one of your opponent's cities. 1x during your turn, you may take 1 resource of your choice from your opponent. Choose from your opponent.",
+    "rules_text": "Foreign card built on the opponent's city. Once per turn, pay 1 gold to buy 1 resource from them. Requires: Commercial Harbor.",
     "image": "merchants-trading-station.webp",
     "copies": 1,
     "confidence": "medium"
@@ -2900,9 +2914,9 @@
       "strength": 1,
       "requires": "of the highest level 2 Residences"
     },
-    "rules_text": "1x during your turn, take discard fish. If all Residences by 1 level and take any 2 resources of your choice.",
+    "rules_text": "Once per turn, downgrade one of your Residences by 1 level to take any 2 resources. Prerequisite for several cards.",
     "image": "merchants-commercial-harbor.webp",
-    "copies": 3,
+    "copies": 2,
     "confidence": "low"
   },
   {
@@ -2926,9 +2940,9 @@
     ],
     "values": {
       "strength": 1,
-      "requires": "Commercial Harbor or at least 2 sea ships"
+      "requires": "Commercial Harbor or 2 trade ships"
     },
-    "rules_text": "1x during your turn, 1 sea ship directly adjacent to the Lighthouse, you may use this ship to trade at 1:1 rate. If you build a house on the Lighthouse level and you must discard sea harbor. Requires: Commercial Harbor or at least 2 sea ships.",
+    "rules_text": "Once per turn, use a trade ship adjacent to it to trade 1:1. Immune to Capricious Sea. Requires: Commercial Harbor or 2+ trade ships.",
     "image": "merchants-lighthouse.webp",
     "copies": 2,
     "confidence": "low"
@@ -2953,7 +2967,7 @@
       }
     ],
     "values": {},
-    "rules_text": "After building the Craft Guild, rotate each of your Residences to the next higher level. If you can't find a Residence, you must rotate any 2 Residences to the next higher level instead.",
+    "rules_text": "When built, rotate all your Residences up 1 level (or take 2 resources if you have none). Prerequisite.",
     "image": "merchants-craft-guild.webp",
     "copies": 2,
     "confidence": "high"
@@ -2978,9 +2992,10 @@
       }
     ],
     "values": {
-      "victory_points": 2
+      "victory_points": 2,
+      "commerce": 1
     },
-    "rules_text": "Each time your opponent trades 2 or 3 resources of one type for a different resource in any monopoly, you increase by 1 resource of the type your opponent just received. If it is not 1 resource of the type your opponent paid during this trade.",
+    "rules_text": "When the opponent makes a 2:1 or 3:1 trade in their principality, you receive 1 of the resource they paid.",
     "image": "merchants-master-merchants-alliance.webp",
     "copies": 1,
     "confidence": "medium"
@@ -2994,7 +3009,7 @@
     "values": {
       "requires": "Craft Guild"
     },
-    "rules_text": "Take up to 2 resources of your choice.",
+    "rules_text": "Take up to 2 resources of your choice. Requires: Craft Guild.",
     "image": "merchants-guild-master.webp",
     "copies": 1,
     "confidence": "high"
@@ -3003,12 +3018,12 @@
     "id": "merchants-herold-the-master-merchant",
     "set": "merchants",
     "category": "action",
-    "name": "Herold the Master Merchant",
+    "name": "Hergild the Master Merchant",
     "cost": [],
     "values": {
-      "requires": "Commercial Harbor or at least 2 trade ships"
+      "requires": "Commercial Harbor or 2 trade ships"
     },
-    "rules_text": "During the turn you play Herold, you may trade a resource card at home as if you like.",
+    "rules_text": "This turn, freely trade one trade-ship resource type 1:1. Requires: Commercial Harbor or 2+ trade ships.",
     "image": "merchants-herold-the-master-merchant.webp",
     "copies": 1,
     "confidence": "medium"
@@ -3020,9 +3035,9 @@
     "name": "Gero the Master Merchant",
     "cost": [],
     "values": {
-      "requires": "At least 2 trade ships"
+      "requires": "2 trade ships"
     },
-    "rules_text": "Take any 1 or 2 resources of your choice.",
+    "rules_text": "Take any 1-2 resources of your choice. Requires: 2+ trade ships.",
     "image": "merchants-gero-the-master-merchant.webp",
     "copies": 1,
     "confidence": "high"
@@ -3034,7 +3049,7 @@
     "name": "Tactical Retreat",
     "cost": [],
     "values": {},
-    "rules_text": "If you remove one of the buildings you placed in your opponent's principality, you receive any 2 resources of your choice. 1 of which your opponent must give you.",
+    "rules_text": "Remove one of your buildings from the opponent's principality to gain any 2 resources (1 of them taken from the opponent).",
     "image": "merchants-tactical-retreat.webp",
     "copies": 1,
     "confidence": "medium"
@@ -3046,7 +3061,7 @@
     "name": "Mendicants",
     "cost": [],
     "values": {},
-    "rules_text": "If your opponent has the trade advantage, demand 1 resource from him. If he also has more victory points than you, demand up to 2 resources from him.",
+    "rules_text": "If the opponent has the trade advantage, demand 1 resource (2 if they also lead on VP).",
     "image": "merchants-mendicants.webp",
     "copies": 1,
     "confidence": "medium"
@@ -3060,7 +3075,7 @@
     "values": {
       "requires": "Commercial Harbor"
     },
-    "rules_text": "Demand 1, 2, of 3 resources of one type from your opponent and give him 1 resource of your choice in return.",
+    "rules_text": "Demand 1-3 resources of a single type; give 1 back. Requires: Commercial Harbor.",
     "image": "merchants-trade-monopoly.webp",
     "copies": 1,
     "confidence": "medium"
@@ -3072,7 +3087,7 @@
     "name": "Maritime Trade Monopoly",
     "cost": [],
     "values": {},
-    "rules_text": "For each trade ship you have in excess of your opponent's trade ship total, demand 1 resource from him—a maximum of 2 resources.",
+    "rules_text": "Demand 1 resource for each trade ship you have more than the opponent (max 2).",
     "image": "merchants-maritime-trade-monopoly.webp",
     "copies": 2,
     "confidence": "high"
@@ -3084,7 +3099,7 @@
     "name": "Fortunate Trade Voyage",
     "cost": [],
     "values": {},
-    "rules_text": "For 1 of the trade ships, each player receives up to 2 resources of the type traded by the ship. Large Trade Ship: Each player receives 2 resources of the left or right region.",
+    "rules_text": "A favourable voyage - each player receives resources according to their trade ships.",
     "image": "merchants-fortunate-trade-voyage.webp",
     "copies": 2,
     "confidence": "medium"
@@ -3096,10 +3111,10 @@
     "name": "Capricious Sea",
     "cost": [],
     "values": {},
-    "rules_text": "Calm Sea (1, 2, 3): At the end of the turn, all trade ships; each player receives 1 resource instead. Place it in his propensity under a matching draw stack of his own.",
+    "rules_text": "Trade is disrupted: resources you cannot store are lost. A Lighthouse is immune.",
     "image": "merchants-capricious-sea.webp",
     "copies": 1,
-    "confidence": "low"
+    "confidence": "medium"
   },
   {
     "id": "merchants-hour-of-the-master-merchants",
@@ -3108,7 +3123,7 @@
     "name": "Hour of the Master Merchants",
     "cost": [],
     "values": {},
-    "rules_text": "Rotate each coin Residences to the next higher level. If 1 or more Residences already reached level 3, each region adjacent to these Residences receives 1 resource instead.",
+    "rules_text": "Rotate each of your Residences to the next higher level. For each Residence already at the highest level, receive 1 resource in its adjacent region.",
     "image": "merchants-hour-of-the-master-merchants.webp",
     "copies": 1,
     "confidence": "medium"

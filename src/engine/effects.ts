@@ -152,6 +152,34 @@ export const EFFECTS: Record<string, EffectStep[]> = {
   // ===== ongoing trade ratios (info; resolve trades via the toolkit) =====
   'base-large-trade-ship': [{ text: 'Trade 2 resources of the left/right neighbouring region for any 1 other resource (your turn).' }],
   'gold-large-trade-ship': [{ text: 'Trade 2 resources of the left/right neighbouring region for any 1 other resource (your turn).' }],
+
+  // ===== Era of Intrigue =====
+  'intrigue-church': [{ text: 'When built, receive up to 2 gold.', quick: [{ kind: 'gainFixed', who: 'owner', resource: 'gold', count: 1, label: '+1 gold' }, { kind: 'gainFixed', who: 'owner', resource: 'gold', count: 1, label: '+1 more gold' }] }],
+  'intrigue-odins-temple': [{ text: 'When built, draw 1 card from any draw stack.', quick: [{ kind: 'grant', label: 'Draw a card' }] }],
+  'intrigue-bran-defender-of-the-temple': [{ text: 'When built, draw 2 cards from the draw stacks. (Place on your Odin’s Temple; Bran + Temple = 2 VP.)', quick: [{ kind: 'grant', label: 'Draw a card' }, { kind: 'grant', label: 'Draw another' }] }],
+  'intrigue-bishops-see': [{ text: 'When built, choose 3 of the opponent’s units; they remove 1 (resolve on the board). Requires: Church, Abbey or Chapel.' }],
+  'intrigue-bishop': [{ text: 'Demand 1 gold from the opponent…', quick: [{ kind: 'steal', count: 1, label: 'Take 1 gold' }] }, { text: '…then receive gold equal to one gold field (up to 3). Requires: Church or Bishop’s See.', quick: [{ kind: 'gainFixed', who: 'owner', resource: 'gold', count: 1, label: '+1 gold' }, { kind: 'gainFixed', who: 'owner', resource: 'gold', count: 1, label: '+1' }, { kind: 'gainFixed', who: 'owner', resource: 'gold', count: 1, label: '+1' }] }],
+  'intrigue-missionary': [{ text: 'The opponent removes 1 hero; place it in your principality or discard it. Requires: Church or Bishop’s See.', quick: [{ kind: 'grant', label: 'Take the hero' }] }],
+  'intrigue-odins-priest': [{ text: 'The opponent reveals their hand and places all action cards and units under matching draw stacks. Requires: Odin’s Temple.' }],
+  'intrigue-priestess-of-the-horns': [{ text: 'Choose a draw stack; take up to 2 cards from it. Requires: Odin’s Fountain or Temple.', quick: [{ kind: 'grant', label: 'Take a card' }, { kind: 'grant', label: 'Take another' }] }],
+  'intrigue-michael-the-master-builder': [{ text: 'When building this turn, you may replace 1–3 of the required resources with 1 gold each (pay as you build).' }],
+  'intrigue-good-neighbors': [{ text: 'A peaceful event — no attack occurs. Resolve any draw-stack effect printed on the card.' }],
+  'intrigue-religious-dispute': [{ text: 'Each player with ≥1 city loses hand cards under matching draw stacks; a Church and an Odin’s Temple each reduce the loss. Resolve by hand.' }],
+
+  // ===== Era of Merchant Princes =====
+  'merchants-gero-the-master-merchant': [{ text: 'Take any 1–2 resources of your choice. Requires: 2+ trade ships.', quick: [gain(1, 'Gain 1'), gain(1, 'Gain another')] }],
+  'merchants-guild-master': [{ text: 'Take up to 2 resources of your choice. Requires: Craft Guild.', quick: [gain(1, 'Gain 1'), gain(1, 'Gain another')] }],
+  'merchants-herold-the-master-merchant': [{ text: 'This turn, freely trade one trade-ship resource type 1:1. Use the toolkit for each trade.' }],
+  'merchants-maritime-trade-monopoly': [{ text: 'Demand 1 resource per trade-ship you have more than the opponent (max 2).', quick: [steal(1, 'Take 1'), steal(1, 'Take another')] }],
+  'merchants-trade-monopoly': [{ text: 'Demand 1–3 resources of one type…', quick: [steal(1, 'Take 1'), steal(1, 'Take another'), steal(1, 'Take a third')] }, { text: '…then give 1 back. Requires: Commercial Harbor.', quick: [{ kind: 'give', count: 1, label: 'Give 1 back' }] }],
+  'merchants-mendicants': [{ text: 'If the opponent has the trade advantage, demand 1 (2 if they also lead on VP).', quick: [steal(1, 'Take 1'), steal(1, 'Take another')] }],
+  'merchants-tactical-retreat': [{ text: 'Remove one of your buildings in the opponent’s principality, then gain any 2 resources (1 taken from the opponent).', quick: [gain(1, 'Gain 1'), steal(1, 'Take 1 from opponent')] }],
+  'merchants-craft-guild': [{ text: 'When built, rotate all your Residences up 1 level — or take 2 resources if you have none.', quick: [gain(1, 'Gain 1 (no Residences)'), gain(1, 'Gain another')] }],
+  'merchants-commercial-harbor': [{ text: 'Once per turn, downgrade a Residence 1 level to take any 2 resources.', quick: [gain(1, 'Gain 1'), gain(1, 'Gain another'), { kind: 'used', key: 'merchants-commercial-harbor', label: 'Mark used this turn' }] }],
+  'merchants-pirate-ship': [{ text: 'When built, the opponent removes 1 trade ship to the discard.', quick: [{ kind: 'grant', label: 'Move a ship' }] }, { text: 'Event Plentiful Harvest: receive 1 gold.', quick: [{ kind: 'gainFixed', who: 'owner', resource: 'gold', count: 1, label: '+1 gold' }] }],
+  'merchants-hour-of-the-master-merchants': [{ text: 'Rotate each of your Residences up 1 level; for each already at the top level, receive 1 resource in its adjacent region.', quick: [gain(1, 'Gain 1 (max-level Residence)')] }],
+  'merchants-fortunate-trade-voyage': [{ text: 'Each player receives resources according to their trade ships.', quick: [gain(1, 'You gain 1'), oppGain(1, 'Opponent gains 1')] }],
+  'merchants-capricious-sea': [{ text: 'Trade is disrupted: resources you cannot store are lost. A Lighthouse is immune. Resolve by hand.' }],
 }
 
 // every "X-ship" base/gold 2:1 trader → info step

@@ -1,4 +1,5 @@
 import { useGame } from '../../store/gameStore'
+import type { PlayerId } from '../../types'
 import { Table } from './Table'
 import { TableHud, type AppMode } from './TableHud'
 import { PrincipalityBoard } from './PrincipalityBoard'
@@ -29,11 +30,13 @@ import './board.css'
 import './anim.css'
 
 /** The real-table board: two principalities facing across the central wall. */
-export function TableBoard({ mode, setMode }: { mode: AppMode; setMode: (m: AppMode) => void }) {
+export function TableBoard({ mode, setMode, fixedBottom }: { mode: AppMode; setMode: (m: AppMode) => void; fixedBottom?: PlayerId }) {
   const state = useGame((s) => s.state)
   const online = useGame((s) => s.online)
   const mySeat = useGame((s) => s.mySeat)
-  const bottom = online ? mySeat : state.activePlayer
+  // `fixedBottom` (vs-AI mode) pins YOUR principality to the bottom so the table
+  // never flips on the opponent's turn. Default keeps the original hotseat behavior.
+  const bottom = fixedBottom ?? (online ? mySeat : state.activePlayer)
   const top = bottom === 'p0' ? 'p1' : 'p0'
   const over = state.phase === 'gameover'
   const topActive = !over && top === state.activePlayer

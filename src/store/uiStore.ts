@@ -78,6 +78,7 @@ interface UIState {
   /** Visual felt theme, decoupled from which card sets are enabled. 'auto' follows the
    *  enabled eras; otherwise the player picks the atmosphere they want to see. */
   tableTheme: 'auto' | 'base' | 'gold' | 'turmoil' | 'progress' | 'duel'
+    | 'intrigue' | 'merchants' | 'barbarians' | 'explorers' | 'sages' | 'prosperity'
   setTableTheme: (t: UIState['tableTheme']) => void
   /** Which draw stack is open in the peek/search browser modal (null = closed). */
   stackBrowse: number | null

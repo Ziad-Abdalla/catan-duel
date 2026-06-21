@@ -11,7 +11,9 @@ export type Category =
   | 'region' | 'road' | 'settlement' | 'city'
   | 'building' | 'action' | 'event' | 'hero-or-unit'
 
-export type SetId = 'base' | 'gold' | 'turmoil' | 'progress'
+export type SetId =
+  | 'base' | 'gold' | 'turmoil' | 'progress'
+  | 'intrigue' | 'merchants' | 'barbarians' | 'explorers' | 'sages' | 'prosperity'
 
 export interface RawValues {
   victory_points?: number

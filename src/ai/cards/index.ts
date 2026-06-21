@@ -177,7 +177,7 @@ function buildDef(c: RawCard): CardDef {
 }
 
 const REGISTRY = new Map<string, CardDef>()
-for (const set of ['base', 'gold', 'turmoil', 'progress'] as SetId[]) {
+for (const set of ['base', 'gold', 'turmoil', 'progress', 'intrigue', 'merchants', 'barbarians', 'explorers', 'sages', 'prosperity'] as SetId[]) {
   for (const c of cardsOfSet(set)) {
     if (SPINE.includes(c.category)) continue // spine cards handled structurally, not via CardDef slots
     REGISTRY.set(c.id, buildDef(c))

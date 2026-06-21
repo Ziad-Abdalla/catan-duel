@@ -11,7 +11,10 @@ import {
 } from './state'
 import { seatYule } from './events'
 
-const WIN_THRESHOLD: Record<Mode, number> = { base: 7, gold: 12, turmoil: 12, progress: 12, duel: 13 }
+const WIN_THRESHOLD: Record<Mode, number> = {
+  base: 7, gold: 12, turmoil: 12, progress: 12, duel: 13,
+  intrigue: 12, merchants: 12, barbarians: 13, explorers: 12, sages: 12, prosperity: 12,
+}
 
 const CENTER_A = new Set(['lumber', 'brick', 'wool']) // classic wood/brick/sheep settlement
 // CENTER_B = grain/ore/gold

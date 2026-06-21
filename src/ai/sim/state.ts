@@ -12,7 +12,9 @@ export function other(seat: Seat): Seat {
   return seat === 'p0' ? 'p1' : 'p0'
 }
 
-export type Mode = 'base' | 'gold' | 'turmoil' | 'progress' | 'duel'
+export type Mode =
+  | 'base' | 'gold' | 'turmoil' | 'progress' | 'duel'
+  | 'intrigue' | 'merchants' | 'barbarians' | 'explorers' | 'sages' | 'prosperity'
 /** preroll: may play pre-roll actions (Brigitta) then roll · action: build/play/trade · gameover. */
 export type Phase = 'preroll' | 'action' | 'gameover'
 
@@ -54,7 +56,7 @@ export interface Player {
 export interface GameState {
   mode: Mode
   /** which expansion theme set is live besides base ('base' for the intro game). */
-  themeSet: 'base' | 'gold' | 'turmoil' | 'progress' | 'duel'
+  themeSet: Mode
   winThreshold: number
   turn: number
   active: Seat

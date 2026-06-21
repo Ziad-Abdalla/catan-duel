@@ -25,6 +25,13 @@ const SET_OF_MODE: Record<Mode, SetId[]> = {
   turmoil: ['base', 'turmoil'],
   progress: ['base', 'progress'],
   duel: ['base', 'gold', 'turmoil', 'progress'],
+  // new theme sets are human-play only for now; the AI selfplay harness never runs them
+  intrigue: ['base', 'intrigue'],
+  merchants: ['base', 'merchants'],
+  barbarians: ['base', 'barbarians'],
+  explorers: ['base', 'explorers'],
+  sages: ['base', 'sages'],
+  prosperity: ['base', 'prosperity'],
 }
 
 export function analyze(res: SeriesResult): Analysis {

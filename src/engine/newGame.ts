@@ -137,6 +137,8 @@ export function newGame({ seed, p0Name = 'Player 1', p1Name = 'Player 2', enable
     ],
     enabledSets: sets,
     // Official targets: 7 intro · 12 single theme · 13 all themes (Duel of the Princes).
-    winThreshold: eras.length === 0 ? 7 : eras.length >= 3 ? 13 : 12,
+    // The Era of Barbarians is the exception — its theme game is played to 13.
+    winThreshold:
+      eras.length === 0 ? 7 : eras.length >= 3 ? 13 : eras.includes('barbarians') ? 13 : 12,
   }
 }

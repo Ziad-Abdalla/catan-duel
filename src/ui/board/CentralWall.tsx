@@ -7,12 +7,7 @@ import { useGame } from '../../store/gameStore'
 import { useUI } from '../../store/uiStore'
 import { playSfx } from '../../audio/sfx'
 
-const SET_LABEL: Record<'base' | 'gold' | 'turmoil' | 'progress', string> = {
-  base: 'Basic',
-  gold: 'Era of Gold',
-  turmoil: 'Era of Turmoil',
-  progress: 'Innovation',
-}
+import { SET_LABEL } from './deckmeta'
 
 /** The central wall: card stacks, dice tray, turn controls, tokens. */
 export function CentralWall() {

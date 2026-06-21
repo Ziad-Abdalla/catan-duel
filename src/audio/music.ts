@@ -97,7 +97,9 @@ function startSynth() {
 // every lap so it never gets repetitive. On by default; on/off + volume in shared prefs.
 const ALL = Array.from({ length: 18 }, (_, i) => `audio/bgm-${i + 1}.mp3`)
 
-export type MusicEra = 'base' | 'gold' | 'turmoil' | 'progress' | 'duel'
+export type MusicEra =
+  | 'base' | 'gold' | 'turmoil' | 'progress' | 'duel'
+  | 'intrigue' | 'merchants' | 'barbarians' | 'explorers' | 'sages' | 'prosperity'
 // indices into ALL, chosen by mood; lists overlap so each era has 5-6 tracks and never runs dry.
 const ERA_TRACKS: Record<MusicEra, number[]> = {
   base: [0, 3, 2, 13, 17, 4], // intro: tavern dance, calm folk, renaissance airs
@@ -105,6 +107,12 @@ const ERA_TRACKS: Record<MusicEra, number[]> = {
   turmoil: [5, 6, 10, 12, 4], // tense + epic + sacre/dramatic
   progress: [9, 11, 15, 16, 2], // bright baroque + concertino
   duel: [5, 12, 6, 11, 1, 0], // epic mix for the full game
+  intrigue: [5, 10, 12, 6, 4], // dark, conspiratorial tension
+  merchants: [1, 7, 8, 14, 9], // courtly trade, stately ayres
+  barbarians: [5, 12, 6, 10, 1], // martial, epic, driving
+  explorers: [8, 14, 1, 9, 17], // adventurous, expansive
+  sages: [11, 16, 2, 9, 3], // calm, scholarly, contemplative
+  prosperity: [2, 9, 11, 15, 16], // bright, peaceful, baroque
 }
 
 let ambEl: HTMLAudioElement | null = null

@@ -349,7 +349,8 @@ function human(aiSeat: PlayerId): PlayerId { return aiSeat === 'p0' ? 'p1' : 'p0
 function Setup({ onStart }: { onStart: (c: Config, sets: SetId[]) => void }) {
   const [difficulty, setDifficulty] = useState<Difficulty>('medium')
   const [aiSeat, setAiSeat] = useState<PlayerId>('p1')
-  const [sets, setSets] = useState<Record<SetId, boolean>>({ base: true, gold: false, turmoil: false, progress: false })
+  // AI opponent currently supports the three base-game eras; new theme sets are human-play only.
+  const [sets, setSets] = useState<Partial<Record<SetId, boolean>>>({ base: true, gold: false, turmoil: false, progress: false })
   const toggle = (id: SetId) => setSets((s) => ({ ...s, [id]: !s[id] }))
   const enabled = (['gold', 'turmoil', 'progress'] as SetId[]).filter((id) => sets[id])
   return (

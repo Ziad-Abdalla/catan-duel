@@ -16,7 +16,9 @@ export const TERRAIN_RESOURCE: Record<string, ResourceType> = {
   'gold-field': 'gold',
 }
 
-export type SetId = 'base' | 'gold' | 'turmoil' | 'progress'
+export type SetId =
+  | 'base' | 'gold' | 'turmoil' | 'progress'
+  | 'intrigue' | 'merchants' | 'barbarians' | 'explorers' | 'sages' | 'prosperity'
 
 export type CardCategory =
   | 'region'

@@ -14,6 +14,12 @@ const ERAS: { id: SetId; label: string }[] = [
   { id: 'gold', label: 'Gold' },
   { id: 'turmoil', label: 'Turmoil' },
   { id: 'progress', label: 'Innovation' },
+  { id: 'intrigue', label: 'Intrigue' },
+  { id: 'merchants', label: 'Merchants' },
+  { id: 'barbarians', label: 'Barbarians' },
+  { id: 'explorers', label: 'Explorers' },
+  { id: 'sages', label: 'Sages' },
+  { id: 'prosperity', label: 'Prosperity' },
 ]
 
 const THEMES: { id: string; label: string }[] = [
@@ -22,6 +28,12 @@ const THEMES: { id: string; label: string }[] = [
   { id: 'gold', label: 'Gold' },
   { id: 'turmoil', label: 'Turmoil' },
   { id: 'progress', label: 'Innovation' },
+  { id: 'intrigue', label: 'Intrigue' },
+  { id: 'merchants', label: 'Merchants' },
+  { id: 'barbarians', label: 'Barbarians' },
+  { id: 'explorers', label: 'Explorers' },
+  { id: 'sages', label: 'Sages' },
+  { id: 'prosperity', label: 'Prosperity' },
   { id: 'duel', label: 'Duel' },
 ]
 

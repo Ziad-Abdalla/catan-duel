@@ -978,6 +978,56 @@
     radial-gradient(130% 120% at 50% 40%, #3a2c52 0%, #2c2042 38%, #1e1530 76%, #100a1c 100%);
 }
 
+/* ── Expansion themes (Age of Darkness + Age of Enlightenment) ── */
+/* Intrigue — shadowy church-and-temple scheming (dark wine) */
+.felt-era-intrigue .felt-bg { background: radial-gradient(120% 80% at 50% 32%, #3a1f33 0%, #20111d 58%, #110810 100%); }
+.felt-era-intrigue .felt-bg::after { background: radial-gradient(80% 40% at 50% 0%, rgba(190, 110, 170, 0.16), transparent 70%); }
+.felt-era-intrigue .pmat {
+  background:
+    radial-gradient(60% 50% at 50% 42%, rgba(210, 140, 190, 0.18), transparent 72%),
+    radial-gradient(130% 120% at 50% 40%, #432a3e 0%, #34202f 38%, #261621 76%, #160b13 100%);
+}
+/* Merchant Princes — mercantile steel-blue felt under a gold trade-wealth rim */
+.felt-era-merchants .felt-bg { background: radial-gradient(120% 80% at 50% 32%, #1d2f43 0%, #111d26 58%, #080f14 100%); }
+.felt-era-merchants .felt-bg::after { background: radial-gradient(80% 40% at 50% 0%, rgba(232, 196, 120, 0.16), transparent 70%); }
+.felt-era-merchants .pmat {
+  background:
+    radial-gradient(60% 50% at 50% 42%, rgba(232, 196, 120, 0.16), transparent 72%),
+    radial-gradient(130% 120% at 50% 40%, #22384a 0%, #1a2c3a 38%, #14202a 76%, #0a1014 100%);
+}
+/* Barbarians — invasion ember/rust */
+.felt-era-barbarians .felt-bg { background: radial-gradient(120% 80% at 50% 32%, #43291a 0%, #261610 58%, #140a06 100%); }
+.felt-era-barbarians .felt-bg::after { background: radial-gradient(80% 40% at 50% 0%, rgba(230, 140, 70, 0.16), transparent 70%); }
+.felt-era-barbarians .pmat {
+  background:
+    radial-gradient(60% 50% at 50% 42%, rgba(235, 150, 80, 0.18), transparent 72%),
+    radial-gradient(130% 120% at 50% 40%, #4a3320 0%, #3a2718 38%, #2a1c10 76%, #160d06 100%);
+}
+/* Explorers — open-ocean cyan */
+.felt-era-explorers .felt-bg { background: radial-gradient(120% 80% at 50% 32%, #15394a 0%, #0e2530 58%, #06141a 100%); }
+.felt-era-explorers .felt-bg::after { background: radial-gradient(80% 40% at 50% 0%, rgba(90, 200, 220, 0.16), transparent 70%); }
+.felt-era-explorers .pmat {
+  background:
+    radial-gradient(60% 50% at 50% 42%, rgba(110, 210, 225, 0.18), transparent 72%),
+    radial-gradient(130% 120% at 50% 40%, #1a4250 0%, #143440 38%, #0f2630 76%, #06151a 100%);
+}
+/* Sages — scholarly indigo */
+.felt-era-sages .felt-bg { background: radial-gradient(120% 80% at 50% 32%, #232a52 0%, #15193a 58%, #0a0c1c 100%); }
+.felt-era-sages .felt-bg::after { background: radial-gradient(80% 40% at 50% 0%, rgba(140, 150, 235, 0.16), transparent 70%); }
+.felt-era-sages .pmat {
+  background:
+    radial-gradient(60% 50% at 50% 42%, rgba(155, 165, 240, 0.18), transparent 72%),
+    radial-gradient(130% 120% at 50% 40%, #2a3056 0%, #202544 38%, #161a30 76%, #0a0c1c 100%);
+}
+/* Prosperity — warm rose-gold wealth */
+.felt-era-prosperity .felt-bg { background: radial-gradient(120% 80% at 50% 32%, #482d38 0%, #2e1c24 58%, #160c10 100%); }
+.felt-era-prosperity .felt-bg::after { background: radial-gradient(80% 40% at 50% 0%, rgba(245, 185, 155, 0.17), transparent 70%); }
+.felt-era-prosperity .pmat {
+  background:
+    radial-gradient(60% 50% at 50% 42%, rgba(245, 190, 160, 0.18), transparent 72%),
+    radial-gradient(130% 120% at 50% 40%, #4a3338 0%, #3a262c 38%, #2a1a20 76%, #160b10 100%);
+}
+
 /* living table: a slow wandering pool of warm light drifts across every mat so the
    felt breathes even on a default game. Sits under the pieces (children are lifted). */
 .pmat::before {

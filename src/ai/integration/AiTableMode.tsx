@@ -17,7 +17,7 @@ import type { SetId, PlayerId } from '../../types'
 import {
   rollForAi, productionTotals, eventTotals, cardEventTotals, planAiActions,
   reconcileDeltas, structuralActions, refillActions, exchangeActions,
-  humanEventChoice, opponentHas, liveCenters, freeBuildingSlot, LIVE_TO_SIM,
+  humanEventChoice, opponentHas, handLimit, liveCenters, freeBuildingSlot, LIVE_TO_SIM,
   RESOURCES, type Seat, type Choice,
 } from './aiController'
 import type { Difficulty } from '../agent/difficulty'
@@ -174,10 +174,17 @@ export default function AiTableMode() {
       setWorking(false); setBanner('🤖 AI finished building — press Next when ready ▶')
     }
     async function refillPhase(ai: boolean) {
-      setWorking(true); setBanner(ai ? '🤖 AI is drawing back up to its hand limit…' : '🎴 Refilling your hand to the limit…')
-      const seat = get().activePlayer
-      for (const a of refillActions(get(), seat)) { dispatch(a); await sleep(T_REFILL); if (stale()) return }
-      setWorking(false); setBanner(ai ? '🤖 AI refilled — press Next ▶' : '🎴 Hand refilled — press Next ▶')
+      if (ai) {
+        setWorking(true); setBanner('🤖 AI is drawing back up to its hand limit…')
+        for (const a of refillActions(get(), aiSeat())) { dispatch(a); await sleep(T_REFILL); if (stale()) return }
+        setWorking(false); setBanner('🤖 AI refilled — press Next ▶')
+        return
+      }
+      // YOUR refill is YOUR choice — draw from whichever stacks you like on the board
+      const need = handLimit(get(), human()) - get().players[human()].hand.length
+      setBanner(need > 0
+        ? `🎴 Refill — draw ${need} card${need > 1 ? 's' : ''} from the stacks of your choice on the board, then Next ▶`
+        : '🎴 Hand already at the limit — press Next ▶')
     }
     async function exchangePhase(ai: boolean) {
       setWorking(true)

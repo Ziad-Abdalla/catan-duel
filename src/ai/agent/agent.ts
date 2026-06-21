@@ -2,11 +2,15 @@
 // Easy = 1-ply greedy (no search). Medium/Hard = ISMCTS with a per-difficulty budget.
 
 import { type GameState } from '../sim/state'
-import { type Move } from '../sim/moves'
-import { chooseFast } from './policy'
+import { legalMoves, apply, type Move } from '../sim/moves'
+import { chooseFast, chooseGreedy } from './policy'
+import { evaluate } from './evaluate'
 import { ismctsSearch } from './ismcts'
 import { type Difficulty, BUDGETS } from './difficulty'
 import type { Chooser } from '../selfplay/run'
+
+/** Eval margin by which greedy must beat the search's pick before we override it. */
+const SAFETY_MARGIN = 35
 
 export function chooseMove(
   s: GameState,
@@ -19,7 +23,7 @@ export function chooseMove(
   // Easy << Medium << Hard is real. (chooseGreedy remains the strong 1-ply baseline
   // used in tests.)
   if (budget.iterations <= 0) return chooseFast(s, rng)
-  return ismctsSearch(
+  const [mctsMove, nrng] = ismctsSearch(
     s,
     {
       // short rollouts: with a decent evaluator, leaning on it near the leaf beats
@@ -31,6 +35,24 @@ export function chooseMove(
     },
     rng,
   )
+  // Greedy safety net: ISMCTS rollouts can turn pessimistic (e.g. an opponent with a
+  // big resource stockpile "wins" every playout), making the search undervalue its
+  // own progress and idle (endTurn) instead of building a +VP settlement/city. The
+  // 1-ply eval is reliable, so if greedy's best deterministic move beats the search's
+  // pick by a clear margin, we trust greedy. Only applies to deterministic action
+  // moves (no roll/chance), and only catches blunders — small disagreements keep the
+  // search's lookahead.
+  if (s.phase === 'action' && mctsMove.t !== 'roll' && mctsMove.t !== 'chooseProd') {
+    const greedyMove = chooseGreedy(s)
+    if (greedyMove.t !== mctsMove.t || JSON.stringify(greedyMove) !== JSON.stringify(mctsMove)) {
+      const seat = s.active
+      const gv = evaluate(apply(s, greedyMove), seat)
+      const mv = evaluate(apply(s, mctsMove), seat)
+      if (gv - mv > SAFETY_MARGIN) return [greedyMove, nrng]
+    }
+  }
+  void legalMoves
+  return [mctsMove, nrng]
 }
 
 /** Self-play chooser — deterministic, iteration-bounded (no wall clock). */

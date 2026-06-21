@@ -28,6 +28,9 @@ export interface SearchBudget {
   now?: () => number
 }
 
+/** Virtual visits the evaluation prior is worth (anchors Q against rollout noise). */
+const PRIOR = 8
+
 interface Node {
   N: number
   W: number // sum of root-seat win-prob
@@ -120,11 +123,14 @@ export function ismctsSearch(root: GameState, budget: SearchBudget, rngSeed: num
         const m = untried[pick]
         applyInPlace(s, m)
         const child = newNode()
-        // Evaluation prior (first-play urgency): seed the new node with one virtual
-        // visit at the heuristic value, so the search is anchored to — and never
-        // worse than — the 1-ply evaluation, then refines it with deeper rollouts.
-        child.N = 1
-        child.W = winProb(s, rootSeat, w)
+        // Evaluation prior (first-play urgency): seed the new node with PRIOR virtual
+        // visits at the heuristic value. The eval is strong but its win-prob gaps are
+        // small (a +1 VP move ≈ +0.02), while a 12-ply random rollout swings much more
+        // — so a single-visit prior gets drowned by rollout noise and clearly-best
+        // moves get missed. A heavier prior anchors Q to the eval; rollouts still
+        // refine it, just without flipping dominant moves on noise.
+        child.N = PRIOR
+        child.W = PRIOR * winProb(s, rootSeat, w)
         node.children.set(sig(m), child)
         path.push(child)
         node = child
@@ -156,7 +162,11 @@ export function ismctsSearch(root: GameState, budget: SearchBudget, rngSeed: num
     for (const n of path) { n.N++; n.W += value }
   }
 
-  // pick the most-visited root child (robust choice)
+  // Root choice: MOST-VISITED child (the standard robust MCTS choice). With the
+  // strengthened evaluation prior, UCB exploits the high-value move so it accrues the
+  // most visits — while NOT selecting by raw Q, which would perversely pick a barely-
+  // explored move: the best move gets explored most, so noisy/biased rollouts drag ITS
+  // mean toward the rollout value while an un-explored move keeps its rosier prior.
   let best: Move = rootMoves[0]
   let bestN = -1
   for (const m of rootMoves) {

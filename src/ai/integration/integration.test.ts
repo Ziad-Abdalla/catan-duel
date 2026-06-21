@@ -176,18 +176,23 @@ describe('a full AI turn against the real engine', () => {
     invariants(store.get())
   })
 
-  it('the AI develops its principality over several turns (all sets)', () => {
-    const store = makeStore(3, ['gold', 'turmoil', 'progress'])
-    const rng = { v: 999 }
-    for (let i = 0; i < 14 && !store.get().winner; i++) {
+  it('the AI actually BUILDS a principality over a full game (not just hoards)', () => {
+    // regression for the "AI never builds settlements" bug: it must grow past its
+    // starting 2 VP by building settlements/cities, not sit on resources.
+    const store = makeStore(7)
+    const rng = { v: 42 }
+    for (let i = 0; i < 80 && !store.get().winner; i++) {
       if (store.get().activePlayer === 'p0') {
-        store.dispatch({ type: 'roll', production: 3, event: 'plentiful-harvest' })
+        store.dispatch({ type: 'roll', production: (i % 6) + 1, event: 'plentiful-harvest' })
         store.dispatch({ type: 'endTurn' })
       } else {
         runAiTurn(store, 'p1', rng)
       }
       invariants(store.get())
     }
-    expect(computeVP(store.get().players.p1)).toBeGreaterThanOrEqual(2)
+    const p1 = store.get().players.p1
+    const spine = p1.placed.filter((c) => c.cardId === 'base-settlement' || c.cardId === 'base-city').length
+    expect(spine).toBeGreaterThan(2)                      // built beyond the 2 starting settlements
+    expect(computeVP(p1)).toBeGreaterThanOrEqual(5)       // a real VP total, not a hoard
   })
 })

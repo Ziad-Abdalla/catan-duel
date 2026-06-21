@@ -21,6 +21,10 @@ export interface RawValues {
   skill?: number
   commerce?: number
   progress?: number
+  wisdom?: number
+  contentment?: number
+  sail?: number
+  cannon?: number
   region_resource?: Resource
   region_number?: number
   requires?: string

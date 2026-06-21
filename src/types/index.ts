@@ -42,6 +42,11 @@ export interface CardValues {
   skill?: number
   commerce?: number
   progress?: number
+  // Age of Enlightenment point types
+  wisdom?: number // owls (Era of Sages)
+  contentment?: number // stars (Era of Prosperity)
+  sail?: number // ship range (Era of Explorers)
+  cannon?: number // pirate combat (Era of Explorers)
   region_resource?: ResourceType
   region_number?: number
   requires?: string

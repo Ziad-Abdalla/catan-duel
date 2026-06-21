@@ -7,3 +7,4 @@ probe/
 # intermediate generated data (derived from transcripts)
 generated/
 pages.json
+rules-work/_*-fulltext.txt

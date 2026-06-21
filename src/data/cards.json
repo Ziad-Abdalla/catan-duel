@@ -89,7 +89,7 @@
     "copies": 9,
     "confidence": "high",
     "unclear": [
-      "cost is the canonical Catan/Rivals build cost — confirm against the physical card"
+      "cost is the canonical Catan/Rivals build cost \u2014 confirm against the physical card"
     ]
   },
   {
@@ -111,7 +111,7 @@
     "copies": 7,
     "confidence": "high",
     "unclear": [
-      "cost is the canonical Catan/Rivals city-upgrade cost — confirm against the physical card"
+      "cost is the canonical Catan/Rivals city-upgrade cost \u2014 confirm against the physical card"
     ]
   },
   {
@@ -133,7 +133,7 @@
     "copies": 9,
     "confidence": "high",
     "unclear": [
-      "cost is the canonical Catan/Rivals build cost — confirm against the physical card"
+      "cost is the canonical Catan/Rivals build cost \u2014 confirm against the physical card"
     ]
   },
   {
@@ -345,7 +345,7 @@
     "copies": 2,
     "confidence": "high",
     "unclear": [
-      "No effect text transcribed — confirm against the physical card whether it has printed rules or is a prerequisite-only card"
+      "No effect text transcribed \u2014 confirm against the physical card whether it has printed rules or is a prerequisite-only card"
     ]
   },
   {
@@ -731,7 +731,7 @@
     "id": "base-siglind",
     "set": "base",
     "category": "hero-or-unit",
-    "tag": "Unit – Hero",
+    "tag": "Unit \u2013 Hero",
     "name": "Siglind",
     "cost": [],
     "values": {
@@ -749,7 +749,7 @@
     "id": "base-brigitta-the-wise-woman",
     "set": "base",
     "category": "action",
-    "tag": "Action – Neutral",
+    "tag": "Action \u2013 Neutral",
     "name": "Brigitta, the Wise Woman",
     "cost": [],
     "values": {},
@@ -764,7 +764,7 @@
     "id": "base-relocation",
     "set": "base",
     "category": "action",
-    "tag": "Action – Neutral",
+    "tag": "Action \u2013 Neutral",
     "name": "Relocation",
     "cost": [],
     "values": {},
@@ -779,7 +779,7 @@
     "id": "base-scout",
     "set": "base",
     "category": "action",
-    "tag": "Action – Neutral",
+    "tag": "Action \u2013 Neutral",
     "name": "Scout",
     "cost": [],
     "values": {},
@@ -794,7 +794,7 @@
     "id": "base-merchant-caravan",
     "set": "base",
     "category": "action",
-    "tag": "Action – Neutral",
+    "tag": "Action \u2013 Neutral",
     "name": "Merchant Caravan",
     "cost": [],
     "values": {},
@@ -809,7 +809,7 @@
     "id": "base-goldsmith",
     "set": "base",
     "category": "action",
-    "tag": "Action – Neutral",
+    "tag": "Action \u2013 Neutral",
     "name": "Goldsmith",
     "cost": [],
     "values": {},
@@ -828,7 +828,7 @@
     "name": "Invention",
     "cost": [],
     "values": {},
-    "rules_text": "Each player gets any 1 resource of his choice for each building with a progress point – up to a maximum of 2 resources.",
+    "rules_text": "Each player gets any 1 resource of his choice for each building with a progress point \u2013 up to a maximum of 2 resources.",
     "flavor_text": "",
     "image": "p05_c3.png",
     "copies": 1,
@@ -1027,7 +1027,7 @@
     "id": "gold-large-trade-ship",
     "set": "gold",
     "category": "hero-or-unit",
-    "tag": "Unit – Trade Ship",
+    "tag": "Unit \u2013 Trade Ship",
     "name": "LARGE TRADE SHIP",
     "cost": [
       {
@@ -1263,7 +1263,7 @@
     "id": "gold-trade-master",
     "set": "gold",
     "category": "action",
-    "tag": "Action – Attack",
+    "tag": "Action \u2013 Attack",
     "name": "Trade Master",
     "cost": [],
     "values": {},
@@ -1278,7 +1278,7 @@
     "id": "gold-merchant",
     "set": "gold",
     "category": "action",
-    "tag": "Action – Attack",
+    "tag": "Action \u2013 Attack",
     "name": "Merchant",
     "cost": [],
     "values": {},
@@ -1293,7 +1293,7 @@
     "id": "gold-reiner-the-herald",
     "set": "gold",
     "category": "action",
-    "tag": "Action – Neutral",
+    "tag": "Action \u2013 Neutral",
     "name": "Reiner the Herald",
     "cost": [],
     "values": {},
@@ -1308,7 +1308,7 @@
     "id": "gold-goldsmith",
     "set": "gold",
     "category": "action",
-    "tag": "Action – Neutral",
+    "tag": "Action \u2013 Neutral",
     "name": "Goldsmith",
     "cost": [],
     "values": {},
@@ -1323,7 +1323,7 @@
     "id": "gold-brigands",
     "set": "gold",
     "category": "action",
-    "tag": "Action – Attack",
+    "tag": "Action \u2013 Attack",
     "name": "Brigands",
     "cost": [],
     "values": {},
@@ -1338,7 +1338,7 @@
     "id": "gold-gudrun-terror-of-the-seas",
     "set": "gold",
     "category": "action",
-    "tag": "Action – Attack",
+    "tag": "Action \u2013 Attack",
     "name": "Gudrun, Terror of the Seas",
     "cost": [],
     "values": {},
@@ -1448,7 +1448,7 @@
     "id": "turmoil-carl-forkbeard",
     "set": "turmoil",
     "category": "hero-or-unit",
-    "tag": "Unit – Hero",
+    "tag": "Unit \u2013 Hero",
     "name": "Carl Forkbeard",
     "cost": [
       {
@@ -1478,7 +1478,7 @@
     "id": "turmoil-heinrich-the-sentinel",
     "set": "turmoil",
     "category": "hero-or-unit",
-    "tag": "Unit – Hero",
+    "tag": "Unit \u2013 Hero",
     "name": "Heinrich the Sentinel",
     "cost": [
       {
@@ -1508,7 +1508,7 @@
     "id": "turmoil-irmgard-keeper-of-the-light",
     "set": "turmoil",
     "category": "hero-or-unit",
-    "tag": "Unit – Hero",
+    "tag": "Unit \u2013 Hero",
     "name": "Irmgard, Keeper of the Light",
     "cost": [],
     "values": {},
@@ -1602,7 +1602,7 @@
     "copies": 2,
     "confidence": "high",
     "unclear": [
-      "No effect text transcribed — confirm against the physical card whether it has printed rules or is a prerequisite-only card"
+      "No effect text transcribed \u2014 confirm against the physical card whether it has printed rules or is a prerequisite-only card"
     ]
   },
   {
@@ -1626,7 +1626,7 @@
       }
     ],
     "values": {},
-    "rules_text": "After building the Tithe Barn, you immediately receive either grain or wool – that is, one of the chosen resource for each of your heroes.",
+    "rules_text": "After building the Tithe Barn, you immediately receive either grain or wool \u2013 that is, one of the chosen resource for each of your heroes.",
     "flavor_text": "",
     "image": "p10_c7.png",
     "copies": 1,
@@ -1664,7 +1664,7 @@
     "copies": 1,
     "confidence": "low",
     "unclear": [
-      "values: two red banner/flag icons at bottom-right – unsure what point value (e.g. victory_points or strength) they represent",
+      "values: two red banner/flag icons at bottom-right \u2013 unsure what point value (e.g. victory_points or strength) they represent",
       "cost: top icon row read as 2 gold, 2 ore, 2 brick but icon counts/types should be verified against physical card"
     ]
   },
@@ -1702,7 +1702,7 @@
     "id": "turmoil-voyage-of-plunder",
     "set": "turmoil",
     "category": "action",
-    "tag": "Action – Attack",
+    "tag": "Action \u2013 Attack",
     "name": "Voyage of Plunder",
     "cost": [],
     "values": {},
@@ -1717,7 +1717,7 @@
     "id": "turmoil-archer",
     "set": "turmoil",
     "category": "action",
-    "tag": "Action – Attack",
+    "tag": "Action \u2013 Attack",
     "name": "Archer",
     "cost": [],
     "values": {},
@@ -1732,7 +1732,7 @@
     "id": "turmoil-arsonist",
     "set": "turmoil",
     "category": "action",
-    "tag": "Action – Attack",
+    "tag": "Action \u2013 Attack",
     "name": "Arsonist",
     "cost": [],
     "values": {},
@@ -1747,7 +1747,7 @@
     "id": "turmoil-brigands",
     "set": "turmoil",
     "category": "action",
-    "tag": "Action – Attack",
+    "tag": "Action \u2013 Attack",
     "name": "Brigands",
     "cost": [],
     "values": {},
@@ -1762,7 +1762,7 @@
     "id": "turmoil-sebastian-the-itinerant-preacher",
     "set": "turmoil",
     "category": "action",
-    "tag": "Action – Neutral",
+    "tag": "Action \u2013 Neutral",
     "name": "Sebastian the Itinerant Preacher",
     "cost": [],
     "values": {},
@@ -2069,7 +2069,7 @@
     "id": "progress-three-field-system",
     "set": "progress",
     "category": "action",
-    "tag": "Action – Neutral",
+    "tag": "Action \u2013 Neutral",
     "name": "THREE-FIELD SYSTEM",
     "cost": [],
     "values": {
@@ -2086,7 +2086,7 @@
     "id": "progress-mineral-mining",
     "set": "progress",
     "category": "action",
-    "tag": "Action – Neutral",
+    "tag": "Action \u2013 Neutral",
     "name": "MINERAL MINING",
     "cost": [],
     "values": {
@@ -2107,7 +2107,7 @@
     "name": "Benjamin the Traveling Scholar",
     "cost": [],
     "values": {
-      "other": "Action – Neutral"
+      "other": "Action \u2013 Neutral"
     },
     "rules_text": "You once more receive the resource of each region whose number you rolled at the beginning of your turn.",
     "flavor_text": "",
@@ -2124,7 +2124,7 @@
     "name": "Guido the Ambassador",
     "cost": [],
     "values": {
-      "other": "Action – Attack"
+      "other": "Action \u2013 Attack"
     },
     "rules_text": "You may choose 1 card from the discard pile (Tournament: from your opponent's discard pile). Requires: Town Hall or fewer victory points than your opponent.",
     "flavor_text": "",
@@ -2141,7 +2141,7 @@
     "name": "Gustav the Librarian",
     "cost": [],
     "values": {
-      "other": "Action – Neutral"
+      "other": "Action \u2013 Neutral"
     },
     "rules_text": "You may choose 1 card from the discard pile (Tournament: from your own discard pile). Requires: Library or fewer victory points than your opponent.",
     "flavor_text": "",
@@ -2158,7 +2158,7 @@
     "name": "Doctor",
     "cost": [],
     "values": {
-      "other": "Action – Neutral"
+      "other": "Action \u2013 Neutral"
     },
     "rules_text": "Each region bordering your Bath House receives 1 resource. If you have various Bath Houses, you may only use 1 of them.",
     "flavor_text": "",
@@ -2175,7 +2175,7 @@
     "name": "Brigitta, the Wise Woman",
     "cost": [],
     "values": {
-      "other": "Action – Neutral"
+      "other": "Action \u2013 Neutral"
     },
     "rules_text": "Play this card before rolling the dice. Choose the result of the production die roll.",
     "flavor_text": "",
@@ -2192,7 +2192,7 @@
     "name": "Relocation",
     "cost": [],
     "values": {
-      "other": "Action – Neutral"
+      "other": "Action \u2013 Neutral"
     },
     "rules_text": "You may exchange 2 of your own regions or 2 of your own expansion cards. Resources stored on regions may not be changed and card placement rules must be followed.",
     "flavor_text": "",
@@ -2224,7 +2224,7 @@
     "name": "INVENTION",
     "cost": [],
     "values": {},
-    "rules_text": "Each player gets any 1 resource of his choice for each building with a progress point – up to a maximum of 2 resources.",
+    "rules_text": "Each player gets any 1 resource of his choice for each building with a progress point \u2013 up to a maximum of 2 resources.",
     "flavor_text": "",
     "image": "p16_c3.png",
     "copies": 2,
@@ -3146,7 +3146,7 @@
     "values": {
       "skill": 2
     },
-    "rules_text": "1x during your turn, draw a Development card. If a '3', '4', or '5' is rolled, you do not receive any resources, if a '4', '5', '6' is rolled, you receive 1 resource; if a '6' is rolled, you receive 2 resources.",
+    "rules_text": "1x during your turn: Pay 1 gold and roll the dice. On 1-2: gain nothing. On 3-5: gain 1 resource. On 6: gain 2 resources.",
     "image": "barbarians-white-raven-tavern.webp",
     "copies": 1,
     "confidence": "low"
@@ -3158,7 +3158,7 @@
     "name": "Border Fortress",
     "cost": [],
     "values": {},
-    "rules_text": "Place adjacent to a hills region where at least 1 brick is stored. For 1 hand you may rotate the Border Fortress to the next higher level.",
+    "rules_text": "Place adjacent to a hills region where at least 1 brick is stored. Pay this brick. For 1 ore + 1 wool, rotate the Border Fortress to the next level.",
     "image": "barbarians-border-fortress.webp",
     "copies": 2,
     "confidence": "medium"
@@ -3173,7 +3173,7 @@
     "values": {
       "requires": "City"
     },
-    "rules_text": "Place adjacent to any region of your choice. If you come out victorious after a Barbarian Attack, instead of taking 2 resources, you may play the Triumph Card to the next higher level.",
+    "rules_text": "Place adjacent to any region of your choice. If you win a Barbarian Attack, instead of taking 2 resources, rotate the Triumph Card to the next level. Requires: City.",
     "image": "barbarians-triumph-card.webp",
     "copies": 3,
     "confidence": "high"
@@ -3194,7 +3194,7 @@
       }
     ],
     "values": {},
-    "rules_text": "Place a free road adjacent to one of your opponent's cities. For your opponent, the strength of the Barbarian Stronghold indicates 3 victory points.",
+    "rules_text": "Place on a free road adjacent to one of your opponent's cities. For your opponent, the barbarian strength increases by 1. Removal: Opponent's Triumph Card shows 3 victory points.",
     "image": "barbarians-barbarian-stronghold.webp",
     "copies": 1,
     "confidence": "high"
@@ -3213,7 +3213,7 @@
     "values": {
       "skill": 1
     },
-    "rules_text": "When a Barbarian Attack occurs, each hero in the settlement/city where a road is placed counts double—except for Arad himself.",
+    "rules_text": "When a Barbarian Attack occurs, each hero in the settlement/city where Arnd is placed counts as 2 units\u2014except for Arnd himself.",
     "image": "barbarians-arad-the-strategist.webp",
     "copies": 1,
     "confidence": "medium"
@@ -3230,7 +3230,7 @@
       }
     ],
     "values": {},
-    "rules_text": "Place adjacent to any region where a Barbarian Stronghold is in your opponent's principality. You receive 2 ore.",
+    "rules_text": "After a Brigand Attack, gain 1 ore. If there is a Barbarian Stronghold in your opponent's principality, gain 2 ore instead.",
     "image": "barbarians-baroc-the-barbarian.webp",
     "copies": 1,
     "confidence": "medium"
@@ -3249,7 +3249,7 @@
     "values": {
       "skill": 1
     },
-    "rules_text": "1x during your turn: You may draw a top card of the event card stack (of any draw stack (of any draw stack)). If you may pay 1 gold to view the cards in your opponent's hand.",
+    "rules_text": "1x during your turn: View the top 3 cards of the event stack or any draw stack for free, or pay 1 gold to view your opponent's hand.",
     "image": "barbarians-siward-the-scout.webp",
     "copies": 1,
     "confidence": "low"
@@ -3268,7 +3268,7 @@
     "values": {
       "skill": 1
     },
-    "rules_text": "Each time a player places a building, it is adjacent to Wolfgang. If you take something, your opponent may place Wolfgang in the principality for 2 gold for the talesman.",
+    "rules_text": "Celebration: Add 1 resource to each region adjacent to Wolfgang. If you gain resources, your opponent may place Wolfgang in their principality by paying 2 gold.",
     "image": "barbarians-wolfgang-the-street-performer.webp",
     "copies": 1,
     "confidence": "low"
@@ -3291,7 +3291,7 @@
     "values": {
       "requires": "City"
     },
-    "rules_text": "Each ship in the settlement/city where the Caravel is placed counts double in case of a Caravel itself. Requires: City.",
+    "rules_text": "Each ship in the settlement/city where the Caravel is placed counts double in case of a Barbarian Attack\u2014except for the Caravel itself. Requires: City.",
     "image": "barbarians-caravel.webp",
     "copies": 1,
     "confidence": "low"
@@ -3312,7 +3312,7 @@
       }
     ],
     "values": {},
-    "rules_text": "During one of your action turns, you may demand that your opponent choose 2 of his heroes that can be placed on Marie's building. Place a token on the discard pile (on your own discard pile).",
+    "rules_text": "During one of your following turns, demand that your opponent choose 2 heroes that can be placed on Marie's building site. Place 1 of them on Marie's site. Place Marie on the discard pile.",
     "image": "barbarians-marie-the-shieldmaiden.webp",
     "copies": 1,
     "confidence": "medium"
@@ -3333,7 +3333,7 @@
       }
     ],
     "values": {},
-    "rules_text": "1) If you lose against the barbarians, you only have to pay 1 resource per turn from your hand. If you do not an unplayed unit of coin card, you receive any 1 resource of your choice.",
+    "rules_text": "(1) If you lose against the barbarians, pay only 1 resource. (2) 1x during your turn: If you discard an unplayed unit or action card, gain any 1 resource of your choice.",
     "image": "barbarians-secret-brotherhood.webp",
     "copies": 2,
     "confidence": "low"
@@ -3354,7 +3354,7 @@
       }
     ],
     "values": {},
-    "rules_text": "1x during your turns, you may draw the top card from a draw stack (from your own draw stack).",
+    "rules_text": "1x during your turn: Draw the top card from a draw stack (from your own draw stack).",
     "image": "barbarians-bailwick.webp",
     "copies": 2,
     "confidence": "medium"
@@ -3376,7 +3376,7 @@
       }
     ],
     "values": {},
-    "rules_text": "In case of a Barbarian Attack, add strength point of your Border Fortress counts as 1 additional unit.",
+    "rules_text": "For calculating your strength in a Barbarian Attack, each strength point of your Border Fortress counts as 1 additional unit.",
     "image": "barbarians-castle.webp",
     "copies": 3,
     "confidence": "medium"
@@ -3397,7 +3397,7 @@
       }
     ],
     "values": {},
-    "rules_text": "In case of a Brigand Attack, the resources of the region adjacent to the Arsenal neither counted nor stolen.",
+    "rules_text": "In case of a Brigand Attack, resources in regions adjacent to the Arsenal are neither counted nor stolen.",
     "image": "barbarians-arsenal.webp",
     "copies": 2,
     "confidence": "medium"
@@ -3411,7 +3411,7 @@
     "values": {
       "requires": "Caft and at least 2 heroes."
     },
-    "rules_text": "Triumph Card to the next higher level.",
+    "rules_text": "Take 1 or 2 resources of your choice or rotate your Triumph Card to the next level. Requires: Castle and at least 2 heroes.",
     "image": "barbarians-siegfried-vanquisher-of-the-barbarians.webp",
     "copies": 1,
     "confidence": "high"
@@ -3425,7 +3425,7 @@
     "values": {
       "requires": "Triumph Card indicating at least 1 victory point, plus at least 1 unit."
     },
-    "rules_text": "Each player who has at least 1 unit takes 1 resource of his choice or rotates your Triumph Card. Each player with remaining resources must rotate a card. Requires: Triumph Card indicating at least 1 victory point, plus at least 1 unit.",
+    "rules_text": "Each player with at least 1 unit takes any 1 resource of choice. The player with the most units takes up to 1 additional resource. Requires: Triumph Card (\u22651 victory point) + \u22651 unit.",
     "image": "barbarians-alliance-against-the-barbarians.webp",
     "copies": 2,
     "confidence": "medium"
@@ -3439,7 +3439,7 @@
     "values": {
       "requires": "Castle."
     },
-    "rules_text": "The two regions adjacent to your Castle each receive 1 resource—if storage space is available.",
+    "rules_text": "The two regions adjacent to your Castle each receive 1 resource\u2014if storage space is available. Requires: Castle.",
     "image": "barbarians-castellan.webp",
     "copies": 2,
     "confidence": "high"
@@ -3451,7 +3451,7 @@
     "name": "Relocation",
     "cost": [],
     "values": {},
-    "rules_text": "Swap 2 of your own regions or 2 of your own expansion cards. The number of resources or development cards and the placement of the cards remain unchanged, and the placement of the cards remain compliant with the rules.",
+    "rules_text": "Swap 2 of your own regions or 2 of your own expansion cards. Resource count and card placement must remain unchanged and compliant with rules.",
     "image": "barbarians-relocation.webp",
     "copies": 1,
     "confidence": "medium"
@@ -3463,7 +3463,7 @@
     "name": "Contest of the Heroes",
     "cost": [],
     "values": {},
-    "rules_text": "Determine 1 of your own heroes and 1 hero of your opponent (if he has one). For each hero: Roll one die. The hero with the highest strength points wins. In case of a tie, roll the die again. The winner receives 1 resource and may discard another. If may discard another, the loser receives from the bank.",
+    "rules_text": "Name 1 of your heroes and 1 opponent hero (if they have one). Each rolls the die and adds strength points. Tie: roll again. Winner gains 1 resource and may take 1 more from loser.",
     "image": "barbarians-contest-of-the-heroes.webp",
     "copies": 2,
     "confidence": "low"
@@ -3475,7 +3475,7 @@
     "name": "Barbarian Attack",
     "cost": [],
     "values": {},
-    "rules_text": "A player who has the most units than any other player gains 1 victory point. Otherwise: He loses units and third units lost in the cities. He loses units and at least 1 city receives 2 resources. Afterwards: The card is placed in the discard pile and a top card is drawn again.",
+    "rules_text": "Player with fewer units than city/metropolis/expansion victory points discards 2 resources. Player with more units + \u22651 city gains 2 resources. Card then goes under top 4 cards of event stack.",
     "image": "barbarians-barbarian-attack.webp",
     "copies": 3,
     "confidence": "low"
@@ -3487,7 +3487,7 @@
     "name": "Retreat of the Barbarians",
     "cost": [],
     "values": {},
-    "rules_text": "A player who has at least 1 unit loses 1 card from their hand. Then a player with units has at least 1 unit and the strength advantage divines up to 2 cards from 1 new stack (from 1 of two draw stacks).",
+    "rules_text": "Player with \u22651 unit chooses 1 card from 1 draw stack. Player with \u22651 unit + strength advantage chooses up to 2 cards from 1 draw stack.",
     "image": "barbarians-retreat-of-the-barbarians.webp",
     "copies": 1,
     "confidence": "low"
@@ -3499,7 +3499,7 @@
     "name": "Shipwreck",
     "cost": [],
     "values": {},
-    "rules_text": "Discovery: You steal any 1 resource of your choice. Missions to the Shipwreck are not possible.",
+    "rules_text": "Discovery: You receive any 1 resource of your choice. Missions to the Shipwreck are not possible.",
     "image": "explorers-shipwreck.webp",
     "copies": 2,
     "confidence": "high"
@@ -3511,7 +3511,7 @@
     "name": "Island of the Bards",
     "cost": [],
     "values": {},
-    "rules_text": "Discovery: Your opponent shows you 2 cards from any 1 of their own draw piles. You may draw 1 action card or unit into your hand. Mission: Pay 2 grain to raise the card to the next higher level.",
+    "rules_text": "Discovery: Your opponent shows you their hand of cards; you may draw 1 action card or unit. Mission: Pay 2 grain to rotate to next higher level.",
     "image": "explorers-island-of-the-bards.webp",
     "copies": 1,
     "confidence": "high"
@@ -3523,7 +3523,7 @@
     "name": "Island of the Merchants",
     "cost": [],
     "values": {},
-    "rules_text": "Discovery: You may immediately trade any 1 resource of your choice for any 1 other resource of your choice. Mission: Pay 2 wool to rotate the card to the next higher level.",
+    "rules_text": "Discovery: Trade any 1 resource of your choice for any 2 other resources of your choice. Mission: Pay 2 wool to rotate to next higher level.",
     "image": "explorers-island-of-the-merchants.webp",
     "copies": 1,
     "confidence": "high"
@@ -3535,7 +3535,7 @@
     "name": "Islands of the Scholars",
     "cost": [],
     "values": {},
-    "rules_text": "Discovery: You may draw up to 2 cards from any 1 of your own draw piles. You may draw 1 action card or unit into your hand. Mission: Pay 2 lumber to rotate the card to the next higher level.",
+    "rules_text": "Discovery: Choose up to 2 cards from any 1 draw stack of your choice and draw them. Mission: Pay 2 lumber to rotate to next higher level.",
     "image": "explorers-islands-of-the-scholars.webp",
     "copies": 1,
     "confidence": "high"
@@ -3558,7 +3558,7 @@
     "values": {
       "strength": 5
     },
-    "rules_text": "Discovery/Mission: Pay 1 gold or fight. Fight: Roll the production die and add the bounty. Defeat: You lose the card and this card turns over to its blank side faces up). Tie: Roll the production die again!",
+    "rules_text": "Discovery/Mission: Pay 1 gold or fight. Fight: Roll production die and add cannons. Victory: Rotate to next higher level and take bounty. Defeat: Lose ship. Tie: Roll again.",
     "image": "explorers-zheng-he.webp",
     "copies": 1,
     "confidence": "medium"
@@ -3581,7 +3581,7 @@
     "values": {
       "strength": 6
     },
-    "rules_text": "Discovery/Mission: Pay 1 gold or fight. Fight: Roll the production die and add the bounty. Defeat: You lose the card and this card turns from the taken card side to its blank side faces up). Tie: Roll the production die again!",
+    "rules_text": "Discovery/Mission: Pay 1 gold or fight. Fight: Roll production die and add cannons. Victory: Rotate to next higher level and take bounty. Defeat: Lose ship. Tie: Roll again.",
     "image": "explorers-cinmarone.webp",
     "copies": 1,
     "confidence": "medium"
@@ -3604,7 +3604,7 @@
     "values": {
       "strength": 8
     },
-    "rules_text": "Discovery/Mission: Pay 2 resources or fight. Fight: Roll the production die and add the bounty. Defeat: You lose the card and this card turns from the taken card side to its blank side faces up). Tie: Roll the production die again!",
+    "rules_text": "Discovery/Mission: Pay 2 resources or fight. Fight: Roll production die and add cannons. Victory: Rotate to next higher level and take bounty. Defeat: Lose ship. Tie: Roll again.",
     "image": "explorers-jean.webp",
     "copies": 1,
     "confidence": "medium"
@@ -3616,7 +3616,7 @@
     "name": "Island of the Forgotten Tribe",
     "cost": [],
     "values": {},
-    "rules_text": "Discovery: Return the ship to the Explorer Harbor. You may carry out an additional mission. Mission: Roll a die!—you lose your ship (turn the disc token over so the sail side faces up). Tie an event. 5-6: Treasure—rotate the card to the next higher level.",
+    "rules_text": "Discovery: Return ship to Explorer Harbor; carry out 1 additional mission. Mission: Roll production die\u20141: Reef (lose ship); 2-4: Event (roll event die); 5-6: Treasure (rotate to next higher level).",
     "image": "explorers-island-of-the-forgotten-tribe.webp",
     "copies": 1,
     "confidence": "medium"
@@ -3628,7 +3628,7 @@
     "name": "Explorer Harbor",
     "cost": [],
     "values": {},
-    "rules_text": "Building an explorer ship (turn the disc token over so the sail side is visible). You may only make 1 discovery during each of your turns.",
+    "rules_text": "Build explorer ships (1 lumber + 1 wool; stand ship upright). You may make only 1 discovery per turn.",
     "image": "explorers-explorer-harbor.webp",
     "copies": 1,
     "confidence": "medium"
@@ -3656,7 +3656,7 @@
       "commerce": 4,
       "requires": "Place on the city adjacent to the Explorer Harbor. Requires: At least 2 level 3 lands."
     },
-    "rules_text": "",
+    "rules_text": "Place on city adjacent to Explorer Harbor. Worth 4 victory points total. Requires: 6+ discovered sea cards or 2+ level 3 islands.",
     "image": "explorers-explorer-metropolis.webp",
     "copies": 2,
     "confidence": "high"
@@ -3679,7 +3679,7 @@
     "values": {
       "skill": 1
     },
-    "rules_text": "No more diplomas understanding! People understand our language everywhere.",
+    "rules_text": "Gives 1 strength point and 1 cannon point.",
     "image": "explorers-armory.webp",
     "copies": 3,
     "confidence": "low"
@@ -3700,7 +3700,7 @@
       }
     ],
     "values": {},
-    "rules_text": "Should you experience prolonged calms — we also sell rum.",
+    "rules_text": "Gives 1 commerce point and 1 sail point.",
     "image": "explorers-sailmakers-shop.webp",
     "copies": 3,
     "confidence": "high"
@@ -3721,7 +3721,7 @@
       }
     ],
     "values": {},
-    "rules_text": "Place above or below a region directly adjacent to your Explorer Harbor. 1x during your turn: On a mission to the island of the gods, sailed by a previous tribe or merchants, you may replace 1 of the resources you have to pay with 1 gold.",
+    "rules_text": "1x per turn on mission to Island of Bards, Scholars, or Merchants: Replace 1 required resource with 1 gold.",
     "image": "explorers-landing-stage.webp",
     "copies": 2,
     "confidence": "medium"
@@ -3747,7 +3747,7 @@
       }
     ],
     "values": {},
-    "rules_text": "Place above or below a region directly adjacent to your Explorer Harbor. 1x during your turn: You may trade any 1 resource of your choice for 1 lumber or 1 wool.",
+    "rules_text": "1x per turn: Trade any 1 resource for 1 lumber or 1 wool.",
     "image": "explorers-shipyard.webp",
     "copies": 3,
     "confidence": "medium"
@@ -3764,7 +3764,7 @@
       }
     ],
     "values": {},
-    "rules_text": "1x during your turn: If you have discovered fewer sea cards than your opponent, you may add to your second journey of exploration.",
+    "rules_text": "1x per turn: If you have fewer sea cards discovered than opponent, pay 1 gold for second journey of exploration.",
     "image": "explorers-astronomer.webp",
     "copies": 2,
     "confidence": "medium"
@@ -3789,7 +3789,7 @@
       }
     ],
     "values": {},
-    "rules_text": "1x during your turn: If you roll a pirate, you may roll against a pirate, you may repeat the die roll once.",
+    "rules_text": "1x per turn: If you lose against pirate, repeat die roll once.",
     "image": "explorers-cannon-foundry.webp",
     "copies": 2,
     "confidence": "medium"
@@ -3803,7 +3803,7 @@
     "values": {
       "requires": "At least 1 sail point"
     },
-    "rules_text": "View up to 2 of your face-down sea cards and/or switch the positions of any 2 sea cards of your choice in your principality.",
+    "rules_text": "View up to 2 face-down sea cards and/or switch positions of any 2 sea cards in your principality. Requires: At least 1 sail point.",
     "image": "explorers-cartographer.webp",
     "copies": 2,
     "confidence": "high"
@@ -3817,7 +3817,7 @@
     "values": {
       "requires": "At least 2 common points"
     },
-    "rules_text": "Your opponent must either rotate 1 blank card to the next lower level or turn 1 explorer ship over (so that its blank side faces up) — you choose.",
+    "rules_text": "Opponent rotates 1 island card to next lower level or loses 1 explorer ship\u2014you choose. Requires: At least 2 cannon points.",
     "image": "explorers-broadside.webp",
     "copies": 2,
     "confidence": "medium"
@@ -3831,7 +3831,7 @@
     "values": {
       "requires": "At least 1 cannon point"
     },
-    "rules_text": "When you fight against a pirate, the die roll is omitted and the pirate is defeated. Requires: At least 1 cannon point.",
+    "rules_text": "When fighting pirate, die roll is omitted and pirate is defeated. Requires: At least 1 cannon point.",
     "image": "explorers-lars-the-naval-hero.webp",
     "copies": 2,
     "confidence": "high"
@@ -3845,7 +3845,7 @@
     "values": {
       "requires": "2 sail points"
     },
-    "rules_text": "Return 1 of your ships you have used for an action to your Explorer Harbor. You may perform another action with this ship. Requires: 2 sail points.",
+    "rules_text": "Return 1 used explorer ship to Explorer Harbor. Perform another action with this ship. Requires: 2 sail points.",
     "image": "explorers-navigator.webp",
     "copies": 2,
     "confidence": "high"
@@ -3859,7 +3859,7 @@
     "values": {
       "requires": "Requires: You have leveled the Bland of the Burds, the Bland of the Scholars, or the Bland of the Merchants another time"
     },
-    "rules_text": "You get the advantage of discovering the Bland of the Burds, the Bland of the Scholars, or the Bland of the Merchants another time. Requires: You have leveled the Bland of the Burds, the Bland of the Scholars, or the Bland of the Merchants another time.",
+    "rules_text": "Gain advantage of discovering Island of Bards, Island of Scholars, or Island of Merchants another time. Requires: Card rotated to level 1 or higher.",
     "image": "explorers-ambassador.webp",
     "copies": 2,
     "confidence": "medium"
@@ -3871,7 +3871,7 @@
     "name": "Friendship Between Peoples",
     "cost": [],
     "values": {},
-    "rules_text": "Each player receives any 1 resource of his choice for each blind card he has rotated to the next level.",
+    "rules_text": "If you receive more resources than you can store, lose excess resources.",
     "image": "explorers-friendship-between-peoples.webp",
     "copies": 2,
     "confidence": "high"
@@ -3883,7 +3883,7 @@
     "name": "Most Successful Explorer",
     "cost": [],
     "values": {},
-    "rules_text": "The player who discovered the most sea cards in his personality (at least 1) may draw up to 2 cards from any 1 draw stack of his choice (normally 1 draw stack of his choice). The cards he draws are added to his hand. The player whose turn it is begins.",
+    "rules_text": "In case of tie, both players may draw from same stack. Player whose turn it is decides first stack; opponent chooses second.",
     "image": "explorers-most-successful-explorer.webp",
     "copies": 2,
     "confidence": "medium"
@@ -3906,7 +3906,7 @@
     "values": {
       "victory_points": 1
     },
-    "rules_text": "1x during your turn: You may draw 1 card from a draw stack (then one of your own draw stacks).",
+    "rules_text": "1x during your turn: Choose 1 card from a draw stack of your choice without changing the order. You may immediately use it; place excess under a matching stack at turn end.",
     "image": "sages-grove-of-freedom.webp",
     "copies": 1,
     "confidence": "medium"
@@ -3929,7 +3929,7 @@
     "values": {
       "victory_points": 1
     },
-    "rules_text": "1x during your turn: You may draw 3 cards from any of your own draw stacks of your choice. Afterwards, your opponent may draw from any one of his own draw stacks of his choice (from any of his own draw stacks of his choice).",
+    "rules_text": "1x during your turn: Draw up to 3 cards from any of your draw stacks. You may immediately use them; excess cards go under matching stacks at turn end. Opponent then draws 1 card from their choice of draw stacks.",
     "image": "sages-grove-of-fraternity.webp",
     "copies": 1,
     "confidence": "medium"
@@ -3952,7 +3952,7 @@
     "values": {
       "victory_points": 2
     },
-    "rules_text": "Use this card before your die roll and disqualify the result of the event die roll.",
+    "rules_text": "Before your die roll: When your opponent plays an action attack card, roll the production die. If result > 3, the card has no effect and is discarded. (Works with Brigitta without rolling.)",
     "image": "sages-grove-of-justice.webp",
     "copies": 1,
     "confidence": "high"
@@ -3964,7 +3964,7 @@
     "name": "Grove of Peace",
     "cost": [],
     "values": {},
-    "rules_text": "Roll the production die if your opponent plays an action attack card. If the roll result is larger than 3, the card has no effect and you discard it on the discard pile.",
+    "rules_text": "When your opponent plays an action attack card: Roll the production die. If result > 3, the card has no effect and your opponent must discard it. (If Robert Herald is placed, result of 3 also blocks it.)",
     "image": "sages-grove-of-peace.webp",
     "copies": 1,
     "confidence": "high"
@@ -3976,7 +3976,7 @@
     "name": "Grove of Vigilance",
     "cost": [],
     "values": {},
-    "rules_text": "If the event Trade, Colonisation, or Brigand Attack is rolled, you may replace the event. Instead, the event Event Card applies.",
+    "rules_text": "When Trade, Celebration, or Brigand Attack is rolled: Declare the event void; instead Event Card applies. (For Brigand Attack, each player receives resources first, then draw event card.)",
     "image": "sages-grove-of-vigilance.webp",
     "copies": 1,
     "confidence": "medium"
@@ -3988,7 +3988,7 @@
     "name": "Grove of Great Foresight",
     "cost": [],
     "values": {},
-    "rules_text": "1x during your turn: You may view the top 3 topmost event cards. You may place as many of these event cards under the stack as you like, except for the rule card.",
+    "rules_text": "1x during your turn: View the 3 topmost event cards. Reorder some under the stack as desired without altering the top card's position or including Yule.",
     "image": "sages-grove-of-great-foresight.webp",
     "copies": 1,
     "confidence": "medium"
@@ -4000,7 +4000,7 @@
     "name": "Grove of Courage",
     "cost": [],
     "values": {},
-    "rules_text": "1x during your own: you were to lose cards from your hand or buildings due to a Brigand attack, these event cards would have no effect.",
+    "rules_text": "You may use this grove during your opponent's turn. When you would lose cards from hand or buildings to a Feud or Fraternal Feud event, those events have no effect.",
     "image": "sages-grove-of-courage.webp",
     "copies": 1,
     "confidence": "low"
@@ -4028,7 +4028,7 @@
     "values": {
       "requires": "City"
     },
-    "rules_text": "Pay 1 lumber, 2 gold, and 3 owls to activate the card to the next hand. For 2 of the owls you have to pay, you also may place 1 action attack card on the discard pile.",
+    "rules_text": "Rotate to next level: Pay 1 lumber, 2 gold, 3 owls. For 2 of those owls, you may place 1 action attack card on the discard pile. Requires: City.",
     "image": "sages-manifest-of-humane-conduct.webp",
     "copies": 3,
     "confidence": "low"
@@ -4040,7 +4040,7 @@
     "name": "Peter, Sage of the Forest",
     "cost": [],
     "values": {},
-    "rules_text": "Place adjacent to a forest region with at least 1 lumber. Pay this lumber. If the number of the adjoining forest regions is rolled during the production roll, rotate Peter to the next higher level.",
+    "rules_text": "Place adjacent to a forest region with at least 1 lumber. Pay this lumber. When the region's number is rolled during production, rotate Peter to the next higher level.",
     "image": "sages-peter-sage-of-the-forest.webp",
     "copies": 1,
     "confidence": "high"
@@ -4052,7 +4052,7 @@
     "name": "Michaela, Sage of the Pasture",
     "cost": [],
     "values": {},
-    "rules_text": "Place adjacent to a pasture region with at least 1 wool. Pay this wool. If the number of the adjoining pasture regions is rolled during the production roll, rotate Michaela to the next higher level.",
+    "rules_text": "Place adjacent to a pasture region with at least 1 wool. Pay this wool. When the region's number is rolled during production, rotate Michaela to the next higher level.",
     "image": "sages-michaela-sage-of-the-pasture.webp",
     "copies": 1,
     "confidence": "high"
@@ -4064,7 +4064,7 @@
     "name": "Barbara, Sage of the Fields",
     "cost": [],
     "values": {},
-    "rules_text": "Place adjacent to a fields region with at least 1 grain. Pay this grain. If the number of the adjoining fields region is rolled during the production roll, rotate Barbara to the next higher level.",
+    "rules_text": "Place adjacent to a fields region with at least 1 grain. Pay this grain. When the region's number is rolled during production, rotate Barbara to the next higher level.",
     "image": "sages-barbara-sage-of-the-fields.webp",
     "copies": 1,
     "confidence": "high"
@@ -4076,7 +4076,7 @@
     "name": "Frederich, Sage of the Hills",
     "cost": [],
     "values": {},
-    "rules_text": "Place adjacent to a hills region with at least 1 brick. Pay this brick. If the number of the adjoining hills region is rolled during the production roll, rotate Frederich to the next higher level.",
+    "rules_text": "Place adjacent to a hills region with at least 1 brick. Pay this brick. When the region's number is rolled during production, rotate Frederich to the next higher level.",
     "image": "sages-frederich-sage-of-the-hills.webp",
     "copies": 1,
     "confidence": "high"
@@ -4088,7 +4088,7 @@
     "name": "Piet, Sage of the Mountains",
     "cost": [],
     "values": {},
-    "rules_text": "Place adjacent to a mountains region with at least 1 ore. Pay this ore. If the number of the adjoining mountains region is rolled during the production roll, rotate Piet to the next higher level.",
+    "rules_text": "Place adjacent to a mountains region with at least 1 ore. Pay this ore. When the region's number is rolled during production, rotate Piet to the next higher level.",
     "image": "sages-piet-sage-of-the-mountains.webp",
     "copies": 1,
     "confidence": "high"
@@ -4100,7 +4100,7 @@
     "name": "Walther, Sage of the Gold Field",
     "cost": [],
     "values": {},
-    "rules_text": "Place adjacent to a gold field region with at least 1 gold. Pay this gold. If the number of the adjoining gold field region is rolled during the production roll, rotate Walther to the next higher level.",
+    "rules_text": "Place adjacent to a gold field region with at least 1 gold. Pay this gold. When the region's number is rolled during production, rotate Walther to the next higher level. Feud/Fraternal Feud events have no effect on you.",
     "image": "sages-walther-sage-of-the-gold-field.webp",
     "copies": 1,
     "confidence": "high"
@@ -4112,7 +4112,7 @@
     "name": "Principal Sage Woman",
     "cost": [],
     "values": {},
-    "rules_text": "Place adjacent to any region of your choice with at least 1 resource. Pay this resource. If the number of the adjoining region is rolled during the production roll, rotate Principal Sage Woman to the next higher level.",
+    "rules_text": "Place adjacent to any region with at least 1 resource. Pay this resource. When the region's number is rolled during production, rotate the Principal Sage Woman to the next higher level.",
     "image": "sages-principal-sage-woman.webp",
     "copies": 2,
     "confidence": "high"
@@ -4133,7 +4133,7 @@
       }
     ],
     "values": {},
-    "rules_text": "Each time you must roll the production die to surpass either a strength value or a card of the owls rolled by your opponent, you win also in case of a tie.",
+    "rules_text": "When you must roll the production die to surpass a card value or your opponent's roll, you win also on a tie.",
     "image": "sages-robert-herald-of-the-sages.webp",
     "copies": 1,
     "confidence": "medium"
@@ -4154,7 +4154,7 @@
       }
     ],
     "values": {},
-    "rules_text": "1x during your turn: You may use the function of one of your owls. You may pay the same function on the number of owls indicated on that glove.",
+    "rules_text": "1x during your turn: Use the function of one of your opponent's groves by paying the number of owls indicated on it.",
     "image": "sages-cole-paladin-of-the-sages.webp",
     "copies": 1,
     "confidence": "low"
@@ -4185,7 +4185,7 @@
     "values": {
       "victory_points": 1
     },
-    "rules_text": "1x during your turn: If enemy regions has no grain, you may give him 1 grain, which he must use in that region. Afterwards, any 1 resource of a different type of your choice from him.",
+    "rules_text": "1x during your turn: If your opponent's fields region has no grain, give them 1 grain (which they must store there). Then demand any 1 resource of a different type from them. (You can only build 1 per principality.)",
     "image": "sages-granary.webp",
     "copies": 2,
     "confidence": "high"
@@ -4212,7 +4212,7 @@
     "values": {
       "victory_points": 1
     },
-    "rules_text": "1x during your turn: If you need 1 or more of your choice and rotate any 1 sage card to the next higher level.",
+    "rules_text": "1x during your turn: Pay any 1 resource of your choice and rotate any 1 sage card to the next higher level. (If both copies are built, you may provide 2 sages 1 owl each per turn instead.)",
     "image": "sages-academy-of-sages.webp",
     "copies": 2,
     "confidence": "medium"
@@ -4239,7 +4239,7 @@
     "values": {
       "victory_points": 1
     },
-    "rules_text": "If you lose resources when the event trade is rolled, you determine which resources to give to your opponent.",
+    "rules_text": "When the Trade event is rolled: You determine which resources you give to your opponent. (You can only build 1 per principality.)",
     "image": "sages-courthouse.webp",
     "copies": 2,
     "confidence": "high"
@@ -4256,7 +4256,7 @@
       }
     ],
     "values": {},
-    "rules_text": "View the event card stack and remove — without changing the order of the cards — 1 event (except for the Rule).",
+    "rules_text": "Pay 1 owl: View the event card stack and remove\u2014without changing card order\u20141 event card except Yule.",
     "image": "sages-great-foresight.webp",
     "copies": 2,
     "confidence": "high"
@@ -4275,7 +4275,7 @@
     "values": {
       "requires": "Both players each have at least 1 sage."
     },
-    "rules_text": "Pay 1 owl: You and your opponent roll the production die, and each adds his sages' owls to his result. The winner receives any 2 resources of his choice. The other receives 1 resource.",
+    "rules_text": "Pay 1 owl: You and opponent roll the production die; each adds their sages' owls to their result. Winner receives any 2 resources of their choice. Tie: Both receive 1 resource. Requires: Both players have \u22651 sage.",
     "image": "sages-dispute-of-the-sages.webp",
     "copies": 2,
     "confidence": "medium"
@@ -4294,7 +4294,7 @@
     "values": {
       "requires": "Fewer cities or victory points than your opponent."
     },
-    "rules_text": "Pay 3 owls: You may build 1 city for free (without paying resources).",
+    "rules_text": "Pay 3 owls: Build 1 city for free without paying resources. Requires: Fewer cities or victory points than your opponent.",
     "image": "sages-wise-compensation.webp",
     "copies": 2,
     "confidence": "high"
@@ -4313,7 +4313,7 @@
     "values": {
       "requires": "At least 2 sages."
     },
-    "rules_text": "You receive 1 owl for each grove in your principality. You may distribute the owls among your sages as desired.",
+    "rules_text": "Pay 1 owl: Receive 1 owl for each grove in your principality. Distribute these owls among your sages as desired. Requires: At least 2 sages.",
     "image": "sages-power-of-the-groves.webp",
     "copies": 2,
     "confidence": "high"
@@ -4330,7 +4330,7 @@
       }
     ],
     "values": {},
-    "rules_text": "Pay 1 owl: Your opponent must show you his hand of cards. If it contains an action attack card, he must place all cards in his hand face down and you may draw 1 card (under any matching draw stacks of his own).",
+    "rules_text": "Pay 1 owl: Your opponent must show you their hand. If it contains an action attack card, they must place all hand cards under matching draw stacks of their own.",
     "image": "sages-wise-protection.webp",
     "copies": 2,
     "confidence": "medium"
@@ -4354,7 +4354,7 @@
     "name": "Famine",
     "cost": [],
     "values": {},
-    "rules_text": "Each player without a grain must discard 1 grain. If a player doesn't have grain, he must discard 2 resources of his choice.",
+    "rules_text": "Each player without a Granary must discard 1 grain. If a player has no grain, they must discard 2 resources of their choice.",
     "image": "sages-famine.webp",
     "copies": 2,
     "confidence": "high"
@@ -4366,7 +4366,7 @@
     "name": "Council of the Sages",
     "cost": [],
     "values": {},
-    "rules_text": "Each player may distribute, at his own discretion, either up to 2 swiqs among his sages or up to 2 progress among regions with an adjacent logic.",
+    "rules_text": "Each player may distribute at their own discretion either up to 2 owls among their sages OR up to 2 resources among regions with an adjacent sage.",
     "image": "sages-council-of-the-sages.webp",
     "copies": 2,
     "confidence": "medium"
@@ -4378,7 +4378,7 @@
     "name": "Common Land",
     "cost": [],
     "values": {},
-    "rules_text": "1 x during your turn: You may trade any 1 resource of your choice for 1 different resource.",
+    "rules_text": "1x during your turn: Pay 1 star to trade any 1 resource of your choice for 1 different resource.",
     "image": "prosperity-common-land.webp",
     "copies": 1,
     "confidence": "high"
@@ -4399,7 +4399,7 @@
       }
     ],
     "values": {},
-    "rules_text": "After building the Village School, you immediately receive up to 2 swiqs. You also immediately take back 1 star each time the event Trade occurs.",
+    "rules_text": "After building, you immediately receive up to 2 stars. You receive 1 additional star each time the event Trade occurs.",
     "image": "prosperity-village-school.webp",
     "copies": 2,
     "confidence": "medium"
@@ -4420,7 +4420,7 @@
       }
     ],
     "values": {},
-    "rules_text": "Place on one of your own free roads. You receive 1 star. 1x during your turn: Move the traveling Theater onto one of your own free roads. Trade 1 resource of an adjacent region for 1 star.",
+    "rules_text": "Place on a free road. You receive 1 star. 1x during your turn: Move to another free road. Trade 1 adjacent region's resource for 1 star.",
     "image": "prosperity-traveling-theater.webp",
     "copies": 1,
     "confidence": "medium"
@@ -4443,7 +4443,7 @@
     "values": {
       "strength": 1
     },
-    "rules_text": "Place on one of your own free roads. You may keep 1 gold and 1 year beyond Afrond. If you pay 1 star, you keep all resources.",
+    "rules_text": "Place on a free road. You may keep 1 gold and 1 wool during Brigand Attack; pay 1 star to keep all resources.",
     "image": "prosperity-mercenaries.webp",
     "copies": 1,
     "confidence": "low"
@@ -4462,7 +4462,7 @@
     "values": {
       "commerce": 1
     },
-    "rules_text": "Place on one of your own free roads. 1x during your turn: If one of your regions has 3 resources, you may trade these resources for any 1 different resource.",
+    "rules_text": "Place on a free road. 1x during your turn: If an adjacent region has 3 resources, trade 1 of them for any 1 different resource.",
     "image": "prosperity-small-market-town.webp",
     "copies": 1,
     "confidence": "medium"
@@ -4474,7 +4474,7 @@
     "name": "Public Feeling",
     "cost": [],
     "values": {},
-    "rules_text": "If you pay 1 star, the events Riot and Insurrection do not affect you. 1x during your turn: For 1 star, you receive any 1 resource of your choice.",
+    "rules_text": "Pay 1 star to prevent Riots and Insurrection from affecting you. 1x during your turn: For 2 stars, receive any 1 resource of your choice.",
     "image": "prosperity-public-feeling.webp",
     "copies": 2,
     "confidence": "medium"
@@ -4499,7 +4499,7 @@
       }
     ],
     "values": {},
-    "rules_text": "Place adjacent to a region of your opponent's. During your turn: For 1 wool, you may place the Thieves adjacent to another region of your opponent. The placed region must have at least 5 strength points or pay 3 discs.",
+    "rules_text": "Place adjacent to an opponent's free region. 1x during your turn: For 1 wool, move to another opponent's free region. Removed if opponent has 5+ strength or pays 3 stars.",
     "image": "prosperity-thieves-hideout.webp",
     "copies": 1,
     "confidence": "medium"
@@ -4528,7 +4528,7 @@
       "victory_points": 1,
       "requires": "Not having a Princess."
     },
-    "rules_text": "1x during your turn: 1 gold, you may retrieve 1 artwork from the discard pile (from your own discard piles). The princess never cover to the opponent's princess or to the cards in his hand.",
+    "rules_text": "1x during your turn: For 1 gold, retrieve 1 Artwork from the discard pile. Cannot be taken or enticed away. Requires: Not having a Princess.",
     "image": "prosperity-prince.webp",
     "copies": 2,
     "confidence": "low"
@@ -4557,7 +4557,7 @@
       "victory_points": 1,
       "requires": "Not having a Princess."
     },
-    "rules_text": "1x during your turn: 1 gold, you may retrieve 1 artwork from the discard pile (from your own discard piles). The princess never cover to the opponent's princess or to the cards in his hand.",
+    "rules_text": "1x during your turn: For 1 gold, retrieve 1 Artwork from the discard pile. Cannot be taken or enticed away. Requires: Not having a Prince.",
     "image": "prosperity-princess.webp",
     "copies": 2,
     "confidence": "low"
@@ -4578,7 +4578,7 @@
       }
     ],
     "values": {},
-    "rules_text": "If the number of a field or pasture regions adjacent to the city with the Aqueduct is tripled, you receive 1 additional resource there.",
+    "rules_text": "If a field or pasture region number is rolled, you receive 1 additional resource from that region. Can only build 1 Aqueduct.",
     "image": "prosperity-aqueduct.webp",
     "copies": 2,
     "confidence": "medium"
@@ -4601,7 +4601,7 @@
     "values": {
       "requires": "Aqueduct."
     },
-    "rules_text": "1x during your turn: You receive 1 star, or you pay 1 star and receive any 1 resource of your choice in exchange.",
+    "rules_text": "1x during your turn: Receive 1 star, or pay 1 star and receive any 1 resource of your choice. Requires: Aqueduct.",
     "image": "prosperity-hospital.webp",
     "copies": 2,
     "confidence": "medium"
@@ -4622,7 +4622,7 @@
       }
     ],
     "values": {},
-    "rules_text": "After building the Theater, you immediately receive 1 star.",
+    "rules_text": "After building, you immediately receive 1 star.",
     "image": "prosperity-theater.webp",
     "copies": 1,
     "confidence": "high"
@@ -4643,7 +4643,7 @@
       }
     ],
     "values": {},
-    "rules_text": "After you have built the Monument, your opponent must determine 2 knight cards placed. Choose 1 of them and add it to your hand.",
+    "rules_text": "After building, your opponent determines 2 of their placed units. Choose 1 of them and add it to your hand.",
     "image": "prosperity-monument-to-the-prince.webp",
     "copies": 2,
     "confidence": "low"
@@ -4664,7 +4664,7 @@
       }
     ],
     "values": {},
-    "rules_text": "1x during your turn: Pay 3 stars and draw 1 action card. This action does not count as a requirement for an action from the discard pile (from your own discard pile) into your hand.",
+    "rules_text": "1x during your turn: Pay 3 stars and draw 1 action card with no requirement, or 1 unit from the discard pile into your hand.",
     "image": "prosperity-city-palace.webp",
     "copies": 1,
     "confidence": "low"
@@ -4688,7 +4688,7 @@
     "values": {
       "skill": 1
     },
-    "rules_text": "(1) If the event Colonization is ruled, you receive 1 star. (2) A building that costs 1 less resource of your choice costs you 1 resource less.",
+    "rules_text": "(1) If event Celebration is rolled, receive 1 star. (2) A building costing 6+ resources costs 1 resource less. Can only build 1 Builders' Hut.",
     "image": "prosperity-builders-hut.webp",
     "copies": 3,
     "confidence": "medium"
@@ -4715,7 +4715,7 @@
       "victory_points": 1,
       "requires": "Prince or Princess."
     },
-    "rules_text": "You receive 1 star. If you have a Builder's Hut, you receive another 1 star.",
+    "rules_text": "You receive 1 star. If you have a Builders' Hut, receive another 1 star. Requires: Prince or Princess.",
     "image": "prosperity-artwork-sculpture.webp",
     "copies": 1,
     "confidence": "high"
@@ -4729,7 +4729,7 @@
     "values": {
       "requires": "Prince or Princess"
     },
-    "rules_text": "You receive 1 star. If you have a Theater, you receive another 1 star.",
+    "rules_text": "You receive 1 star. If you have a Theater, receive another 1 star. Requires: Prince or Princess.",
     "image": "prosperity-artwork-epic.webp",
     "copies": 1,
     "confidence": "high"
@@ -4743,7 +4743,7 @@
     "values": {
       "requires": "Prince or Princess"
     },
-    "rules_text": "You receive 1 star. If you have an Aqueduct, you receive another 1 star.",
+    "rules_text": "You receive 1 star. If you have an Aqueduct, receive another 1 star. Requires: Prince or Princess.",
     "image": "prosperity-artwork-fountain.webp",
     "copies": 1,
     "confidence": "high"
@@ -4757,7 +4757,7 @@
     "values": {
       "requires": "Prince or Princess"
     },
-    "rules_text": "You receive 1 star. If you have a City Palace, you receive another 1 star.",
+    "rules_text": "You receive 1 star. If you have a City Palace, receive another 1 star. Requires: Prince or Princess.",
     "image": "prosperity-artwork-relief.webp",
     "copies": 1,
     "confidence": "high"
@@ -4771,7 +4771,7 @@
     "values": {
       "requires": "Prince or Princess"
     },
-    "rules_text": "If you play this card and pay 1 star, you may once more determine an event die and put it into your turn.",
+    "rules_text": "Pay 1 star and you may once more determine an event die roll result during your turn. Requires: Prince or Princess.",
     "image": "prosperity-court-astrologer.webp",
     "copies": 1,
     "confidence": "high"
@@ -4785,7 +4785,7 @@
     "values": {
       "requires": "Public Fencing"
     },
-    "rules_text": "You choose: Your opponent either gives you 2 stars, or he gives you 1 resource of his choice for each victory point he has, to a maximum of 3 resources.",
+    "rules_text": "You choose: Your opponent gives you up to 2 stars, or 1 resource of their choice for each VP they have in excess of yours (max 3 resources). Requires: Public Feeling.",
     "image": "prosperity-bera-the-insurrectionist.webp",
     "copies": 1,
     "confidence": "high"
@@ -4799,7 +4799,7 @@
     "values": {
       "requires": "Aqueduct"
     },
-    "rules_text": "Building a city costs you only 1 ore and 2 grain.",
+    "rules_text": "Building a city costs you only 1 ore and 2 grain. Requires: Aqueduct.",
     "image": "prosperity-prosperity.webp",
     "copies": 1,
     "confidence": "high"
@@ -4823,7 +4823,7 @@
     "name": "Insurrection",
     "cost": [],
     "values": {},
-    "rules_text": "Each player has to remove 1 of his own buildings that at least costs 2 resources, and place it under a matching draw stack (under one of its resources). Afterwards: The Insurrection is placed under the 4 top cards of the event card stack.",
+    "rules_text": "Each player must place 1 building costing at least 2 resources under a matching draw stack. Then place this card under the 4 topmost event card stack cards.",
     "image": "prosperity-insurrection.webp",
     "copies": 2,
     "confidence": "high"
@@ -4835,7 +4835,7 @@
     "name": "Taxation",
     "cost": [],
     "values": {},
-    "rules_text": "Each player who pays 1 star receives any 1 resource of his choice and 1 gold.",
+    "rules_text": "Each player who pays 1 star receives any 1 resource of their choice and 1 gold.",
     "image": "prosperity-taxation.webp",
     "copies": 2,
     "confidence": "high"

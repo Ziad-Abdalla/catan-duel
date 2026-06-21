@@ -16,6 +16,14 @@ const STAT_META: { key: Stat; glyph: string; title: string }[] = [
   { key: 'progress', glyph: '⚙', title: 'Progress' },
 ]
 
+// Age of Enlightenment point types — shown on the plate only when a player has any
+const EXTRA_STAT_META: { key: 'wisdom' | 'contentment' | 'sail' | 'cannon'; glyph: string; title: string }[] = [
+  { key: 'wisdom', glyph: '🦉', title: 'Wisdom (owls)' },
+  { key: 'contentment', glyph: '★', title: 'Contentment (stars)' },
+  { key: 'sail', glyph: '⛵', title: 'Sail points' },
+  { key: 'cannon', glyph: '💣', title: 'Cannon points' },
+]
+
 /** A player's plaque (slim horizontal bar): colour identity, name, held advantage
  *  tokens, turn marker, derived stat tallies, and VP with a ± nudge. */
 export function PlayerPlate({ player }: { player: PlayerId }) {
@@ -76,6 +84,16 @@ export function PlayerPlate({ player }: { player: PlayerId }) {
           )
         })}
       </div>
+      {EXTRA_STAT_META.some(({ key }) => stats[key] > 0) && (
+        <div className="plate-stats plate-stats-extra" aria-label="Expansion point tallies">
+          {EXTRA_STAT_META.filter(({ key }) => stats[key] > 0).map(({ key, glyph, title }) => (
+            <span key={key} className="plate-stat" title={`${title}: ${stats[key]}`}>
+              <i>{glyph}</i>
+              {stats[key]}
+            </span>
+          ))}
+        </div>
+      )}
       <div className="plate-tokens">
         <PlateToken kind="hero" player={player} />
         <PlateToken kind="trade" player={player} />

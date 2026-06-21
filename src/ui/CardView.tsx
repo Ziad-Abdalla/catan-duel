@@ -64,6 +64,11 @@ function ValueBadges({ card }: { card: Card }) {
   if (v?.skill) badges.push({ label: `${v.skill} ✦`, cls: 'skill' })
   if (v?.commerce) badges.push({ label: `${v.commerce} ⚖`, cls: 'commerce' })
   if (v?.progress) badges.push({ label: `${v.progress} ⚙`, cls: 'progress' })
+  // Age of Enlightenment point types
+  if (v?.wisdom) badges.push({ label: `${v.wisdom} 🦉`, cls: 'wisdom' })
+  if (v?.contentment) badges.push({ label: `${v.contentment} ★`, cls: 'contentment' })
+  if (v?.sail) badges.push({ label: `${v.sail} ⛵`, cls: 'sail' })
+  if (v?.cannon) badges.push({ label: `${v.cannon} 💣`, cls: 'cannon' })
   if (badges.length === 0) return null
   return (
     <div className="cv-badges">

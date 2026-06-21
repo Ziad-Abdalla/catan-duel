@@ -101,6 +101,11 @@ export interface Stats {
   skill: number
   commerce: number
   progress: number
+  // Age of Enlightenment point types (auto-derived like the base stats; shown when nonzero)
+  wisdom: number // owls — Era of Sages
+  contentment: number // stars — Era of Prosperity
+  sail: number // ship range — Era of Explorers
+  cannon: number // pirate combat — Era of Explorers
 }
 
 /** Per-player tallies derived from placed cards' printed values + manual nudges. */
@@ -108,7 +113,11 @@ export function computeStats(p: PlayerState): Stats {
   let strength = 0,
     skill = 0,
     commerce = 0,
-    progress = 0
+    progress = 0,
+    wisdom = 0,
+    contentment = 0,
+    sail = 0,
+    cannon = 0
   for (const pc of p.placed) {
     if (pc.owner && pc.owner !== p.id) continue // foreign cards don't add to the host's stats
     const v = getCard(pc.cardId)?.values
@@ -117,6 +126,10 @@ export function computeStats(p: PlayerState): Stats {
     skill += v.skill ?? 0
     commerce += v.commerce ?? 0
     progress += v.progress ?? 0
+    wisdom += v.wisdom ?? 0
+    contentment += v.contentment ?? 0
+    sail += v.sail ?? 0
+    cannon += v.cannon ?? 0
   }
   const a = p.statAdjust ?? {}
   return {
@@ -125,6 +138,10 @@ export function computeStats(p: PlayerState): Stats {
     skill: skill + (a.skill ?? 0),
     commerce: commerce + (a.commerce ?? 0),
     progress: progress + (a.progress ?? 0),
+    wisdom,
+    contentment,
+    sail,
+    cannon,
   }
 }
 

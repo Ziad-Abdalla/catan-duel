@@ -15,10 +15,12 @@ import { TableBoard } from '../../ui/board/TableBoard'
 import type { Action } from '../../engine/actions'
 import type { SetId, PlayerId } from '../../types'
 import {
-  rollForAi, productionTotals, eventTotals, cardEventTotals, planAiActions,
+  rollForAi, productionActions, eventTotals, cardEventTotals, planAiActions,
   reconcileDeltas, structuralActions, refillActions, exchangeActions,
   humanEventChoice, handLimit, liveCenters, freeBuildingSlot, LIVE_TO_SIM, type Seat,
+  resolveHumanCard, handReconcileActions, isActionCard,
 } from './aiController'
+import { cardName } from '../cards/data'
 import type { Difficulty } from '../agent/difficulty'
 import '../ui/ai-mode.css'
 
@@ -73,7 +75,13 @@ export default function AiTableMode() {
     // (Log, music, settings), the audit drawer, card zoom, scrolling — stays usable.
     const block = (e: Event) => {
       const t = e.target as HTMLElement | null
-      if (t && t.closest('.pboard, .wall')) { e.stopPropagation(); e.preventDefault() }
+      if (!t) return
+      // block the central wall (roll/end/draw) and the AI's OWN principality, but
+      // leave YOUR principality usable — so you can rotate your regions to take an
+      // event resource (Celebration / Plentiful Harvest) by hand on the AI's turn.
+      const pb = t.closest('.pboard') as HTMLElement | null
+      const inAiBoard = pb?.getAttribute('data-player') === cfg.current.aiSeat
+      if (t.closest('.wall') || inAiBoard) { e.stopPropagation(); e.preventDefault() }
     }
     const types = ['click', 'dblclick', 'mousedown', 'pointerdown', 'dragstart', 'contextmenu']
     for (const t of types) host.addEventListener(t, block, true)
@@ -147,9 +155,11 @@ export default function AiTableMode() {
       }
 
       setBanner('🌾 Production — collecting from the regions')
-      const prodT = productionTotals(get(), prod)
-      reconcileResources(aiSeat(), prodT[aiSeat() as Seat]); await sleep(T_PRODUCE); if (stale()) return
-      reconcileResources(human(), prodT[human() as Seat]); await sleep(T_PRODUCE); if (stale()) return
+      // per-region: only the regions showing the rolled number gain (+doubling)
+      for (const a of productionActions(get(), prod, aiSeat())) dispatch(a)
+      await sleep(T_PRODUCE); if (stale()) return
+      for (const a of productionActions(get(), prod, human())) dispatch(a)
+      await sleep(T_PRODUCE); if (stale()) return
 
       if (eventSim === 'event') {
         setBanner('❓ Event card')
@@ -236,6 +246,28 @@ export default function AiTableMode() {
       setBanner(withNote('✅ Production & event done — press Next: Build ▶'))
     }
 
+    // Auto-resolve a card the human just played (its effect is otherwise manual /
+    // impossible in the UI — Traitor, Brigands, Archer, Merchant, …).
+    let resolvingCard = false
+    async function resolveHumanPlayedCard(cardId: string) {
+      const eff = resolveHumanCard(get(), cardId, human())
+      if (eff) {
+        const before = get()
+        const acts = []
+        for (const seat of [human(), aiSeat()]) {
+          acts.push(...structuralActions(before, eff.sim, seat, false)) // placed only
+          acts.push(...handReconcileActions(before, eff.sim, seat))     // hand grants/discards
+        }
+        for (const a of acts) dispatch(a)
+        for (const seat of [human(), aiSeat()]) reconcileResources(seat, eff.totals[seat as Seat])
+        applyTokens(eff.tokens)
+        setBanner(`✨ ${cardName(cardId)} resolved`)
+      }
+      // one-shot: discard the action card after resolving
+      const idx = get().players[human()].placed.findIndex((pc) => pc.cardId === cardId)
+      if (idx >= 0) dispatch({ type: 'discardCard', player: human(), from: 'placed', placedIndex: idx })
+    }
+
     nextRef.current = () => {
       if (workingRef.current) return
       if (phaseRef.current === 'roll' && !rollResolvedRef.current) return
@@ -252,6 +284,13 @@ export default function AiTableMode() {
       if (s.turn !== turnRef.current) { turnRef.current = s.turn; void startTurn(); return }
       if (!s.winner && s.activePlayer !== aiSeat() && phaseRef.current === 'roll' && !rollResolvedRef.current && !workingRef.current && s.lastRoll) {
         void resolveHumanRoll(s.lastRoll.production, s.lastRoll.event)
+      }
+      // the human just played an action card → auto-resolve its effect (skip the
+      // pre-roll dice cards, which are handled by rolling)
+      if (!s.winner && s.activePlayer !== aiSeat() && !resolvingCard) {
+        const placed = s.players[human()].placed
+        const pc = placed.find((c) => isActionCard(c.cardId) && !c.cardId.includes('brigitta') && !c.cardId.includes('reiner'))
+        if (pc) { resolvingCard = true; void resolveHumanPlayedCard(pc.cardId).finally(() => { resolvingCard = false }) }
       }
     })
     return () => { stopped.current = true; unsub() }

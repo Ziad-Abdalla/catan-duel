@@ -11,7 +11,8 @@ import type { Action } from '../../engine/actions'
 import { computeStats } from '../../engine/actions'
 import type { EventFace as LiveEventFace } from '../../engine/dice'
 import { liveToSim } from './liveToSim'
-import { legalMoves, apply, applyProduction } from '../sim/moves'
+import { legalMoves, apply, applyProduction, applyActionCard } from '../sim/moves'
+import { applyThemeAction, onBuild } from '../sim/theme'
 import { resolveFace, resolveBrigand, resolveEventCard } from '../sim/events'
 import { isOver } from '../sim/win'
 import { chooseMove } from '../agent/agent'
@@ -113,6 +114,28 @@ export function productionTotals(live: LiveState, prod: number): SeatTotals {
   return simAfter(live, (s) => { s.lastRoll = { production: prod, event: 'event' }; applyProduction(s, prod) }).totals
 }
 
+/** Does this seat have a doubling building for `resource` (e.g. Lumber Camp)? */
+function doublesResource(live: LiveState, seat: PlayerId, resource: Resource): boolean {
+  for (const pc of live.players[seat].placed) if (maybeDef(pc.cardId)?.doubles === resource) return true
+  return false
+}
+
+/**
+ * Production as PER-REGION setStored actions — only the regions whose printed number
+ * matches `prod` gain (the live engine's region-agnostic addResource would otherwise
+ * fill the WRONG same-resource region). Doubling buildings add +2 to their resource.
+ */
+export function productionActions(live: LiveState, prod: number, seat: PlayerId): Action[] {
+  const out: Action[] = []
+  live.players[seat].regions.forEach((r, regionIndex) => {
+    if (r.empty || r.number !== prod) return
+    const gain = doublesResource(live, seat, r.resource) ? 2 : 1
+    const stored = Math.min(3, r.stored + gain)
+    if (stored !== r.stored) out.push({ type: 'setStored', player: seat, regionIndex, stored: stored as 0 | 1 | 2 | 3 })
+  })
+  return out
+}
+
 // ── step 3: the die event (both players) ──────────────────────────────────────────
 
 export interface EventResult { totals: SeatTotals; tokens: Tokens; sim: SimState }
@@ -189,8 +212,10 @@ function livePlacedUnitsBuildings(live: LiveState, seat: PlayerId): { cardId: st
   return out
 }
 
-/** Actions to reconcile placed cards + hand of `seat` to the sim result (removals from events). */
-export function structuralActions(liveBefore: LiveState, sim: SimState, seat: PlayerId): Action[] {
+/** Actions to reconcile placed cards (and, by default, hand) of `seat` to the sim
+ *  result (removals from events). Pass includeHand=false when the caller reconciles
+ *  the hand separately (handReconcileActions) to avoid double-discarding. */
+export function structuralActions(liveBefore: LiveState, sim: SimState, seat: PlayerId, includeHand = true): Action[] {
   const actions: Action[] = []
   // placed buildings/units
   const livePlaced = livePlacedUnitsBuildings(liveBefore, seat)
@@ -207,12 +232,14 @@ export function structuralActions(liveBefore: LiveState, sim: SimState, seat: Pl
       if (hit) { usedIndex.add(hit.index); actions.push({ type: 'removePlaced', player: seat, placedIndex: hit.index }) }
     }
   }
-  // hand cards removed by an event (Fraternal Feuds)
-  const liveHand = placedMultiset(liveBefore.players[seat].hand)
-  const simHand = placedMultiset(sim.players[seat].hand)
-  for (const [cardId, lc] of liveHand) {
-    const remove = lc - (simHand.get(cardId) ?? 0)
-    for (let k = 0; k < remove; k++) actions.push({ type: 'discardCard', player: seat, from: 'hand', cardId })
+  // hand cards removed by an event (Fraternal Feuds) — skip if the caller does hands
+  if (includeHand) {
+    const liveHand = placedMultiset(liveBefore.players[seat].hand)
+    const simHand = placedMultiset(sim.players[seat].hand)
+    for (const [cardId, lc] of liveHand) {
+      const remove = lc - (simHand.get(cardId) ?? 0)
+      for (let k = 0; k < remove; k++) actions.push({ type: 'discardCard', player: seat, from: 'hand', cardId })
+    }
   }
   return actions
 }
@@ -320,6 +347,48 @@ export function exchangeActions(live: LiveState, seat: PlayerId): Action[] {
     ]
   }
   return []
+}
+
+// ── the human plays a card → auto-resolve its effect ──────────────────────────────
+// In the trust-based board, playing a card just places it; complex effects (Traitor,
+// Archer, Arsonist, Brigands, Merchant, Library's draw, …) are "resolved by hand",
+// which is fiddly or impossible in the UI. This applies the effect for you.
+
+export interface CardEffect { totals: SeatTotals; tokens: Tokens; sim: SimState; isAction: boolean }
+
+/** Resolve the effect of a card the human just played; null if it has no auto effect. */
+export function resolveHumanCard(live: LiveState, cardId: string, seat: PlayerId): CardEffect | null {
+  const d = maybeDef(cardId)
+  if (!d) return null
+  const s = liveToSim(live)
+  if (d.isAction) {
+    if (!applyThemeAction(s, seat as Seat, cardId)) applyActionCard(s, seat as Seat, cardId)
+    return { totals: seatTotals(s), tokens: seatTokens(s), sim: s, isAction: true }
+  }
+  if (d.placeable) {
+    onBuild(s, seat as Seat, cardId) // building/unit on-build effect (Library draw, Staple House, Pirate Ship…)
+    return { totals: seatTotals(s), tokens: seatTokens(s), sim: s, isAction: false }
+  }
+  return null
+}
+
+/** Actions to make `seat`'s live HAND match the sim's hand (grant gained / discard lost
+ *  cards) — e.g. Traitor moves a card from the opponent's hand into yours. */
+export function handReconcileActions(liveBefore: LiveState, sim: SimState, seat: PlayerId): Action[] {
+  const out: Action[] = []
+  const liveHand = placedMultiset(liveBefore.players[seat].hand)
+  const simHand = placedMultiset(sim.players[seat].hand)
+  for (const [id, lc] of liveHand) { const sc = simHand.get(id) ?? 0; for (let k = 0; k < lc - sc; k++) out.push({ type: 'discardCard', player: seat, from: 'hand', cardId: id }) }
+  for (const [id, sc] of simHand) { const lc = liveHand.get(id) ?? 0; for (let k = 0; k < sc - lc; k++) out.push({ type: 'grantCard', player: seat, cardId: id }) }
+  return out
+}
+
+/** Card ids that are action cards (one-shot) — for detecting plays to auto-resolve. */
+export function isActionCard(cardId: string): boolean {
+  return maybeDef(cardId)?.isAction ?? false
+}
+export function hasOnBuildEffect(cardId: string): boolean {
+  return ['gold-staple-house', 'gold-pirate-ship', 'turmoil-tithe-barn', 'turmoil-fairgrounds', 'progress-library'].includes(cardId)
 }
 
 // ── step 4: the AI's action phase (builds/plays/trades) ───────────────────────────

@@ -42,9 +42,12 @@ export function chooseMove(
   // pick by a clear margin, we trust greedy. Only applies to deterministic action
   // moves (no roll/chance), and only catches blunders — small disagreements keep the
   // search's lookahead.
-  if (s.phase === 'action' && mctsMove.t !== 'roll' && mctsMove.t !== 'chooseProd') {
+  // Only catch the IDLE pathology: the search picks endTurn/trade (sits on its hand)
+  // when greedy finds a much better build/play. We do NOT override other moves, so the
+  // search is free to play economy buildings, not just rush settlements/cities.
+  if (s.phase === 'action' && (mctsMove.t === 'endTurn' || mctsMove.t === 'trade')) {
     const greedyMove = chooseGreedy(s)
-    if (greedyMove.t !== mctsMove.t || JSON.stringify(greedyMove) !== JSON.stringify(mctsMove)) {
+    if (greedyMove.t !== 'endTurn' && greedyMove.t !== 'trade') {
       const seat = s.active
       const gv = evaluate(apply(s, greedyMove), seat)
       const mv = evaluate(apply(s, mctsMove), seat)

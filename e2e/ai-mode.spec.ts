@@ -27,8 +27,9 @@ test('AI mode: human-paced phases, no flip, red/green light', async ({ page }) =
   const waitReady = async (timeout = 16000) => {
     const end = Date.now() + timeout
     while (Date.now() < end) {
-      if (await page.locator('.ai-choice-overlay').isVisible().catch(() => false)) {
-        await page.locator('.ai-choice-btn:not([disabled])').first().click().catch(() => {})
+      // event cards stay open until closed — close any to unblock the phase bar
+      if (await page.locator('.evpop-scrim').isVisible().catch(() => false)) {
+        await page.locator('.evpop-close').click().catch(() => {})
         await page.waitForTimeout(250)
         continue
       }

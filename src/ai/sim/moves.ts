@@ -347,7 +347,7 @@ function addSettlement(s: GameState, seat: Seat): void {
   p.scoutBest = false
 }
 
-function applyActionCard(s: GameState, seat: Seat, id: string): void {
+export function applyActionCard(s: GameState, seat: Seat, id: string): void {
   if (applyThemeAction(s, seat, id)) return
   const p = s.players[seat]
   switch (id) {

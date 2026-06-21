@@ -9,7 +9,9 @@
   /* region tile edge — the master unit the whole board scales from. Tuned bigger than the
      old cramped fit; the table can run a touch past one screen (it scrolls by wheel/snap,
      scrollbars are hidden). The width guard keeps a 5-column principality from overflowing. */
-  --reg: clamp(64px, min(16.5vh, 13.5vw), 210px);
+  --reg-base: clamp(64px, min(16.5vh, 13.5vw), 210px);
+  --reg: var(--reg-base);
+  --cols: 5; /* fallback; PrincipalityBoard sets the real 2N+1 per board */
   --seat: calc(var(--reg) * 0.86);
   --site-empty: clamp(18px, 2.6vh, 40px); /* slim drop strip when no building yet */
   --road-w: calc(var(--reg) * 0.52);
@@ -95,10 +97,10 @@
     radial-gradient(1px 1px at 88% 40%, rgba(255, 245, 220, 0.5), transparent),
     radial-gradient(1.5px 1.5px at 45% 88%, rgba(255, 245, 220, 0.45), transparent);
   background-size: 100% 100%;
-  animation: mote-rise 26s linear infinite;
+  /* Static dust — the field used to rise continuously (mote-rise), which read as a
+     "weird slow scroll up" at the bottom of the table. Keep the texture, drop the drift. */
   opacity: 0.7;
 }
-@keyframes mote-rise { from { transform: translateY(6vh); } to { transform: translateY(-10vh); } }
 
 /* ===== a principality pane = one half of the table ===== */
 .ppane {
@@ -280,6 +282,10 @@
 .pboard {
   position: relative;
   display: grid;
+  /* As settlements are built, cols (=2N+1) grows and the board would run off-screen.
+     Shrink the region unit so the whole spine fits the available width (capped to the
+     felt's ~1240px / 92vw), never wider than the base size. --cols is set per board. */
+  --reg: min(var(--reg-base), calc((min(92vw, 1240px) - (var(--cols) - 1) * var(--gap)) / var(--cols)));
   grid-template-rows: auto var(--reg) auto; /* above · spine · below */
   justify-items: center;
   align-items: center;

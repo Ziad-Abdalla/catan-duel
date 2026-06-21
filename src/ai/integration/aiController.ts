@@ -396,7 +396,7 @@ export function hasOnBuildEffect(cardId: string): boolean {
 export interface ActionPlan {
   settlements: number
   cities: number
-  extraRoads: number
+  roads: number // raw # of roads the sim BUILT (and paid for) this turn — NOT settlements
   buildings: string[]
   totals: SeatTotals
   tokens: Tokens
@@ -427,7 +427,7 @@ export function planAiActions(live: LiveState, aiSeat: PlayerId, difficulty: Dif
   }
   return {
     settlements, cities,
-    extraRoads: Math.max(0, roads - settlements),
+    roads,
     buildings,
     totals: seatTotals(beforeEnd),
     tokens: seatTokens(beforeEnd),

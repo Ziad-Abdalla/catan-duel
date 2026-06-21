@@ -64,6 +64,7 @@ export function PrincipalityBoard({
 
   const gridStyle: CSSProperties = {
     gridTemplateColumns: `repeat(${cols}, var(--reg))`,
+    ['--cols' as string]: cols, // drives the fit-to-width region sizing in table.css
   }
 
   return (

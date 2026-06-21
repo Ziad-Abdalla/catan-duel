@@ -190,8 +190,17 @@ export default function AiTableMode() {
     async function aiBuildPhase() {
       setWorking(true); setBanner('🤖 AI is building…')
       const plan = planAiActions(get(), aiSeat(), cfg.current.difficulty, rng.current)
-      for (let i = 0; i < plan.settlements; i++) { if (get().regionStack.length < 2) break; dispatch({ type: 'expandSpine', player: aiSeat() }); await sleep(T_BUILD); if (stale()) return }
-      for (let i = 0; i < plan.extraRoads; i++) { dispatch({ type: 'buildPiece', player: aiSeat(), piece: 'road', end: 'right', pay: false }); await sleep(T_BUILD); if (stale()) return }
+      // sim built R roads + S settlements. expandSpine does settlement+road together,
+      // so pair them up; leftover roads stand alone; leftover settlements consumed a
+      // PRE-EXISTING pending road (build without a road, then fill its 2 new regions).
+      const S = plan.settlements, R = plan.roads, pairs = Math.min(S, R)
+      for (let i = 0; i < pairs; i++) { if (get().regionStack.length < 2) break; dispatch({ type: 'expandSpine', player: aiSeat() }); await sleep(T_BUILD); if (stale()) return }
+      for (let i = 0; i < R - pairs; i++) { dispatch({ type: 'buildPiece', player: aiSeat(), piece: 'road', end: 'right', pay: false }); await sleep(T_BUILD); if (stale()) return }
+      for (let i = 0; i < S - pairs; i++) {
+        dispatch({ type: 'buildPiece', player: aiSeat(), piece: 'settlement', end: 'right', pay: false })
+        get().players[aiSeat()].regions.forEach((r, idx) => { if (r.empty && get().regionStack.length > 0) dispatch({ type: 'placeLandscape', player: aiSeat(), regionIndex: idx }) })
+        await sleep(T_BUILD); if (stale()) return
+      }
       for (let i = 0; i < plan.cities; i++) { const st = liveCenters(get(), aiSeat()).find((c) => c.kind === 'settlement'); if (!st) break; dispatch({ type: 'upgradeCity', player: aiSeat(), seat: st.seat, pay: false }); await sleep(T_BUILD); if (stale()) return }
       for (const cardId of plan.buildings) { if (!get().players[aiSeat()].hand.includes(cardId)) continue; dispatch({ type: 'playCard', player: aiSeat(), cardId, slot: freeBuildingSlot(get(), aiSeat()) ?? undefined, pay: false }); await sleep(T_BUILD); if (stale()) return }
       // action cards can affect the opponent → reconcile BOTH seats' resources + structure

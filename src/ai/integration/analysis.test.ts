@@ -53,8 +53,13 @@ describe('full-game flow analysis', () => {
       } else if (['trade', 'celebration', 'plenty'].includes(es)) { const ev = eventTotals(get(), roll.production, es, ai as Seat); for (const s of order) rec(s, ev.totals) }
       const plan = planAiActions(get(), ai, 'medium', rng)
       const vpBefore = computeVP(get().players[ai])
-      for (let i = 0; i < plan.settlements; i++) { if (get().regionStack.length < 2) break; dispatch({ type: 'expandSpine', player: ai }) }
-      for (let i = 0; i < plan.extraRoads; i++) dispatch({ type: 'buildPiece', player: ai, piece: 'road', end: 'right', pay: false })
+      const S = plan.settlements, R = plan.roads, pairs = Math.min(S, R)
+      for (let i = 0; i < pairs; i++) { if (get().regionStack.length < 2) break; dispatch({ type: 'expandSpine', player: ai }) }
+      for (let i = 0; i < R - pairs; i++) dispatch({ type: 'buildPiece', player: ai, piece: 'road', end: 'right', pay: false })
+      for (let i = 0; i < S - pairs; i++) {
+        dispatch({ type: 'buildPiece', player: ai, piece: 'settlement', end: 'right', pay: false })
+        get().players[ai].regions.forEach((r, idx) => { if (r.empty && get().regionStack.length > 0) dispatch({ type: 'placeLandscape', player: ai, regionIndex: idx }) })
+      }
       for (let i = 0; i < plan.cities; i++) { const c = liveCenters(get(), ai).find((c) => c.kind === 'settlement'); if (!c) break; dispatch({ type: 'upgradeCity', player: ai, seat: c.seat, pay: false }) }
       for (const cid of plan.buildings) { if (!get().players[ai].hand.includes(cid)) continue; dispatch({ type: 'playCard', player: ai, cardId: cid, slot: freeBuildingSlot(get(), ai) ?? undefined, pay: false }) }
       for (const s of order) structuralActions(get(), plan.sim, s).forEach(dispatch)
@@ -63,7 +68,7 @@ describe('full-game flow analysis', () => {
       const lim = handLimit(get(), ai)
       check(get().players[ai].hand.length <= lim, `${ai} over hand limit after refill (${get().players[ai].hand.length}/${lim})`)
       exchangeActions(get(), ai).forEach(dispatch)
-      const bld = `s${plan.settlements} c${plan.cities} r${plan.extraRoads}${plan.buildings.length ? ' +' + plan.buildings.map((b) => b.replace('base-', '')).join(',') : ''}`
+      const bld = `s${plan.settlements} c${plan.cities} r${plan.roads}${plan.buildings.length ? ' +' + plan.buildings.map((b) => b.replace('base-', '')).join(',') : ''}`
       log.push(`T${String(get().turn).padStart(2)} ${ai} ${roll.production}/${evNote.replace('base-', '')} prod[ai+${prodGain.ai} hu+${prodGain.hu}] [${bld}] vp${vpBefore}->${computeVP(get().players[ai])} res[${fmt(vec(get(), ai))}] hand${get().players[ai].hand.length}/${lim}`)
       dispatch({ type: 'endTurn' })
     }

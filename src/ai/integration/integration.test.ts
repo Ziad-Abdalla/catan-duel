@@ -54,8 +54,13 @@ function runAiTurn(store: ReturnType<typeof makeStore>, aiSeat: PlayerId, rng: {
 
   // build
   const plan = planAiActions(get(), aiSeat, 'easy', rng)
-  for (let i = 0; i < plan.settlements; i++) { if (get().regionStack.length < 2) break; dispatch({ type: 'expandSpine', player: aiSeat }) }
-  for (let i = 0; i < plan.extraRoads; i++) dispatch({ type: 'buildPiece', player: aiSeat, piece: 'road', end: 'right', pay: false })
+  const S = plan.settlements, R = plan.roads, pairs = Math.min(S, R)
+  for (let i = 0; i < pairs; i++) { if (get().regionStack.length < 2) break; dispatch({ type: 'expandSpine', player: aiSeat }) }
+  for (let i = 0; i < R - pairs; i++) dispatch({ type: 'buildPiece', player: aiSeat, piece: 'road', end: 'right', pay: false })
+  for (let i = 0; i < S - pairs; i++) {
+    dispatch({ type: 'buildPiece', player: aiSeat, piece: 'settlement', end: 'right', pay: false })
+    get().players[aiSeat].regions.forEach((r, idx) => { if (r.empty && get().regionStack.length > 0) dispatch({ type: 'placeLandscape', player: aiSeat, regionIndex: idx }) })
+  }
   for (let i = 0; i < plan.cities; i++) { const st = liveCenters(get(), aiSeat).find((c) => c.kind === 'settlement'); if (!st) break; dispatch({ type: 'upgradeCity', player: aiSeat, seat: st.seat, pay: false }) }
   for (const cardId of plan.buildings) { if (!get().players[aiSeat].hand.includes(cardId)) continue; dispatch({ type: 'playCard', player: aiSeat, cardId, slot: freeBuildingSlot(get(), aiSeat) ?? undefined, pay: false }) }
   for (const s of order) structuralActions(get(), plan.sim, s).forEach(dispatch)

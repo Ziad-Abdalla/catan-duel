@@ -29,9 +29,12 @@ export function PrincipalityBoard({
 }) {
   const p = useGame((s) => s.state.players[player])
   const dispatch = useGame((s) => s.dispatch)
-  const { dragBuild, setDragRemove, clear, payCosts } = useUI()
+  const { dragBuild, setDragRemove, clear, payCosts, openZoom } = useUI()
 
-  const spine = p.placed.map((pc, i) => ({ pc, i, card: getCard(pc.cardId) })).filter((x) => x.card)
+  const all = p.placed.map((pc, i) => ({ pc, i, card: getCard(pc.cardId) })).filter((x) => x.card)
+  // foreign cards (built HERE by the opponent) render in a separate strip, not the spine
+  const foreign = all.filter((x) => x.pc.owner && x.pc.owner !== player)
+  const spine = all.filter((x) => !(x.pc.owner && x.pc.owner !== player))
   const seats = spine.filter((x) => x.card!.category === 'settlement' || x.card!.category === 'city')
   const roads = spine.filter((x) => x.card!.category === 'road')
   const buildings = spine.filter((x) => !['settlement', 'city', 'road'].includes(x.card!.category))
@@ -163,6 +166,29 @@ export function PrincipalityBoard({
             </div>
           )
         }),
+      )}
+
+      {/* FOREIGN cards the opponent built in this principality — shown intruding at the top */}
+      {foreign.length > 0 && (
+        <div className="pb-foreign" title="Foreign cards your opponent built in your principality">
+          {foreign.map((x) => (
+            <button
+              key={`fgn-${x.i}`}
+              className="pb-foreign-card"
+              title={x.card!.name}
+              onClick={() => openZoom({ cardId: x.card!.id, from: 'play', player, placedIndex: x.i })}
+            >
+              {cardArt(x.card!.id) ? <img src={cardArt(x.card!.id)} alt={x.card!.name} /> : <span>{x.card!.name}</span>}
+              {interactive && (
+                <span
+                  className="pb-foreign-x"
+                  title="Remove this foreign card"
+                  onClick={(e) => { e.stopPropagation(); dispatch({ type: 'removePlaced', player, placedIndex: x.i }); playSfx('build') }}
+                >✕</span>
+              )}
+            </button>
+          ))}
+        </div>
       )}
     </div>
   )

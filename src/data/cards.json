@@ -2392,7 +2392,7 @@
     "values": {
       "commerce": 1,
       "strength": 1,
-      "victory_points": 1
+      "victory_points": 2
     },
     "rules_text": "Place on your Church to protect it from actions, expansion effects and events. Once per turn, pay 1 non-gold resource to receive up to 2 gold. Judith + Church are worth 2 VP together.",
     "image": "intrigue-judith-guardian-of-the-church.webp",
@@ -2417,7 +2417,7 @@
     "values": {
       "commerce": 1,
       "strength": 1,
-      "victory_points": 1
+      "victory_points": 2
     },
     "rules_text": "Place on your Odin's Temple. Draw 2 cards when built. Protects the Temple. Bran + Temple are worth 2 VP together.",
     "image": "intrigue-bran-defender-of-the-temple.webp",

@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { getCard } from '../../data/cards'
+import { getCard, isForeignCard } from '../../data/cards'
 import { CardView } from '../CardView'
 import { requirementMet } from '../../engine/requirements'
 import { resourceTotalOf } from '../../engine/actions'
@@ -71,6 +71,15 @@ export function CardZoom() {
     playSfx(cardSfx(zoom.cardId), zoom.cardId) // one thematic cue per play, varied per card
     closeZoom()
   }
+  // Foreign cards (Red Light Tavern, Brigand Camp, Trading Station…) are built in the
+  // OPPONENT's principality and affect them — the engine adds them to the opponent's
+  // placed cards with `owner` set so they score for nobody.
+  const buildForeign = (pay: boolean) => {
+    dispatch({ type: 'playForeign', player: zoom.player, cardId: zoom.cardId, pay })
+    dispatch({ type: 'showcaseCard', player: zoom.player, cardId: zoom.cardId })
+    playSfx(cardSfx(zoom.cardId), zoom.cardId)
+    closeZoom()
+  }
   // Manually show this card big to both players (without playing it).
   const showOpponent = () => {
     dispatch({ type: 'showcaseCard', player: zoom.player, cardId: zoom.cardId })
@@ -125,11 +134,25 @@ export function CardZoom() {
             </>
           ) : zoom.from === 'hand' ? (
             <>
-              <button className="cz-btn cz-play" onClick={() => play(false)}>Play to principality</button>
-              {hasCost && (
-                <button className="cz-btn" onClick={() => play(true)} title="Place it and spend its cost from your regions">
-                  Play &amp; pay cost
-                </button>
+              {isForeignCard(zoom.cardId) ? (
+                <>
+                  <button className="cz-btn cz-play" onClick={() => buildForeign(false)} title="Built in your opponent's principality">Build on opponent’s board</button>
+                  {hasCost && (
+                    <button className="cz-btn" onClick={() => buildForeign(true)} title="Build it on your opponent and spend its cost from your regions">
+                      Build &amp; pay cost
+                    </button>
+                  )}
+                  <p className="cz-hint">A foreign card — it is built in your opponent’s principality and affects them.</p>
+                </>
+              ) : (
+                <>
+                  <button className="cz-btn cz-play" onClick={() => play(false)}>Play to principality</button>
+                  {hasCost && (
+                    <button className="cz-btn" onClick={() => play(true)} title="Place it and spend its cost from your regions">
+                      Play &amp; pay cost
+                    </button>
+                  )}
+                </>
               )}
               <button className="cz-btn cz-resolve" onClick={() => resolve('hand')}>Resolve effect…</button>
               <button className="cz-btn cz-discard" onClick={discardFromHand}>Discard</button>

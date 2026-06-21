@@ -99,6 +99,10 @@ export interface PlacedCard {
   cardId: string
   /** free-form position the player arranged it at (manual play) */
   slot?: string
+  /** for FOREIGN cards (built in the opponent's principality): the player who owns/played
+   *  it. The card sits in the host's `placed` but scores for nobody — `owner` just records
+   *  who controls its effect and lets the host exclude it from their VP/stats. */
+  owner?: PlayerId
 }
 
 /** The derived tallies that placed cards contribute to (besides VP). */

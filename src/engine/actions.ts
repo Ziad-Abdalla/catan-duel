@@ -48,6 +48,7 @@ export type Action =
   | { type: 'placeLandscape'; player: PlayerId; regionIndex: number } // fill an empty landscape slot from the region stack
   | { type: 'removePlaced'; player: PlayerId; placedIndex: number } // drag a placed road/building back off the board
   | { type: 'movePlaced'; player: PlayerId; placedIndex: number; slot: string } // relocate a placed piece to another slot (no remove)
+  | { type: 'playForeign'; player: PlayerId; cardId: string; slot?: string; pay?: boolean } // build a FOREIGN card in the OPPONENT's principality (Red Light Tavern, Brigand Camp, Trading Station)
   // stack manipulation (Tabletop-style: peek is UI-only since the snapshot already carries the stacks)
   | { type: 'shuffleStack'; stackIndex: number } // shuffle one draw stack in place (seeded → sync-safe)
   | { type: 'takeFromStack'; player: PlayerId; stackIndex: number; cardId?: string; position?: number } // search/take a card into hand (top by default)
@@ -84,6 +85,7 @@ export type Action =
 export function computeVP(p: PlayerState): number {
   let vp = 0
   for (const pc of p.placed) {
+    if (pc.owner && pc.owner !== p.id) continue // a foreign card scores for nobody
     const c = getCard(pc.cardId)
     if (!c) continue
     if (c.category === 'settlement') vp += 1
@@ -108,6 +110,7 @@ export function computeStats(p: PlayerState): Stats {
     commerce = 0,
     progress = 0
   for (const pc of p.placed) {
+    if (pc.owner && pc.owner !== p.id) continue // foreign cards don't add to the host's stats
     const v = getCard(pc.cardId)?.values
     if (!v) continue
     strength += v.strength ?? 0
@@ -640,6 +643,23 @@ function reduce(s: GameState, a: Action): GameState {
       )
       // (supply is derived from the board in applyAction — placing a face-up spends it)
       return logged(out, a.player, `Played ${name}${pay && cost.length ? ` (${fmtCost(cost)})` : ''}`)
+    }
+
+    case 'playForeign': {
+      const pay = a.pay !== false
+      const card = getCard(a.cardId)
+      const cost = card?.cost ?? []
+      const name = card?.name ?? a.cardId
+      const foe: PlayerId = a.player === 'p0' ? 'p1' : 'p0'
+      let out = withPlayer(s, a.player, (p) => {
+        const i = p.hand.indexOf(a.cardId)
+        if (i >= 0) p.hand.splice(i, 1)
+        if (pay) spendCost(p, cost)
+      })
+      out = withPlayer(out, foe, (p) => {
+        p.placed.push({ cardId: a.cardId, slot: a.slot ?? `foreign-${p.placed.length}`, owner: a.player })
+      })
+      return logged(finalize(out), a.player, `Built ${name} in the opponent's principality${pay && cost.length ? ` (${fmtCost(cost)})` : ''}`)
     }
 
     case 'returnToHand': {

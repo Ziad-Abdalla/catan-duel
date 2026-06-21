@@ -546,6 +546,20 @@
 }
 .pb-expand:hover { transform: translateY(-50%) scale(1.15); background: rgba(200, 146, 42, 0.4); }
 .pboard { position: relative; }
+/* foreign cards (built in this principality by the opponent) — a small intruding strip */
+.pb-foreign { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 6; }
+.pb-foreign-card {
+  position: relative; width: calc(var(--reg) * 0.52); padding: 0; cursor: pointer;
+  border: 2px solid #b5562a; border-radius: 6px; overflow: hidden; background: #2a1c10;
+  box-shadow: 0 3px 9px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(243, 215, 154, 0.25);
+}
+.pb-foreign-card img { width: 100%; display: block; }
+.pb-foreign-card > span { display: block; padding: 4px; font-size: 10px; color: #f3d79a; }
+.pb-foreign-x {
+  position: absolute; top: 0; right: 0; width: 16px; height: 16px; display: grid; place-items: center;
+  background: rgba(139, 46, 46, 0.92); color: #fff; font-size: 10px; border-bottom-left-radius: 5px;
+}
+.pb-foreign-x:hover { background: #b5562a; }
 
 /* ===== player plate — a slim horizontal nameplate bar ===== */
 .player-plate {

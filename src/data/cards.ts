@@ -10,6 +10,17 @@ export function getCard(id: string): Card | undefined {
   return byId.get(id)
 }
 
+/** FOREIGN cards are built in the OPPONENT's principality (road complements / city
+ *  attachments) and affect them. They use the `playForeign` action, not `playCard`. */
+export const FOREIGN_CARD_IDS = new Set<string>([
+  'intrigue-red-light-tavern',
+  'merchants-brigand-camp',
+  'merchants-trading-station',
+  'barbarians-barbarian-stronghold',
+  'prosperity-thieves-hideout',
+])
+export const isForeignCard = (id: string): boolean => FOREIGN_CARD_IDS.has(id)
+
 /**
  * The base region Card for a produced resource (one per terrain) — used to render
  * the reusable <CenterArt> region tile for any region slot on the board.

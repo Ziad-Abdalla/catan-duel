@@ -17,5 +17,7 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "vite.config.ts"]
+  "include": ["src", "vite.config.ts"],
+  "comment": "selfplay cli/report are node-only scripts run via vite-node; kept out of the browser app typecheck",
+  "exclude": ["node_modules", "src/ai/selfplay/cli.ts", "src/ai/selfplay/report.ts"]
 }

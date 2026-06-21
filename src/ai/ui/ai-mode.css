@@ -1,0 +1,39 @@
+/* AI "play vs AI" mode — setup screen + a thin wrapper around the REAL board.
+   Self-contained; the board itself is the live game's own components/styles. */
+.ai-app {
+  min-height: 100vh;
+  background: radial-gradient(140% 120% at 50% -10%, #2f2618 0%, #1a140d 60%), #14100a;
+  color: #ece3cf;
+  font-family: 'IM Fell English', Georgia, serif;
+  padding: 14px clamp(8px, 3vw, 40px) 40px;
+  box-sizing: border-box;
+}
+.ai-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.ai-header h1 { font-family: 'Cinzel', Georgia, serif; font-size: clamp(18px, 2.6vw, 26px); margin: 0; color: #f3d79a; }
+.ai-back, .ai-start, .ai-chip {
+  background: rgba(243, 215, 154, 0.14); color: #f3d79a; border: 1px solid rgba(243, 215, 154, 0.4);
+  border-radius: 8px; padding: 6px 12px; cursor: pointer; text-decoration: none; font-size: 14px; font-family: inherit;
+}
+.ai-back:hover, .ai-start:hover, .ai-chip:hover { background: rgba(243, 215, 154, 0.26); }
+
+.ai-setup { max-width: 560px; margin: 6vh auto; display: flex; flex-direction: column; gap: 16px; font-size: 16px; }
+.ai-setup label { display: flex; flex-direction: column; gap: 6px; }
+.ai-setup select { padding: 8px; border-radius: 8px; background: #221b12; color: #ece3cf; border: 1px solid rgba(243,215,154,0.4); font-size: 15px; font-family: inherit; }
+.ai-setup-sets { display: flex; flex-direction: column; gap: 6px; }
+.ai-setup-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.ai-chip.on { background: rgba(140, 200, 130, 0.28); border-color: rgba(150, 220, 140, 0.6); color: #eafbe6; }
+.ai-start { font-size: 17px; padding: 12px; }
+.ai-note { font-size: 13px; opacity: 0.7; }
+
+/* wrapper around the real <TableBoard> */
+.ai-table-wrap { min-height: 100vh; display: flex; flex-direction: column; }
+.ai-table-banner {
+  display: flex; align-items: center; gap: 14px; padding: 6px 16px; font-size: 14px;
+  background: linear-gradient(180deg, rgba(60,48,32,0.92), rgba(34,27,18,0.92));
+  color: #f3d79a; border-bottom: 1px solid rgba(243,215,154,0.3); position: sticky; top: 0; z-index: 50;
+}
+.ai-table-thinking { color: #bfe2f4; font-style: italic; }
+.ai-table-exit { margin-left: auto; color: #f3d79a; text-decoration: underline; }
+.ai-table-host { position: relative; flex: 1; min-height: 0; }
+/* transparent shield blocks stray human input during the AI's turn */
+.ai-table-shield { position: absolute; inset: 0; z-index: 40; cursor: progress; background: rgba(10,8,5,0.04); }

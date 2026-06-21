@@ -161,6 +161,8 @@ export function TableHud({ mode, setMode }: { mode: AppMode; setMode: (m: AppMod
         <button className={`hud-tab${mode === 'local' ? ' active' : ''}`} onClick={() => setMode('local')}>Hotseat</button>
         <button className={`hud-tab${mode === 'online' ? ' active' : ''}`} onClick={() => setMode('online')}>Online</button>
         <button className={`hud-tab${mode === 'gallery' ? ' active' : ''}`} onClick={() => setMode('gallery')}>Cards</button>
+        {/* additive: jump to the separate single-player AI mode (#/ai, lazy-loaded) */}
+        <button className="hud-tab" title="Play single-player against the AI" onClick={() => { window.location.hash = '#/ai' }}>🤖 vs AI</button>
       </div>
     </div>
   )

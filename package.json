@@ -12,7 +12,8 @@
     "test:watch": "vitest",
     "e2e": "playwright test",
     "party": "partykit dev",
-    "party:deploy": "partykit deploy"
+    "party:deploy": "partykit deploy",
+    "ai:selfplay": "vite-node src/ai/selfplay/cli.ts"
   },
   "dependencies": {
     "partysocket": "^1.2.0",

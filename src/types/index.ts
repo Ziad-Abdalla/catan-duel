@@ -108,6 +108,12 @@ export interface PlacedCard {
 /** The derived tallies that placed cards contribute to (besides VP). */
 export type Stat = 'strength' | 'skill' | 'commerce' | 'progress'
 
+/** Per-player rotating marker-card tracks (trust-based level counters — the marker card's
+ *  printed art defines what each level grants; the engine just stores the level).
+ *  Triumph = Era of Barbarians · Manifesto of Humane Conduct = Era of Sages ·
+ *  Public Feeling = Era of Prosperity. */
+export type MarkerId = 'triumph' | 'manifesto' | 'publicFeeling'
+
 export interface PlayerState {
   id: PlayerId
   name: string
@@ -126,6 +132,9 @@ export interface PlayerState {
   statAdjust?: Partial<Record<Stat, number>>
   /** ability keys already used this turn (once-per-turn markers; cleared on endTurn) */
   usedThisTurn?: string[]
+  /** rotating marker-card levels (Barbarians Triumph, Sages Manifesto, Prosperity Public
+   *  Feeling). Present only for markers the player is tracking; trust-based level counter. */
+  markers?: Partial<Record<MarkerId, number>>
 }
 
 export interface GameState {

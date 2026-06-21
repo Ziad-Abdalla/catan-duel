@@ -633,6 +633,29 @@
   border-color: var(--gold);
   color: #fff;
 }
+/* rotating marker-card tracks (Triumph / Manifesto / Public Feeling) */
+.plate-markers { display: flex; gap: clamp(3px, 0.5vw, 6px); align-items: center; flex-wrap: wrap; }
+.plate-marker {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-family: var(--font-head);
+  font-size: clamp(10px, 1.3vh, 13px);
+  color: #f0e2c2;
+  padding: 1px 4px;
+  border-radius: 9px;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(243, 215, 154, 0.22);
+}
+.plate-marker i { font-style: normal; font-size: 1.05em; }
+.plate-marker b { min-width: 0.9em; text-align: center; color: #f3d79a; }
+.plate-mk-btn {
+  width: clamp(15px, 1.9vh, 19px); aspect-ratio: 1; border-radius: 5px;
+  border: 1px solid rgba(243, 215, 154, 0.32); background: rgba(0, 0, 0, 0.25);
+  color: #f3d79a; font-size: clamp(11px, 1.4vh, 14px); line-height: 1;
+  display: grid; place-items: center; cursor: pointer;
+}
+.plate-mk-btn:hover { border-color: rgba(243, 215, 154, 0.6); }
 .plate-vprow { display: flex; align-items: center; gap: clamp(6px, 0.9vw, 10px); margin-left: auto; }
 .plate-vp { font-family: var(--font-head); font-size: clamp(22px, 3.2vh, 38px); font-weight: 700; line-height: 1; color: #f3d79a; }
 .plate-vp small { font-size: 0.4em; color: rgba(240, 226, 194, 0.6); font-weight: 400; }

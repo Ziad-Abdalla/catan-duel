@@ -5,7 +5,7 @@
 // move cards, tally VP). They do NOT enforce rule legality — anything a player
 // could do at the table is allowed here too.
 
-import type { GameState, PlayerId, PlayerState, Phase, RegionSlot, ResourceType, Stat } from '../types'
+import type { GameState, PlayerId, PlayerState, Phase, RegionSlot, ResourceType, Stat, MarkerId } from '../types'
 import { getCard } from '../data/cards'
 import { makeRng, shuffle } from './rng'
 import type { EventFace } from './dice'
@@ -63,6 +63,7 @@ export type Action =
   // scoring
   | { type: 'adjustVP'; player: PlayerId; delta: number }
   | { type: 'setToken'; player: PlayerId | null; token: AdvantageToken }
+  | { type: 'setMarker'; player: PlayerId; marker: MarkerId; level: number } // rotate a marker-card track (clamped ≥ 0)
   // ---- universal resolution toolkit (enacts ANY card effect, all serializable) ----
   // resources live as region `stored` 0–3; addResource distributes +/- across matching regions
   | { type: 'addResource'; player: PlayerId; resource: ResourceType; count: number }
@@ -186,6 +187,7 @@ function clonePlayer(p: PlayerState): PlayerState {
     placed: p.placed.map((c) => ({ ...c })),
     statAdjust: { ...(p.statAdjust ?? {}) },
     usedThisTurn: [...(p.usedThisTurn ?? [])],
+    markers: { ...(p.markers ?? {}) },
   }
 }
 
@@ -859,6 +861,18 @@ function reduce(s: GameState, a: Action): GameState {
         a.player,
         `VP ${a.delta >= 0 ? '+' : ''}${a.delta}`,
       )
+
+    case 'setMarker': {
+      const level = Math.max(0, Math.min(9, a.level))
+      const label = { triumph: 'Triumph', manifesto: 'Manifesto', publicFeeling: 'Public Feeling' }[a.marker]
+      return logged(
+        withPlayer(s, a.player, (p) => {
+          p.markers = { ...(p.markers ?? {}), [a.marker]: level }
+        }),
+        a.player,
+        `${label} → level ${level}`,
+      )
+    }
 
     case 'setToken': {
       const key = a.token === 'hero' ? 'hasHeroToken' : 'hasTradeToken'

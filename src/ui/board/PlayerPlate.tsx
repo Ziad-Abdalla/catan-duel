@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import type { PlayerId, Stat } from '../../types'
+import type { MarkerId, PlayerId, SetId, Stat } from '../../types'
 import { PlateToken } from './TokenLayer'
 import { computeStats, suggestAdvantage } from '../../engine/actions'
 import { useGame } from '../../store/gameStore'
@@ -22,6 +22,14 @@ const EXTRA_STAT_META: { key: 'wisdom' | 'contentment' | 'sail' | 'cannon'; glyp
   { key: 'contentment', glyph: '★', title: 'Contentment (stars)' },
   { key: 'sail', glyph: '⛵', title: 'Sail points' },
   { key: 'cannon', glyph: '💣', title: 'Cannon points' },
+]
+
+// Rotating marker-card tracks, surfaced when their expansion set is in play. Trust-based:
+// the ±buttons rotate the level; the card's printed art defines what each level grants.
+const MARKER_META: { id: MarkerId; set: SetId; label: string; glyph: string }[] = [
+  { id: 'triumph', set: 'barbarians', label: 'Triumph', glyph: '🏆' },
+  { id: 'manifesto', set: 'sages', label: 'Manifesto', glyph: '📜' },
+  { id: 'publicFeeling', set: 'prosperity', label: 'Public Feeling', glyph: '🌡' },
 ]
 
 /** A player's plaque (slim horizontal bar): colour identity, name, held advantage
@@ -92,6 +100,21 @@ export function PlayerPlate({ player }: { player: PlayerId }) {
               {stats[key]}
             </span>
           ))}
+        </div>
+      )}
+      {MARKER_META.some(({ set }) => state.enabledSets.includes(set)) && (
+        <div className="plate-markers" aria-label="Marker tracks">
+          {MARKER_META.filter(({ set }) => state.enabledSets.includes(set)).map(({ id, label, glyph }) => {
+            const lvl = p.markers?.[id] ?? 0
+            return (
+              <span key={id} className="plate-marker" title={`${label} — level ${lvl} (rotate per the card)`}>
+                <button className="plate-mk-btn" aria-label={`lower ${label}`} onClick={() => { dispatch({ type: 'setMarker', player, marker: id, level: lvl - 1 }); playSfx('ui') }}>−</button>
+                <i>{glyph}</i>
+                <b>{lvl}</b>
+                <button className="plate-mk-btn" aria-label={`raise ${label}`} onClick={() => { dispatch({ type: 'setMarker', player, marker: id, level: lvl + 1 }); playSfx('vp') }}>+</button>
+              </span>
+            )
+          })}
         </div>
       )}
       <div className="plate-tokens">

@@ -2236,7 +2236,6 @@
     "set": "intrigue",
     "category": "building",
     "name": "Pilgrimage Site",
-    "tag": "Face-up Expansion",
     "cost": [
       {
         "resource": "brick",
@@ -2285,7 +2284,6 @@
     "set": "intrigue",
     "category": "building",
     "name": "Odin's Fountain",
-    "tag": "Face-up Expansion",
     "cost": [
       {
         "resource": "brick",
@@ -2427,7 +2425,6 @@
     "set": "intrigue",
     "category": "hero-or-unit",
     "name": "Master of the Brotherhood",
-    "tag": "Face-up Expansion",
     "cost": [
       {
         "resource": "grain",
@@ -2474,7 +2471,6 @@
     "set": "intrigue",
     "category": "building",
     "name": "Church",
-    "tag": "Face-up Expansion",
     "cost": [
       {
         "resource": "brick",
@@ -2496,7 +2492,6 @@
     "set": "intrigue",
     "category": "building",
     "name": "Odin's Temple",
-    "tag": "Face-up Expansion",
     "cost": [
       {
         "resource": "brick",
@@ -2771,7 +2766,6 @@
     "set": "merchants",
     "category": "hero-or-unit",
     "name": "Ship Builder",
-    "tag": "Face-up Expansion",
     "cost": [
       {
         "resource": "lumber",
@@ -2908,7 +2902,7 @@
     },
     "rules_text": "1x during your turn, take discard fish. If all Residences by 1 level and take any 2 resources of your choice.",
     "image": "merchants-commercial-harbor.webp",
-    "copies": 2,
+    "copies": 3,
     "confidence": "low"
   },
   {
@@ -2944,7 +2938,6 @@
     "set": "merchants",
     "category": "building",
     "name": "Craft Guild",
-    "tag": "Face-up Expansion",
     "cost": [
       {
         "resource": "lumber",
@@ -3148,7 +3141,6 @@
     "set": "barbarians",
     "category": "building",
     "name": "Border Fortress",
-    "tag": "Face-up Expansion",
     "cost": [],
     "values": {},
     "rules_text": "Place adjacent to a hills region where at least 1 brick is stored. For 1 hand you may rotate the Border Fortress to the next higher level.",
@@ -3168,7 +3160,7 @@
     },
     "rules_text": "Place adjacent to any region of your choice. If you come out victorious after a Barbarian Attack, instead of taking 2 resources, you may play the Triumph Card to the next higher level.",
     "image": "barbarians-triumph-card.webp",
-    "copies": 2,
+    "copies": 3,
     "confidence": "high"
   },
   {
@@ -3315,7 +3307,6 @@
     "set": "barbarians",
     "category": "building",
     "name": "Secret Brotherhood",
-    "tag": "Face-up Expansion",
     "cost": [
       {
         "resource": "lumber",
@@ -3337,7 +3328,6 @@
     "set": "barbarians",
     "category": "building",
     "name": "Bailwick",
-    "tag": "Face-up Expansion",
     "cost": [
       {
         "resource": "lumber",
@@ -3373,7 +3363,7 @@
     "values": {},
     "rules_text": "In case of a Barbarian Attack, add strength point of your Border Fortress counts as 1 additional unit.",
     "image": "barbarians-castle.webp",
-    "copies": 2,
+    "copies": 3,
     "confidence": "medium"
   },
   {
@@ -3488,68 +3478,56 @@
     "confidence": "low"
   },
   {
-    "id": "barbarians-",
-    "set": "barbarians",
-    "category": "building",
-    "name": "",
-    "cost": [],
-    "values": {},
-    "rules_text": "",
-    "image": "barbarians-.webp",
-    "copies": 2,
-    "confidence": "low"
-  },
-  {
-    "id": "barbarians-shipwreck",
-    "set": "barbarians",
+    "id": "explorers-shipwreck",
+    "set": "explorers",
     "category": "building",
     "name": "Shipwreck",
     "cost": [],
     "values": {},
     "rules_text": "Discovery: You steal any 1 resource of your choice. Missions to the Shipwreck are not possible.",
-    "image": "barbarians-shipwreck.webp",
+    "image": "explorers-shipwreck.webp",
     "copies": 2,
     "confidence": "high"
   },
   {
-    "id": "barbarians-island-of-the-bards",
-    "set": "barbarians",
+    "id": "explorers-island-of-the-bards",
+    "set": "explorers",
     "category": "building",
     "name": "Island of the Bards",
     "cost": [],
     "values": {},
     "rules_text": "Discovery: Your opponent shows you 2 cards from any 1 of their own draw piles. You may draw 1 action card or unit into your hand. Mission: Pay 2 grain to raise the card to the next higher level.",
-    "image": "barbarians-island-of-the-bards.webp",
+    "image": "explorers-island-of-the-bards.webp",
     "copies": 1,
     "confidence": "high"
   },
   {
-    "id": "barbarians-island-of-the-merchants",
-    "set": "barbarians",
+    "id": "explorers-island-of-the-merchants",
+    "set": "explorers",
     "category": "building",
     "name": "Island of the Merchants",
     "cost": [],
     "values": {},
     "rules_text": "Discovery: You may immediately trade any 1 resource of your choice for any 1 other resource of your choice. Mission: Pay 2 wool to rotate the card to the next higher level.",
-    "image": "barbarians-island-of-the-merchants.webp",
+    "image": "explorers-island-of-the-merchants.webp",
     "copies": 1,
     "confidence": "high"
   },
   {
-    "id": "barbarians-islands-of-the-scholars",
-    "set": "barbarians",
+    "id": "explorers-islands-of-the-scholars",
+    "set": "explorers",
     "category": "building",
     "name": "Islands of the Scholars",
     "cost": [],
     "values": {},
     "rules_text": "Discovery: You may draw up to 2 cards from any 1 of your own draw piles. You may draw 1 action card or unit into your hand. Mission: Pay 2 lumber to rotate the card to the next higher level.",
-    "image": "barbarians-islands-of-the-scholars.webp",
+    "image": "explorers-islands-of-the-scholars.webp",
     "copies": 1,
     "confidence": "high"
   },
   {
-    "id": "barbarians-zheng-he",
-    "set": "barbarians",
+    "id": "explorers-zheng-he",
+    "set": "explorers",
     "category": "hero-or-unit",
     "name": "Zheng He",
     "cost": [
@@ -3566,13 +3544,13 @@
       "strength": 5
     },
     "rules_text": "Discovery/Mission: Pay 1 gold or fight. Fight: Roll the production die and add the bounty. Defeat: You lose the card and this card turns over to its blank side faces up). Tie: Roll the production die again!",
-    "image": "barbarians-zheng-he.webp",
+    "image": "explorers-zheng-he.webp",
     "copies": 1,
     "confidence": "medium"
   },
   {
-    "id": "barbarians-cinmarone",
-    "set": "barbarians",
+    "id": "explorers-cinmarone",
+    "set": "explorers",
     "category": "hero-or-unit",
     "name": "Cinmarone",
     "cost": [
@@ -3589,13 +3567,13 @@
       "strength": 6
     },
     "rules_text": "Discovery/Mission: Pay 1 gold or fight. Fight: Roll the production die and add the bounty. Defeat: You lose the card and this card turns from the taken card side to its blank side faces up). Tie: Roll the production die again!",
-    "image": "barbarians-cinmarone.webp",
+    "image": "explorers-cinmarone.webp",
     "copies": 1,
     "confidence": "medium"
   },
   {
-    "id": "barbarians-jean",
-    "set": "barbarians",
+    "id": "explorers-jean",
+    "set": "explorers",
     "category": "hero-or-unit",
     "name": "Jean",
     "cost": [
@@ -3612,31 +3590,31 @@
       "strength": 8
     },
     "rules_text": "Discovery/Mission: Pay 2 resources or fight. Fight: Roll the production die and add the bounty. Defeat: You lose the card and this card turns from the taken card side to its blank side faces up). Tie: Roll the production die again!",
-    "image": "barbarians-jean.webp",
+    "image": "explorers-jean.webp",
     "copies": 1,
     "confidence": "medium"
   },
   {
-    "id": "barbarians-island-of-the-forgotten-tribe",
-    "set": "barbarians",
+    "id": "explorers-island-of-the-forgotten-tribe",
+    "set": "explorers",
     "category": "building",
     "name": "Island of the Forgotten Tribe",
     "cost": [],
     "values": {},
     "rules_text": "Discovery: Return the ship to the Explorer Harbor. You may carry out an additional mission. Mission: Roll a die!—you lose your ship (turn the disc token over so the sail side faces up). Tie an event. 5-6: Treasure—rotate the card to the next higher level.",
-    "image": "barbarians-island-of-the-forgotten-tribe.webp",
+    "image": "explorers-island-of-the-forgotten-tribe.webp",
     "copies": 1,
     "confidence": "medium"
   },
   {
-    "id": "barbarians-explorer-harbor",
-    "set": "barbarians",
+    "id": "explorers-explorer-harbor",
+    "set": "explorers",
     "category": "building",
     "name": "Explorer Harbor",
     "cost": [],
     "values": {},
     "rules_text": "Building an explorer ship (turn the disc token over so the sail side is visible). You may only make 1 discovery during each of your turns.",
-    "image": "barbarians-explorer-harbor.webp",
+    "image": "explorers-explorer-harbor.webp",
     "copies": 1,
     "confidence": "medium"
   },
@@ -3645,7 +3623,6 @@
     "set": "explorers",
     "category": "building",
     "name": "Explorer Metropolis",
-    "tag": "Face-up Expansion",
     "cost": [
       {
         "resource": "brick",
@@ -3718,7 +3695,6 @@
     "set": "explorers",
     "category": "building",
     "name": "Landing Stage",
-    "tag": "Face-up Expansion",
     "cost": [
       {
         "resource": "brick",
@@ -3758,7 +3734,7 @@
     "values": {},
     "rules_text": "Place above or below a region directly adjacent to your Explorer Harbor. 1x during your turn: You may trade any 1 resource of your choice for 1 lumber or 1 wool.",
     "image": "explorers-shipyard.webp",
-    "copies": 2,
+    "copies": 3,
     "confidence": "medium"
   },
   {
@@ -3766,7 +3742,6 @@
     "set": "explorers",
     "category": "hero-or-unit",
     "name": "Astronomer",
-    "tag": "Face-up Expansion",
     "cost": [
       {
         "resource": "gold",
@@ -3784,7 +3759,6 @@
     "set": "explorers",
     "category": "building",
     "name": "Cannon Foundry",
-    "tag": "Face-up Expansion",
     "cost": [
       {
         "resource": "ore",
@@ -4041,7 +4015,7 @@
     },
     "rules_text": "Pay 1 lumber, 2 gold, and 3 owls to activate the card to the next hand. For 2 of the owls you have to pay, you also may place 1 action attack card on the discard pile.",
     "image": "sages-manifest-of-humane-conduct.webp",
-    "copies": 2,
+    "copies": 3,
     "confidence": "low"
   },
   {
@@ -4121,7 +4095,6 @@
     "set": "sages",
     "category": "hero-or-unit",
     "name": "Principal Sage Woman",
-    "tag": "Face-up Expansion",
     "cost": [],
     "values": {},
     "rules_text": "Place adjacent to any region of your choice with at least 1 resource. Pay this resource. If the number of the adjoining region is rolled during the production roll, rotate Principal Sage Woman to the next higher level.",
@@ -4176,7 +4149,6 @@
     "set": "sages",
     "category": "building",
     "name": "Granary",
-    "tag": "Face-up Expansion",
     "cost": [
       {
         "resource": "brick",
@@ -4235,7 +4207,6 @@
     "set": "sages",
     "category": "building",
     "name": "Courthouse",
-    "tag": "Face-up Expansion",
     "cost": [
       {
         "resource": "brick",
@@ -4402,7 +4373,6 @@
     "set": "prosperity",
     "category": "building",
     "name": "Village School",
-    "tag": "Face-up Expansion",
     "cost": [
       {
         "resource": "lumber",
@@ -4545,7 +4515,7 @@
     },
     "rules_text": "1x during your turn: 1 gold, you may retrieve 1 artwork from the discard pile (from your own discard piles). The princess never cover to the opponent's princess or to the cards in his hand.",
     "image": "prosperity-prince.webp",
-    "copies": 1,
+    "copies": 2,
     "confidence": "low"
   },
   {
@@ -4574,7 +4544,7 @@
     },
     "rules_text": "1x during your turn: 1 gold, you may retrieve 1 artwork from the discard pile (from your own discard piles). The princess never cover to the opponent's princess or to the cards in his hand.",
     "image": "prosperity-princess.webp",
-    "copies": 1,
+    "copies": 2,
     "confidence": "low"
   },
   {
@@ -4582,7 +4552,6 @@
     "set": "prosperity",
     "category": "building",
     "name": "Aqueduct",
-    "tag": "Face-up Expansion",
     "cost": [
       {
         "resource": "brick",
@@ -4604,7 +4573,6 @@
     "set": "prosperity",
     "category": "building",
     "name": "Hospital",
-    "tag": "Face-up Expansion",
     "cost": [
       {
         "resource": "lumber",
@@ -4670,7 +4638,6 @@
     "set": "prosperity",
     "category": "building",
     "name": "City Palace",
-    "tag": "Face-up Expansion",
     "cost": [
       {
         "resource": "brick",
@@ -4708,7 +4675,7 @@
     },
     "rules_text": "(1) If the event Colonization is ruled, you receive 1 star. (2) A building that costs 1 less resource of your choice costs you 1 resource less.",
     "image": "prosperity-builders-hut.webp",
-    "copies": 2,
+    "copies": 3,
     "confidence": "medium"
   },
   {

@@ -58,14 +58,25 @@ point icons + rules text** (AoD cards were given AoE-only point types; rules gar
 ## Phase plan
 - [x] P0 Download sources, map architecture, build art-extraction pipeline, extract 216 card imgs
 - [x] P0 Transcription fan-out (19 read-only agents) → `transcripts/raw-transcription.json`
-- [ ] P1 Build authoritative card dataset (reference-doc functional + vision costs + art map)
-- [ ] P2 Map/crop art → `src/assets/cards/<id>.webp`
-- [ ] P3 Wire set ids through all ~19 era-reference points (types + live + sim-data + UI)
-- [ ] P4 cards.json entries for all 6 themes + EFFECTS guidance
+- [x] P1 Build card dataset (144 entries) → `generated/new-cards.json`, merged into cards.json
+- [x] P2 Crop art → `src/assets/cards/<id>.webp` (144 faces) — verified loading live
+- [x] P3 Wire 6 set ids through all era-reference points (types + live + sim-data + UI) — tsc/tests green
+- [x] P4a cards.json entries for all 6 themes (selectable + playable in hot-seat, real art)
+- [x] Deck-back colors per new theme (table.css `.cs-set-*`)
+- [~] P4b QA pass vs rulebook Card Index: face-up flags, copies, categories, point types (in progress)
+- [ ] P4c Per-card rules_text polish from the rulebook (functional summaries)
 - [ ] P5 New mechanics UI: point icons (owl/star/sail/cannon), markers (Triumph/Manifesto/Public
       Feeling), foreign cards, metropolis, the 3×3 sea board (full fidelity)
 - [ ] P6 Per-theme verification (tsc, tests, hot-seat playthrough)
-- [ ] P7 Final HTML report compiling everything
+- [x] P7 HTML report (`report.html`) — to refresh as themes complete
+
+## Progress log
+- 2026-06-21: P0–P4a + deck colors + report shipped (commits 056aa94…4c0dc1c). All 6 themes
+  selectable and playable in trust-based hot-seat with real cropped official art. AI-opponent
+  support and the bespoke-mechanic UIs (sea board, marker tracks, foreign cards) remain.
+- Known data caveats from the auto-generated baseline (being fixed in P4b): `copies` mostly 1
+  (vision deduped by name), `face_up` over-applied (only the per-theme face-up stack should be
+  flagged), some categories collapsed to `building`, rules_text is best-effort.
 
 ## Notes
 - Commit as you go (owner directive this session). No AI-mode regressions.

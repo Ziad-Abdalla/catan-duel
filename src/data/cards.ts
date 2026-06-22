@@ -45,6 +45,19 @@ export const isRegionExpansion = (id: string): boolean => id in REGION_EXPANSION
 export const regionExpansionOf = (id: string): RegionExpansionDef | undefined => REGION_EXPANSIONS[id]
 
 /**
+ * ROAD COMPLEMENTS — cards placed ON a road slot. Trading Post is your OWN road; the rest are
+ * FOREIGN (built on a free road of your opponent — they are also in FOREIGN_CARD_IDS). Placed
+ * cards use slot `rc-<roadSlotIndex>` so the board renders them on that road.
+ */
+export const ROAD_COMPLEMENT_IDS = new Set<string>([
+  'merchants-trading-post',
+  'merchants-brigand-camp',
+  'intrigue-red-light-tavern',
+  'barbarians-barbarian-stronghold',
+])
+export const isRoadComplement = (id: string): boolean => ROAD_COMPLEMENT_IDS.has(id)
+
+/**
  * The base region Card for a produced resource (one per terrain) — used to render
  * the reusable <CenterArt> region tile for any region slot on the board.
  */

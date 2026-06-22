@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { getCard, isForeignCard, isRegionExpansion, regionExpansionOf } from '../../data/cards'
+import { getCard, isForeignCard, isRegionExpansion, regionExpansionOf, isRoadComplement } from '../../data/cards'
 import type { ResourceType } from '../../types'
 import { CardView } from '../CardView'
 import { requirementMet } from '../../engine/requirements'
@@ -79,8 +79,31 @@ export function CardZoom() {
   // Foreign cards (Red Light Tavern, Brigand Camp, Trading Station…) are built in the
   // OPPONENT's principality and affect them — the engine adds them to the opponent's
   // placed cards with `owner` set so they score for nobody.
+  // First free road-slot index (0..N) of a player's principality with no road complement yet.
+  const freeRoadSlot = (pid: 'p0' | 'p1') => {
+    const pp = state.players[pid]
+    const seats = pp.placed.filter((pc) => {
+      const c = getCard(pc.cardId)
+      return c && (c.category === 'settlement' || c.category === 'city')
+    }).length
+    const n = Math.max(2, seats)
+    const used = new Set(pp.placed.map((pc) => { const m = /^rc-(\d+)$/.exec(pc.slot ?? ''); return m ? Number(m[1]) : -1 }))
+    for (let i = 0; i <= n; i++) if (!used.has(i)) return i
+    return 0
+  }
   const buildForeign = (pay: boolean) => {
-    dispatch({ type: 'playForeign', player: zoom.player, cardId: zoom.cardId, pay })
+    const foe: 'p0' | 'p1' = zoom.player === 'p0' ? 'p1' : 'p0'
+    // foreign road complements (Brigand Camp, Red Light Tavern, Barbarian Stronghold) go on a free
+    // road of the opponent; other foreign cards land in the foreign strip.
+    const slot = isRoadComplement(zoom.cardId) ? `rc-${freeRoadSlot(foe)}` : undefined
+    dispatch({ type: 'playForeign', player: zoom.player, cardId: zoom.cardId, slot, pay })
+    dispatch({ type: 'showcaseCard', player: zoom.player, cardId: zoom.cardId })
+    playSfx(cardSfx(zoom.cardId), zoom.cardId)
+    closeZoom()
+  }
+  // own road complement (Trading Post) → onto one of your own free roads.
+  const placeRoadComplement = (pay: boolean) => {
+    dispatch({ type: 'playCard', player: zoom.player, cardId: zoom.cardId, slot: `rc-${freeRoadSlot(zoom.player)}`, pay })
     dispatch({ type: 'showcaseCard', player: zoom.player, cardId: zoom.cardId })
     playSfx(cardSfx(zoom.cardId), zoom.cardId)
     closeZoom()
@@ -178,6 +201,16 @@ export function CardZoom() {
                     </button>
                   )}
                   <p className="cz-hint">A region expansion — placed on a matching region (or drag the card onto the tile).{rexpDef.rotates ? ' Rotate it through levels with the ± buttons on the tile.' : ''}</p>
+                </>
+              ) : isRoadComplement(zoom.cardId) ? (
+                <>
+                  <button className="cz-btn cz-play" onClick={() => placeRoadComplement(false)}>Place on one of your roads</button>
+                  {hasCost && (
+                    <button className="cz-btn" onClick={() => placeRoadComplement(true)} title="Place it and spend its cost from your regions">
+                      Place &amp; pay cost
+                    </button>
+                  )}
+                  <p className="cz-hint">A road complement — placed on one of your own roads (or drag the card onto a road slot). It works with the two regions adjacent to that road.</p>
                 </>
               ) : (
                 <>

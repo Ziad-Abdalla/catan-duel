@@ -1,6 +1,6 @@
 import { useState, type CSSProperties } from 'react'
 import type { PlacedCard, PlayerId, RegionSlot } from '../../types'
-import { getCard, cardArt, regionExpansionOf } from '../../data/cards'
+import { getCard, cardArt, regionExpansionOf, isRoadComplement, isForeignCard } from '../../data/cards'
 import { PieceArt } from './PieceArt'
 import { RegionTile } from './RegionTile'
 import { useGame } from '../../store/gameStore'
@@ -32,18 +32,28 @@ export function PrincipalityBoard({
   const { dragBuild, setDragRemove, clear, payCosts, openZoom } = useUI()
 
   const all = p.placed.map((pc, i) => ({ pc, i, card: getCard(pc.cardId) })).filter((x) => x.card)
-  // foreign cards (built HERE by the opponent) render in a separate strip, not the spine
-  const foreign = all.filter((x) => x.pc.owner && x.pc.owner !== player)
+  const rcMatch = (slot?: string) => /^rc-(\d+)$/.exec(slot ?? '')
+  // foreign cards (built HERE by the opponent) render in a separate strip — EXCEPT foreign road
+  // complements, which render on the road slot they were built on (below).
+  const foreign = all.filter((x) => x.pc.owner && x.pc.owner !== player && !rcMatch(x.pc.slot))
   const spine = all.filter((x) => !(x.pc.owner && x.pc.owner !== player))
   const seats = spine.filter((x) => x.card!.category === 'settlement' || x.card!.category === 'city')
   const roads = spine.filter((x) => x.card!.category === 'road')
-  // region-expansions (Residences, Border Fortress, Reiner, Triumph) live ON a region, not in a
-  // settlement building site — pull them out of `buildings` and render them over their region tile.
-  const buildings = spine.filter((x) => !['settlement', 'city', 'road'].includes(x.card!.category) && !/^rexp-/.test(x.pc.slot ?? ''))
+  // region-expansions live ON a region; road complements live ON a road slot — pull both out of the
+  // settlement building sites and render them over their region tile / road slot respectively.
+  const buildings = spine.filter(
+    (x) => !['settlement', 'city', 'road'].includes(x.card!.category) && !/^rexp-/.test(x.pc.slot ?? '') && !rcMatch(x.pc.slot),
+  )
   const regionExpansions = new Map<number, (typeof all)[number]>()
   for (const x of spine) {
     const m = /^rexp-(\d+)$/.exec(x.pc.slot ?? '')
     if (m) regionExpansions.set(Number(m[1]), x)
+  }
+  // road complements: own (in spine) + foreign (owner set) — keyed by road-slot index.
+  const roadComplements = new Map<number, (typeof all)[number]>()
+  for (const x of all) {
+    const m = rcMatch(x.pc.slot)
+    if (m) roadComplements.set(Number(m[1]), x)
   }
 
   const N = Math.max(2, seats.length)
@@ -138,6 +148,12 @@ export function PrincipalityBoard({
             />
           )
         })}
+
+      {/* road complements (Trading Post on your own road; foreign Brigand Camp / Red Light Tavern /
+          Barbarian Stronghold) sit ON a road slot — overlay + own-road drop target */}
+      {Array.from({ length: N + 1 }, (_, i) => i).map((i) => (
+        <RoadComplementCell key={`rc${i}`} player={player} index={i} entry={roadComplements.get(i)} interactive={interactive} style={{ gridRow: 2, gridColumn: roadSlotCol(i) }} />
+      ))}
 
       {/* a frontier road opens a settlement slot beyond it (drop a Settlement) */}
       {extendLeft && (
@@ -279,6 +295,60 @@ function RegionExpansionBadge({ player, entry, interactive }: { player: PlayerId
             <button className="pb-rexp-btn" title="Rotate up a level (spends its rotation cost)" onClick={() => dispatch({ type: 'rotatePlaced', player, placedIndex: entry.i, delta: 1, pay: payCosts })}>＋</button>
           )}
         </div>
+      )}
+    </div>
+  )
+}
+
+/** A road slot's road-complement layer: hosts a placed complement (own or foreign) and accepts a
+ *  dropped OWN road complement (Trading Post) on your own board. Foreign ones are placed via CardZoom. */
+function RoadComplementCell({
+  player,
+  index,
+  entry,
+  interactive,
+  style,
+}: {
+  player: PlayerId
+  index: number
+  entry?: PlacedEntry
+  interactive?: boolean
+  style?: CSSProperties
+}) {
+  const dispatch = useGame((s) => s.dispatch)
+  const { dragCardId, selectedCardId, payCosts, clear, openZoom, setDragRemove } = useUI()
+  const [over, setOver] = useState(false)
+  const armedId = interactive && !entry ? dragCardId || selectedCardId : null
+  // only your OWN (non-foreign) road complement can be dropped on your own road
+  const armed = !!armedId && isRoadComplement(armedId) && !isForeignCard(armedId)
+  const place = (cardId: string) => {
+    if (!cardId) return
+    dispatch({ type: 'playCard', player, cardId, slot: `rc-${index}`, pay: payCosts })
+    playSfx(cardSfx(cardId), cardId)
+    clear()
+  }
+  if (!entry && !armed) return null
+  const isForeignHere = !!entry?.pc.owner && entry.pc.owner !== player
+  return (
+    <div
+      className={`pb-rc${armed ? ' rc-armed' : ''}${over ? ' rc-over' : ''}`}
+      style={style}
+      onDragOver={armed ? (e) => { e.preventDefault(); setOver(true) } : undefined}
+      onDragLeave={armed ? () => setOver(false) : undefined}
+      onDrop={armed ? (e) => { e.preventDefault(); setOver(false); place(e.dataTransfer.getData('text/cardid') || dragCardId || '') } : undefined}
+      onClick={armed && selectedCardId ? () => place(selectedCardId) : undefined}
+    >
+      {entry?.card && (
+        <button
+          className={`pb-rc-card${isForeignHere ? ' foreign' : ''}`}
+          title={`${entry.card.name}${isForeignHere ? ' (foreign — built by your opponent)' : ''}`}
+          draggable={interactive}
+          onDragStart={interactive ? () => setDragRemove({ placedIndex: entry.i, player }) : undefined}
+          onDragEnd={interactive ? () => setDragRemove(null) : undefined}
+          onClick={() => openZoom({ cardId: entry.card!.id, from: 'play', player, placedIndex: entry.i })}
+        >
+          {cardArt(entry.card.id) ? <img src={cardArt(entry.card.id)} alt={entry.card.name} /> : <span>{entry.card.name}</span>}
+        </button>
       )}
     </div>
   )

@@ -101,3 +101,19 @@ describe('per-level Residence scoring', () => {
     expect(computeVP(s.players.p0)).toBe(vp0 + 1) // +1 VP at level 3
   })
 })
+
+describe('Border Fortress per-level strength', () => {
+  it('contributes 0/1/2/4 strength as it rotates', () => {
+    const BF = 'barbarians-border-fortress'
+    let s = newGame({ seed: 13, enabledSets: ['barbarians'] })
+    s.players.p0.hand.push(BF)
+    s = applyAction(s, { type: 'playRegionExpansion', player: 'p0', cardId: BF, regionIndex: 2, pay: false }) // index 2 = brick/hills
+    const idx = s.players.p0.placed.findIndex((p) => p.cardId === BF)
+    const base = computeStats(s.players.p0).strength
+    expect(computeStats(s.players.p0).strength).toBe(base) // level 0 => +0
+    s = applyAction(s, { type: 'rotatePlaced', player: 'p0', placedIndex: idx, delta: 1, pay: false })
+    expect(computeStats(s.players.p0).strength).toBe(base + 1)
+    for (let i = 0; i < 2; i++) s = applyAction(s, { type: 'rotatePlaced', player: 'p0', placedIndex: idx, delta: 1, pay: false })
+    expect(computeStats(s.players.p0).strength).toBe(base + 4) // level 3 => +4
+  })
+})

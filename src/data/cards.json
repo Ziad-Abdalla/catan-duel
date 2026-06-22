@@ -2992,16 +2992,13 @@
       }
     ],
     "values": {
-      "commerce": 1,
+      "victory_points": 1,
       "requires": "City"
     },
     "rules_text": "City expansion. Each time your opponent trades 2 or 3 resources of one type for 1 different resource, you receive 1 resource of the type they paid. Requires: City.",
     "image": "merchants-master-merchants-alliance.webp",
     "copies": 1,
-    "confidence": "medium",
-    "unclear": [
-      "commerce value unconfirmed"
-    ]
+    "confidence": "medium"
   },
   {
     "id": "merchants-guild-master",
@@ -3164,10 +3161,7 @@
     "rules_text": "Region expansion (max 1) — place adjacent to a hills region holding at least 1 brick; pay that brick. Pay 1 ore + 1 wool to rotate to the next higher level (repeatable). Higher levels give strength that counts as units (via the Castle) in a Barbarian Attack.",
     "image": "barbarians-border-fortress.webp",
     "copies": 2,
-    "confidence": "medium",
-    "unclear": [
-      "per-level strength values need physical card; build cost is 1 brick paid from the adjacent hills region"
-    ]
+    "confidence": "medium"
   },
   {
     "id": "barbarians-triumph-card",
@@ -3320,14 +3314,14 @@
         "count": 1
       }
     ],
-    "values": {},
+    "values": {
+      "strength": 1,
+      "skill": 1
+    },
     "rules_text": "Hero. On a later turn: your opponent picks 2 of their heroes that could sit on Marie’s site; take 1 into your principality, then discard Marie. (No use if the opponent has only 1 hero or none placeable.)",
     "image": "barbarians-marie-the-shieldmaiden.webp",
     "copies": 1,
-    "confidence": "medium",
-    "unclear": [
-      "point values unconfirmed"
-    ]
+    "confidence": "medium"
   },
   {
     "id": "barbarians-secret-brotherhood",

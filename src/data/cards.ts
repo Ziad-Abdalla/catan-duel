@@ -55,6 +55,7 @@ export const regionExpansionOf = (id: string): RegionExpansionDef | undefined =>
 export const PLACED_LEVEL_VALUES: Record<string, Array<Partial<CardValues>>> = {
   'merchants-cloth-merchants-residence': [{}, { commerce: 1 }, { commerce: 2 }, { commerce: 3 }],
   'merchants-paper-merchants-residence': [{}, { commerce: 1 }, { commerce: 1, progress: 1 }, { commerce: 1, progress: 1, victory_points: 1 }],
+  'barbarians-border-fortress': [{}, { strength: 1 }, { strength: 2 }, { strength: 4 }],
 }
 export const levelValuesOf = (id: string, level: number | undefined): Partial<CardValues> | undefined =>
   PLACED_LEVEL_VALUES[id]?.[Math.max(0, Math.min(3, level ?? 0))]

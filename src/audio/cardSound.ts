@@ -14,8 +14,13 @@ export function cardSfx(cardId: string): Sfx {
   if (c.category === 'settlement' || c.category === 'city' || c.category === 'road') return 'build'
   const text = `${c.name} ${c.rules_text ?? ''} ${c.flavor_text ?? ''}`.toLowerCase()
   // order matters — a pirate ship is menacing, not soothing
-  if (/pirate|brigand|raid|plunder|arson|archer|traitor|riot|feud|robber|plague|terror|sink/.test(text)) return 'menace'
-  if (/ship|harbou?r|fleet|sail|voyage|\bsea\b|wharf|dock|\bboat|merchant caravan/.test(text)) return 'water'
+  if (/pirate|plunder|arson|terror|sink|riot|plague/.test(text)) return 'menace'
+  // martial / barbarian material gets the war drums (whole Barbarians era leans this way)
+  if (c.set === 'barbarians' || /barbarian|raid|siege|stronghold|fortress|warrior|battle|brigand|catapult|arsenal/.test(text)) return 'drums'
+  // anything seafaring rides the boat creak + water bed
+  if (/ship|harbou?r|fleet|sail|voyage|\bsea\b|wharf|dock|\bboat|merchant caravan|caravel|island|explor/.test(text)) return 'ship'
+  // scholarly / mystical material (Sages era + seers) gets the ethereal chime
+  if (c.set === 'sages' || /\bsage|seer|astronom|meditat|prophe|oracle|mystic|scholar of/.test(text)) return 'mystic'
   if (c.category === 'hero-or-unit' || /hero|knight|scout|herald|sentinel|cannoneer|warrior|ambassador|guard|preacher/.test(text)) return 'hero'
   if (/festival|celebrat|abbey|chapel|church|\bhall\b|monk|yule|\bfair|tavern|brew|tithe/.test(text)) return 'festival'
   if (/invent|universit|library|scholar|crane|alchem|pharmac|doctor|mineral|three.?field|parliament|town hall|innovation/.test(text)) return 'magic'

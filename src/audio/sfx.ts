@@ -17,7 +17,12 @@ export type Sfx =
   | 'harvest' // a warm rustle + chime — plenty, grain, mills
   | 'festival' // a bright jingle — celebrations, halls, abbeys
   | 'magic' // a shimmering arpeggio — inventions, universities
+  | 'mystic' // an ethereal bell chime — sages, seers
   | 'action' // a short parchment-and-chime flourish — one-shot action cards
+  | 'ship' // a wooden boat creak over gentle water — trade ships, sailing units
+  | 'drums' // a martial double drum hit — barbarians, raids, battle events
+  | 'remove' // a structure being demolished / a piece taken off the board
+  | 'page' // a parchment / book page flip — browsing a stack of cards
   // Per-resource "gather" cues — played when you ADD a resource to a region.
   // Each maps to a thematic action: chop / kiln / shear / scythe / mine / coins.
   | 'res-lumber' // axe chop into wood
@@ -73,6 +78,7 @@ function out(): AudioNode {
 const SAMPLE_VOICES: Sfx[] = [
   'ui', 'flip', 'coin', 'build', 'place', 'hero', 'magic', 'water', 'menace',
   'harvest', 'vp', 'token', 'festival', 'rotate', 'turn', 'action', 'sweep',
+  'ship', 'drums', 'mystic', 'remove', 'page',
   // per-resource gather cues — drop your own files at public/audio/sfx/res-<resource>.wav
   'res-lumber', 'res-brick', 'res-wool', 'res-grain', 'res-ore', 'res-gold',
 ]
@@ -81,9 +87,13 @@ const SAMPLE_VOICES: Sfx[] = [
 const VARIANTS: Partial<Record<Sfx, string[]>> = {
   hero: ['hero', 'hero-2', 'hero-3'],
   menace: ['menace', 'menace-2'],
-  magic: ['magic', 'magic-2'],
-  coin: ['coin', 'coin-2'],
-  build: ['build', 'build-2'],
+  magic: ['magic', 'magic-2', 'magic-3'],
+  coin: ['coin', 'coin-2', 'coin-3'],
+  build: ['build', 'build-2', 'build-3'],
+  mystic: ['mystic', 'mystic-2'],
+  drums: ['drums', 'drums-2'],
+  remove: ['remove', 'remove-2'],
+  page: ['page', 'page-2'],
 }
 const buffers = new Map<string, AudioBuffer>() // keyed by file stem (voice or 'voice-2')
 let samplesRequested = false
@@ -278,6 +288,31 @@ export function playSfx(kind: Sfx, seed?: string, vol = 1): void {
       noise(ac, t, { dur: 0.09, gain: 0.07, freq: 3000, q: 0.5, type: 'highpass' })
       tone(ac, t + 0.02, { type: 'triangle', freq: 740, dur: 0.1, gain: 0.09 })
       tone(ac, t + 0.1, { type: 'triangle', freq: 988, dur: 0.14, gain: 0.08 })
+      break
+    case 'mystic': // an ethereal bell chime — sages, seers
+      tone(ac, t, { type: 'sine', freq: 1320, dur: 0.5, gain: 0.09 })
+      tone(ac, t + 0.02, { type: 'sine', freq: 1976, dur: 0.6, gain: 0.05 }) // shimmering overtone
+      tone(ac, t + 0.12, { type: 'sine', freq: 2640, dur: 0.4, gain: 0.03 })
+      break
+    case 'ship': // a wooden creak riding a gentle wave
+      tone(ac, t, { type: 'sawtooth', freq: 160, to: 120, dur: 0.4, gain: 0.07 }) // groaning timber
+      noise(ac, t, { dur: 0.5, gain: 0.09, freq: 600, q: 0.35, type: 'lowpass' }) // water bed
+      noise(ac, t + 0.18, { dur: 0.34, gain: 0.05, freq: 900, q: 0.4, type: 'bandpass', pan: 0.25 })
+      break
+    case 'drums': // a deep martial double hit — boom, boom
+      tone(ac, t, { type: 'sine', freq: 150, to: 55, dur: 0.22, gain: 0.34 })
+      noise(ac, t, { dur: 0.06, gain: 0.08, freq: 220, q: 0.5, type: 'lowpass' })
+      tone(ac, t + 0.16, { type: 'sine', freq: 140, to: 52, dur: 0.24, gain: 0.28 })
+      noise(ac, t + 0.16, { dur: 0.06, gain: 0.06, freq: 220, q: 0.5, type: 'lowpass' })
+      break
+    case 'remove': // a structure demolished — a woody crack and tumble
+      noise(ac, t, { dur: 0.09, gain: 0.18, freq: 1800, q: 0.6, type: 'bandpass' })
+      tone(ac, t, { type: 'square', freq: 200, to: 70, dur: 0.14, gain: 0.16 })
+      noise(ac, t + 0.07, { dur: 0.16, gain: 0.1, freq: 500, q: 0.4, type: 'lowpass' }) // rubble
+      break
+    case 'page': // a parchment / book page turning
+      noise(ac, t, { dur: 0.14, gain: 0.1, freq: 2600, q: 0.4, type: 'highpass' })
+      noise(ac, t + 0.07, { dur: 0.1, gain: 0.07, freq: 3400, q: 0.5, type: 'highpass', pan: 0.2 })
       break
     // ── Per-resource gather fallbacks (placeholders until real recordings land) ──
     case 'res-lumber': // axe chop: a sharp crack into a low woody thunk

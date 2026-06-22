@@ -41,6 +41,17 @@ Engine is trust-based (no legality enforcement) — most gaps are UI wiring.
 - [ ] Friend reportedly did: placing on road/region, rotating residences; owner fixed 3 Era-of-Darkness themes. NOT in this repo (clean tree) — verify live, don't assume.
 - [ ] Read cards broadly; ensure all card actions doable; add anim/sfx where possible. Downloads from trusted sources permitted (music/sfx). Clean up + wrap up properly at end.
 
+## Owner follow-ups batch 2 (added mid-session)
+- [ ] Per-card-type + per-era effects: classify cards (building / city-building / hero / ship / unit / action-neutral / action-attack / event / region) AND era; each group + era gets fitting, correctly-triggered animation+SFX. Base buildings vs era buildings differ.
+- [ ] cardFx.ts taxonomy classifier + per-group SFX at play sites + flourish CSS. [in progress]
+- [ ] 3D rolling dice (perspective + multi-axis + contact shadow). [done, needs build verify]
+- [ ] Settlement icon: current is unsuitable — design/replace a proper settlement icon. Icon/symbol polish broadly.
+- [ ] Add/remove cards on EXISTING buildings (heroes on chapel/Odin temple/court etc.) for ALL types, everywhere; some already work — make uniform. (engine playForeign/playCard + slot; removePlaced; UI drop targets)
+- [ ] Base card audit DONE: 2 fixes (base-siglind cost empty→wool2+grain+ore; base-candamir wool1→wool2). Apply with the rest.
+- [ ] Volume consistency across all SFX/music via the existing sliders; nothing obnoxious/overlapping.
+- [ ] Prefer free-licensed assets (pixabay/freesound CC/opengameart/itch-free/incompetech) over ripped-OST sites for clean public deploy.
+- [ ] Wrap-up: space-efficient, clean repo + memory files; ready via Radmin AND ideally free online (web/app), no radmin/repo needed.
+
 ## Wave 6 — Deploy + verify + wrap
 - [ ] A1 Clean prod build → dist.
 - [ ] A2 Run exact artifact via partykit dev serving dist; two-browser Playwright online-sync proof + refresh resync.

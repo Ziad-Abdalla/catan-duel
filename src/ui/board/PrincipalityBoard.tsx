@@ -7,6 +7,8 @@ import { useGame } from '../../store/gameStore'
 import { useUI } from '../../store/uiStore'
 import { playSfx } from '../../audio/sfx'
 import { cardSfx } from '../../audio/cardSound'
+import { cardFx } from './cardFx'
+import './cardfx.css'
 
 /**
  * One player's principality, laid out like the real table. The spine alternates
@@ -183,7 +185,7 @@ export function PrincipalityBoard({
                 <span
                   className="pb-foreign-x"
                   title="Remove this foreign card"
-                  onClick={(e) => { e.stopPropagation(); dispatch({ type: 'removePlaced', player, placedIndex: x.i }); playSfx('build') }}
+                  onClick={(e) => { e.stopPropagation(); dispatch({ type: 'removePlaced', player, placedIndex: x.i }); playSfx('remove') }}
                 >✕</span>
               )}
             </button>
@@ -246,7 +248,8 @@ function Site({
     >
       {entry && (
         <div
-          className="pb-site-card"
+          className={`pb-site-card ${cardFx(entry.card!.id).anim}`}
+          data-era={cardFx(entry.card!.id).era}
           title={`${entry.card!.name} — tap to enlarge, drag to a free site to move or to the build bar to remove`}
           draggable={interactive}
           onDragStart={interactive ? (e) => { e.stopPropagation(); setDragRemove({ placedIndex: entry.i, player }) } : undefined}

@@ -1,0 +1,77 @@
+/* Per-card-type placement flourishes. Each placed card plays a short, subtle entrance
+   that fits what it is (see cardFx.ts → fx-<group>), tinted by era via [data-era].
+   Kept brief (~0.5s) and GPU-friendly (transform/opacity/filter only). */
+
+.pb-site-card {
+  /* a base so groups without a specific rule still settle in nicely */
+  animation: fx-pop 0.34s var(--ease-out, ease) both;
+}
+
+/* buildings rise from below as they're raised */
+.pb-site-card.fx-building { animation: fx-rise 0.46s var(--ease-out, ease) both; }
+/* city buildings are grander — bigger rise + a warm glow */
+.pb-site-card.fx-city-building { animation: fx-rise-grand 0.6s var(--ease-out, ease) both; }
+/* heroes flash in with a quick scale pop */
+.pb-site-card.fx-hero { animation: fx-hero-flash 0.55s var(--ease-spring, ease) both; }
+/* ships ride in on a gentle swell */
+.pb-site-card.fx-ship { animation: fx-ship-rock 0.7s ease both; }
+/* units deploy with a crisp pop */
+.pb-site-card.fx-unit { animation: fx-pop 0.34s var(--ease-spring, ease) both; }
+/* attacks shudder in */
+.pb-site-card.fx-attack { animation: fx-attack-shake 0.5s ease both; }
+/* neutral actions shimmer */
+.pb-site-card.fx-action { animation: fx-shimmer 0.6s ease both; }
+.pb-site-card.fx-event { animation: fx-shimmer 0.6s ease both; }
+.pb-site-card.fx-region { animation: fx-pop 0.34s var(--ease-out, ease) both; }
+
+@keyframes fx-pop {
+  0% { opacity: 0; transform: scale(0.7); }
+  60% { opacity: 1; transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+@keyframes fx-rise {
+  0% { opacity: 0; transform: translateY(26%) scale(0.9); }
+  60% { opacity: 1; transform: translateY(-4%) scale(1.03); }
+  100% { transform: translateY(0) scale(1); }
+}
+@keyframes fx-rise-grand {
+  0% { opacity: 0; transform: translateY(34%) scale(0.86); filter: brightness(1.4) drop-shadow(0 0 0 rgba(243, 215, 154, 0)); }
+  55% { opacity: 1; transform: translateY(-6%) scale(1.05); filter: brightness(1.2) drop-shadow(0 0 12px rgba(243, 215, 154, 0.65)); }
+  100% { transform: translateY(0) scale(1); filter: brightness(1) drop-shadow(0 0 0 rgba(243, 215, 154, 0)); }
+}
+@keyframes fx-hero-flash {
+  0% { opacity: 0; transform: scale(0.6) rotate(-6deg); filter: brightness(2.2); }
+  45% { opacity: 1; transform: scale(1.12) rotate(2deg); filter: brightness(1.5); }
+  100% { transform: scale(1) rotate(0); filter: brightness(1); }
+}
+@keyframes fx-ship-rock {
+  0% { opacity: 0; transform: translateY(-14%) rotate(-7deg); }
+  40% { opacity: 1; transform: translateY(0) rotate(5deg); }
+  68% { transform: rotate(-3deg); }
+  100% { transform: rotate(0); }
+}
+@keyframes fx-attack-shake {
+  0% { opacity: 0; transform: scale(1.1) translateX(0); filter: brightness(1.6) saturate(1.6); }
+  20% { opacity: 1; transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(2px); filter: brightness(1.1); }
+  100% { transform: translateX(0); filter: brightness(1); }
+}
+@keyframes fx-shimmer {
+  0% { opacity: 0; transform: scale(0.92); filter: brightness(1.6) hue-rotate(0); }
+  50% { opacity: 1; transform: scale(1.02); filter: brightness(1.25) hue-rotate(8deg); }
+  100% { transform: scale(1); filter: brightness(1) hue-rotate(0); }
+}
+
+/* subtle era accents — a faint coloured aura after the entrance, never garish and
+   never replacing the card's own group animation. */
+.pb-site-card[data-era='barbarians'].filled { box-shadow: 0 0 9px rgba(150, 40, 28, 0.35); }
+.pb-site-card[data-era='sages'] { box-shadow: 0 0 9px rgba(110, 80, 170, 0.3); }
+.pb-site-card[data-era='gold'],
+.pb-site-card[data-era='prosperity'] { box-shadow: 0 0 9px rgba(214, 174, 86, 0.32); }
+.pb-site-card[data-era='explorers'] { box-shadow: 0 0 9px rgba(56, 142, 142, 0.3); }
+
+@media (prefers-reduced-motion: reduce) {
+  .pb-site-card, .pb-site-card[class*='fx-'] { animation: fx-pop 0.2s ease both; }
+}

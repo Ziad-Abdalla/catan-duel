@@ -91,28 +91,37 @@ function startSynth() {
 }
 
 // ── Ambient background music ─────────────────────────────────────────────────
-// 18 bundled CC0 medieval/folk tracks (archive.org public-domain collection), grouped
-// into a mood-matched, shuffled playlist PER ERA — so the felt sounds different in the
-// intro vs Gold vs Turmoil vs Innovation vs the full Duel. Each era's list reshuffles
-// every lap so it never gets repetitive. On by default; on/off + volume in shared prefs.
-const ALL = Array.from({ length: 18 }, (_, i) => `audio/bgm-${i + 1}.mp3`)
+// 42 bundled royalty-free instrumental tracks, grouped into a mood-matched, shuffled
+// playlist PER ERA — so the felt sounds different in the intro vs Gold vs Turmoil vs
+// Innovation vs the full Duel. bgm-1..18 are CC0 public-domain (archive.org); bgm-19..42
+// are Kevin MacLeod period/theme instrumentals (CC-BY 4.0 — see docs/superpowers/
+// MUSIC_LICENSES.md for the required attribution). Lists overlap so every era's pool is
+// 30+ minutes and reshuffles each lap so it never gets repetitive. On by default; on/off
+// + volume in shared prefs.
+const ALL = Array.from({ length: 42 }, (_, i) => `audio/bgm-${i + 1}.mp3`)
 
 export type MusicEra =
   | 'base' | 'gold' | 'turmoil' | 'progress' | 'duel'
   | 'intrigue' | 'merchants' | 'barbarians' | 'explorers' | 'sages' | 'prosperity'
-// indices into ALL, chosen by mood; lists overlap so each era has 5-6 tracks and never runs dry.
+// 0-based indices into ALL, chosen by mood; lists overlap and each era's pool totals 30+ min
+// so the music never runs dry. (18=Angevin 19=Folk Round 20=Master of the Feast 21=Achaidh
+// Cheide 22=Minstrel Guild 23=Teller of the Tales 24=Pippin 25=Court of the Queen
+// 26=Procession of the King 27=Sovereign 28=Suonatore di Liuto 29=Hidden Agenda 30=Ossuary 1
+// 31=Echoes of Time 32=Lightless Dawn 33=Volatile Reaction 34=Heroic Age 35=Despair and
+// Triumph 36=Crusade 37=Lord of the Land 38=Meditation Impromptu 03 39=At Rest 40=Frost Waltz
+// 41=Egmont Overture.)
 const ERA_TRACKS: Record<MusicEra, number[]> = {
-  base: [0, 3, 2, 13, 17, 4], // intro: tavern dance, calm folk, renaissance airs
-  gold: [1, 7, 8, 14, 9, 15], // courtly + stately pavanes, dances, ayres
-  turmoil: [5, 6, 10, 12, 4], // tense + epic + sacre/dramatic
-  progress: [9, 11, 15, 16, 2], // bright baroque + concertino
-  duel: [5, 12, 6, 11, 1, 0], // epic mix for the full game
-  intrigue: [5, 10, 12, 6, 4], // dark, conspiratorial tension
-  merchants: [1, 7, 8, 14, 9], // courtly trade, stately ayres
-  barbarians: [5, 12, 6, 10, 1], // martial, epic, driving
-  explorers: [8, 14, 1, 9, 17], // adventurous, expansive
-  sages: [11, 16, 2, 9, 3], // calm, scholarly, contemplative
-  prosperity: [2, 9, 11, 15, 16], // bright, peaceful, baroque
+  base: [0, 3, 2, 13, 17, 4, 18, 19, 20, 21, 24, 37], // village/folk: tavern dance, calm folk, minstrels
+  gold: [1, 7, 8, 14, 9, 15, 25, 26, 27, 35], // wealthy/merchant grandeur: courtly, stately, regal processions
+  turmoil: [5, 6, 10, 12, 4, 29, 30, 31, 32], // tense/political: dark, conspiratorial, ominous
+  progress: [9, 11, 15, 16, 2, 34, 41, 26, 38], // hopeful/building: bright baroque, heroic, uplifting
+  duel: [5, 12, 6, 11, 1, 0, 35, 41, 33, 18], // full-game epic mix
+  intrigue: [5, 10, 12, 6, 4, 28, 29, 30, 23, 32], // mysterious/courtly: lute, hidden agenda, ossuary
+  merchants: [1, 7, 8, 14, 9, 22, 20, 25, 37, 26, 18], // bustling market/trade: lively courtly, feasts
+  barbarians: [5, 12, 6, 10, 1, 33, 36, 32, 35], // martial/ominous: crusade, volatile, driving
+  explorers: [8, 14, 1, 9, 17, 18, 23, 41, 21, 35], // seafaring/adventurous: expansive, dramatic overture
+  sages: [11, 16, 2, 9, 3, 38, 39, 40, 28, 31], // mystical/scholarly: meditative, calm, contemplative
+  prosperity: [2, 9, 11, 15, 16, 34, 26, 40, 20, 35, 21], // triumphant/abundant: bright, peaceful, regal
 }
 
 let ambEl: HTMLAudioElement | null = null

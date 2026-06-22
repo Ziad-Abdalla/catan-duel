@@ -2,3 +2,7 @@ Sound effects: "RPG Sound Pack" by artisticdude — CC0 (Public Domain).
 Source: https://opengameart.org/content/rpg-sound-pack
 Curated + renamed per game cue. No attribution required (CC0); credited here as courtesy.
 Played via src/audio/sfx.ts (samples through the master gain; synth fallback if a file is missing).
+
+Additional cues (ship, drums, mystic, remove, page + coin-3/magic-3/build-3 variants) are CC0
+sound effects by "rubberduck" (OpenGameArt), normalized to -3 dBFS / 44.1k / mono / 16-bit.
+Full per-file source, URL, license and attribution: docs/superpowers/SFX_LICENSES.md

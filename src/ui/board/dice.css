@@ -7,16 +7,38 @@
   display: flex;
   gap: clamp(12px, 1.4vw, 22px);
   pointer-events: none;
-  filter: drop-shadow(0 18px 20px rgba(0, 0, 0, 0.6));
+  perspective: 680px; /* real depth — the dice read as solid cubes tumbling in 3D */
+  perspective-origin: 50% 30%;
 }
 
 .pdie {
+  position: relative;
   width: clamp(64px, 8.5vh, 112px);
   aspect-ratio: 1 / 1;
   border-radius: 22%;
   display: grid;
   place-items: center;
   transform-origin: center;
+  transform-style: preserve-3d;
+  filter: drop-shadow(0 14px 13px rgba(0, 0, 0, 0.55));
+}
+/* a soft contact shadow that pools under the die on impact + at rest */
+.pdie::after {
+  content: '';
+  position: absolute;
+  left: 10%; right: 10%; bottom: -18%;
+  height: 24%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0) 70%);
+  z-index: -1;
+  opacity: 0.8;
+}
+.pdie.phase-tumble::after { animation: die-shadow 2.8s cubic-bezier(0.16, 0.7, 0.12, 1) both; }
+@keyframes die-shadow {
+  0% { opacity: 0; transform: scale(0.35); }
+  16% { opacity: 0.85; transform: scale(1.12); }
+  24% { opacity: 0.45; transform: scale(0.8); }
+  100% { opacity: 0.8; transform: scale(1); }
 }
 .pdie.d-prod {
   background: linear-gradient(150deg, #fffdf6 60%, #e6dcc4);
@@ -49,12 +71,13 @@
 .phase-fade { animation: die-fade 0.5s ease forwards; }
 
 @keyframes die-tumble {
-  0% { transform: translateY(-170px) rotate(0deg) scale(0.78); opacity: 0; }
-  9% { opacity: 1; }
-  16% { transform: translateY(8px) rotate(300deg) scale(1.06); }  /* hits the felt */
-  24% { transform: translateY(-14px) rotate(560deg) scale(1); }   /* bounces up */
-  34% { transform: translateY(0) rotate(860deg); }
-  100% { transform: translateY(0) rotate(1680deg) scale(1); }     /* spins down to rest */
+  0%   { transform: translateY(-180px) rotateX(-220deg) rotateY(140deg) rotateZ(0deg) scale(0.78); opacity: 0; }
+  9%   { opacity: 1; }
+  16%  { transform: translateY(10px) rotateX(180deg) rotateY(320deg) rotateZ(60deg) scale(1.07); } /* hits the felt */
+  24%  { transform: translateY(-16px) rotateX(360deg) rotateY(520deg) rotateZ(120deg) scale(1); }  /* bounces up */
+  34%  { transform: translateY(0) rotateX(540deg) rotateY(700deg) rotateZ(180deg); }
+  62%  { transform: translateY(-6px) rotateX(660deg) rotateY(820deg) rotateZ(220deg); }             /* small second hop */
+  100% { transform: translateY(0) rotateX(720deg) rotateY(900deg) rotateZ(0deg) scale(1); }         /* spins down to rest, square to camera */
 }
 @keyframes die-settle {
   0% { transform: translateY(0) scale(1); }

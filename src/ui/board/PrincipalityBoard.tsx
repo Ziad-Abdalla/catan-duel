@@ -94,9 +94,22 @@ export function PrincipalityBoard({
             key={`seat${j}-${s.card!.id}`}
             className={`pb-seat${interactive && s.card!.category === 'settlement' ? ' upgradable' : ''}${canCity ? ' droppable' : ''}`}
             style={{ gridRow: 2, gridColumn: seatCol(j) }}
-            disabled={!interactive || s.card!.category !== 'settlement'}
-            title={s.card!.category === 'settlement' ? 'Upgrade to city' : 'City'}
-            onClick={() => dispatch({ type: 'upgradeCity', player, seat: j, pay: payCosts })}
+            disabled={!interactive}
+            draggable={interactive}
+            title={
+              !interactive
+                ? s.card!.category === 'city' ? 'City' : 'Settlement'
+                : s.card!.category === 'settlement'
+                  ? 'Click to upgrade to a city · drag to the build bar to remove'
+                  : 'City · drag to the build bar to remove'
+            }
+            onClick={() =>
+              s.card!.category === 'settlement'
+                ? dispatch({ type: 'upgradeCity', player, seat: j, pay: payCosts })
+                : openZoom({ cardId: s.card!.id, from: 'play', player, placedIndex: s.i })
+            }
+            onDragStart={interactive ? () => setDragRemove({ placedIndex: s.i, player }) : undefined}
+            onDragEnd={interactive ? () => setDragRemove(null) : undefined}
             onDragOver={canCity ? (e) => e.preventDefault() : undefined}
             onDrop={canCity ? (e) => { e.preventDefault(); dispatch({ type: 'upgradeCity', player, seat: j, pay: payCosts }); playSfx('build'); clear() } : undefined}
           >

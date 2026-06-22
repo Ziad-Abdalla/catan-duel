@@ -51,7 +51,7 @@ export function BuildSupply({ player }: { player: PlayerId }) {
               e.preventDefault()
               setOver(false)
               dispatch({ type: 'removePlaced', player: dragRemove.player, placedIndex: dragRemove.placedIndex })
-              playSfx('flip')
+              playSfx('remove')
               clear()
             }
           : undefined

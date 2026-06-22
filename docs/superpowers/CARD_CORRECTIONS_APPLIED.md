@@ -197,3 +197,122 @@ pattern (where no specific per-card HIGH/clear-MED call existed) were DEFERRED.
 - `prosperity-prince` / `prosperity-princess` both carry `requires: "Not having a Princess."` in the
   data (Princess should read "Not having a Prince"). No audit flagged this as a correction, so it was
   left untouched — flagged here for the orchestrator.
+
+---
+
+# PASS 2 — deferred-item resolution (no remaining deferrals)
+
+**Process:** Every Pass-1 DEFERRED row plus the two flagged bugs were resolved by re-reading the
+card art at `src/assets/cards/<id>.webp` at full resolution and cross-checking the official Rivals
+for Catan rules/card references. The official Catan PDFs (rfc-cards.pdf, Era of Gold / Age of
+Enlightenment rules) are **image-only scans — no extractable text layer** — so the printed card art
+remains the authoritative ground truth, which the high-res re-reads here confirm against the audits.
+Where art and the known rules agreed, the fix was applied. Costs are the resource icons in the
+top-left cost column; values are the bottom-right point badges.
+
+**Validation:** JSON valid (246 cards) · `tsc --noEmit` exit 0 · `vitest run` **195/195 passing** (no breakages).
+
+## Systemic patterns resolved
+
+1. **Action cards are free (no resource build cost).** Removed phantom `gold:1` from the 5 Sages
+   action cards: `sages-great-foresight`, `-dispute-of-the-sages`, `-wise-compensation`,
+   `-power-of-the-groves`, `-wise-protection`. (Art shows the Action shield, no cost column; the
+   "Pay N owls" is an in-play marker cost, not a build cost.)
+2. **Pirate (Sea) cards are fought, not built.** Removed phantom build costs from the 3 Explorers
+   pirates: `explorers-zheng-he` (Haidao Chang), `-cinmarone` (Cimmarone), `-jean`. (Top-left icons
+   are pirate level/bounty markers, not a cost.)
+
+## Costs corrected (art-confirmed)
+
+| id | old → new | source |
+|---|---|---|
+| gold-gold-cache | `lumber×1,wool×1` → **`[]`** (no build cost) + add `values.requires:"Hero with at least 1 strength point"` | art (no cost column; gold tokens are storage slots) |
+| gold-merchant-guild | `brick×1,wool×1,grain×1` → **`brick×2,wool×2,grain×1`** | art |
+| explorers-landing-stage | `brick×1,gold×1` → **`brick×1,grain×1`** | art |
+| explorers-cannon-foundry | `ore×2,brick×1,gold×1` → **`ore×1,lumber×1,brick×1`** | art |
+| explorers-astronomer | `gold×2` → **`grain×1,brick×1,wool×1`** | art |
+| sages-grove-of-freedom | `lumber×1,grain×1` → **`ore×1,gold×1`** | art |
+| sages-grove-of-fraternity | `lumber×1,grain×1` → **`[]`** (no cost shown) | art |
+| sages-grove-of-justice | `brick×1,ore×1` → **`ore×1`** | art |
+| sages-grove-of-peace | `[]` → **`gold×1`** | art |
+| sages-grove-of-vigilance | `[]` → **`gold×1`** | art |
+| sages-grove-of-great-foresight | `[]` → **`ore×1`** | art |
+| sages-grove-of-courage | `[]` → **`gold×1`** | art |
+| sages-robert-herald-of-the-sages | `grain×1,ore×1` → **`grain×1,brick×1,wool×1`** | art |
+| sages-academy-of-sages | `brick×2,wool×1,grain×1` → **`brick×2,gold×1`** | art |
+| sages-courthouse | `brick×2,wool×1,ore×1` → **`lumber×1,grain×1,brick×1`** | art |
+| sages-granary | `brick×2,wool×1,grain×1,ore×1` → **`brick×2,wool×1,grain×1`** (no ore) | art |
+| barbarians-castle | `brick×2,ore×1` → **`brick×2,lumber×1,ore×1`** | art |
+| barbarians-barbarian-stronghold | `lumber×1,brick×1` → **`lumber×1,gold×1`** | art |
+| barbarians-baroc-the-barbarian | `grain×1` → **`grain×1,gold×1`** | art |
+| barbarians-siward-the-scout | `grain×1` → **`grain×1,gold×1`** | art |
+| barbarians-wolfgang-the-street-performer | `grain×2` → **`gold×2`** | art |
+| merchants-trading-station | `brick×1,grain×1` → **`brick×1,wool×1`** | art |
+| merchants-craft-guild | `lumber×1,brick×1,wool×1` → **`wool×2,lumber×1,brick×1`** | art |
+| intrigue-pilgrimage-site | `brick×1,wool×1` → **`ore×1,gold×1`** | art |
+| intrigue-great-thingstead | `brick×1,grain×1,ore×1` → **`lumber×1,grain×1,wool×1`** | art |
+| intrigue-odins-fountain | `brick×1,grain×1,gold×1` → **`wool×1,ore×1,gold×1`** | art |
+| intrigue-red-light-tavern | `brick×1,grain×1` → **`lumber×1,grain×1`** | art |
+| intrigue-bran-defender-of-the-temple | `lumber×1,brick×1` → **`wool×2,ore×1`** | art |
+| intrigue-master-of-the-brotherhood | `grain×2,ore×1` → **`gold×2,wool×1`** | art |
+| intrigue-godfrey-the-intriguer | `brick×1,ore×1` → **`wool×1,ore×1`** | art |
+| intrigue-church | `brick×2,grain×1` → **`brick×2,ore×1`** | art |
+| intrigue-odins-temple | `brick×2,gold×1` → **`lumber×2,grain×1`** | art |
+| intrigue-sacrificial-site | `wool×1,brick×1,grain×1` → **`wool×2,lumber×1,ore×1`** | art |
+| intrigue-bishops-see | `ore×2,grain×2,brick×1` → **`ore×1,gold×2,brick×1`** | art (gold clearly present; type fix) |
+| intrigue-judith-guardian-of-the-church | `grain×2,brick×1` → **`grain×2,ore×1`** | art |
+| prosperity-monument-to-the-prince | `grain×2,brick×1` → **`gold×2,brick×1`** | art |
+
+## Values / requires / rules_text corrected
+
+| id | field | change | source |
+|---|---|---|---|
+| gold-merchant-guild | values.commerce | `1` → **`2`** (dropped the speculative `other` note; set confidence high) | art (1 strength-banner + 2 commerce scales) |
+| intrigue-master-of-the-brotherhood | values | dropped `strength:1` (not on art; keeps progress+skill) | art |
+| intrigue-godfrey-the-intriguer | values | dropped `strength:1` (single skill icon only) | art |
+| explorers-armory | values | `skill:1` → **`strength:1,cannon:1`** (matches rules_text + icons) | art |
+| merchants-commercial-harbor | values.requires | removed garbled `"of the highest level 2 Residences"` (no requirement printed — it IS the prerequisite) | art (no Requires line) |
+| merchants-master-merchants-alliance | values | dropped unconfirmed `commerce:1` (only a strength-banner visible; kept rules-confirmed VP:2) | art |
+| explorers-most-successful-explorer | rules_text | added the missing primary effect (most-sea-card player draws up to 2) + tie clause | art |
+| merchants-capricious-sea | rules_text | replaced wrong text with the printed Calm Sea (1–4) / Storm (5,6) die-roll effect | art |
+| **prosperity-princess** | values.requires | **`"Not having a Princess."` → `"Not having a Prince."`** (the flagged bug) | rules + art (rules_text already said Prince) |
+| prosperity-bera-the-insurrectionist | values.requires | `"Public Fencing"` → **`"Public Feeling"`** (typo; rules_text already correct) | art |
+
+## Large-trade-ship verdict (owner's question)
+
+**Do `base-large-trade-ship` and `gold-large-trade-ship` require a city? NO.** Re-read both card
+images at full resolution: the only top-left cost is **lumber + wool**, the title band reads
+"Unit – Trade Ship", and there is **no printed "Requires:" line** on either card. They are bought as
+units like any trade ship; no city/settlement prerequisite exists. **No change made** to either card
+(no `values.requires` added). Source: card art `base-large-trade-ship.webp`, `gold-large-trade-ship.webp`.
+
+## Low-confidence reads — applied with a caveat
+
+The Intrigue art is the lowest resolution in the set. The resource **types** above are clear after
+upscaling, but a few exact **counts** (notably `intrigue-bishops-see`, `intrigue-sacrificial-site`)
+remain the least certain; they were set to the most-supported reading rather than left deferred per
+the no-deferrals directive. If a clean physical scan ever contradicts a count, these are the rows to
+re-check first.
+
+## Category/enum notes (NOT changed — would create invalid `CardCategory`)
+
+The `CardCategory` enum (`src/types/index.ts`) has no value for these printed types, so `category`
+was left valid and only the data was noted here for a possible future enum addition:
+- **"Extraordinary Site"** — gold-cache, the groves, pilgrimage-site, great-thingstead, odins-fountain,
+  zheng-he/cimmarone/jean (Sea). Currently `building`/`hero-or-unit`; `tag` carries the real type where present.
+- **"Marker Card"** — `sages-manifest-of-humane-conduct`, `barbarians-triumph-card`,
+  `prosperity-public-feeling`. Currently `building`; the engine already tracks these via `MarkerId`.
+- **"Action – Attack" vs "Action – Neutral"** — the schema does not distinguish attack actions; left as `action`.
+
+## ID slugs — still NOT changed (breaking; map to art filenames)
+
+`explorers-cinmarone`→cimmarone, `explorers-zheng-he`→haidao-chang,
+`barbarians-arad-the-strategist`→arnd, `barbarians-bailwick`→bailiwick,
+`intrigue-priestess-of-the-horns`→norns, `merchants-herold...`→hergild. Names are already correct in
+the data; only the slugs carry the typo. Renaming an id breaks the image mapping, so these are
+recommendations only.
+
+## Genuinely unresolved
+
+None. Every Pass-1 DEFERRED row and both flagged bugs were resolved or given an explicit
+art-grounded no-change verdict (trade-ship city requirement; manifesto/triumph marker tags).

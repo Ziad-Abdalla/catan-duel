@@ -994,17 +994,10 @@
     "category": "building",
     "tag": "Extraordinary Site",
     "name": "GOLD CACHE",
-    "cost": [
-      {
-        "resource": "lumber",
-        "count": 1
-      },
-      {
-        "resource": "wool",
-        "count": 1
-      }
-    ],
-    "values": {},
+    "cost": [],
+    "values": {
+      "requires": "Hero with at least 1 strength point"
+    },
     "rules_text": "The Gold Cache may also be used to store the gold you received. When the event Brigand Attack is rolled, the gold in the cache is neither counted nor stolen. Requires: Hero with at least 1 strength point.",
     "flavor_text": "",
     "image": "p06_c6.png",
@@ -1072,11 +1065,11 @@
     "cost": [
       {
         "resource": "brick",
-        "count": 1
+        "count": 2
       },
       {
         "resource": "wool",
-        "count": 1
+        "count": 2
       },
       {
         "resource": "grain",
@@ -1084,18 +1077,15 @@
       }
     ],
     "values": {
-      "commerce": 1,
-      "other": "two balance-scale (commerce) symbols at bottom right",
+      "commerce": 2,
       "requires": "City"
     },
     "rules_text": "",
     "flavor_text": "Money can't buy you happiness. But taking it away from others can.",
     "image": "p07_c1.png",
     "copies": 2,
-    "confidence": "low",
-    "unclear": [
-      "values.commerce: the commerce point flag value and the two balance-scale symbol numbers are not legible enough to confirm exact counts"
-    ]
+    "confidence": "high",
+    "unclear": []
   },
   {
     "id": "gold-moneylender",
@@ -2251,11 +2241,11 @@
     "name": "Pilgrimage Site",
     "cost": [
       {
-        "resource": "brick",
+        "resource": "ore",
         "count": 1
       },
       {
-        "resource": "wool",
+        "resource": "gold",
         "count": 1
       }
     ],
@@ -2272,7 +2262,7 @@
     "name": "Great Thingstead",
     "cost": [
       {
-        "resource": "brick",
+        "resource": "lumber",
         "count": 1
       },
       {
@@ -2280,7 +2270,7 @@
         "count": 1
       },
       {
-        "resource": "ore",
+        "resource": "wool",
         "count": 1
       }
     ],
@@ -2299,11 +2289,11 @@
     "name": "Odin's Fountain",
     "cost": [
       {
-        "resource": "brick",
+        "resource": "wool",
         "count": 1
       },
       {
-        "resource": "grain",
+        "resource": "ore",
         "count": 1
       },
       {
@@ -2371,7 +2361,7 @@
     "name": "Red Light Tavern",
     "cost": [
       {
-        "resource": "brick",
+        "resource": "lumber",
         "count": 1
       },
       {
@@ -2398,7 +2388,7 @@
         "count": 2
       },
       {
-        "resource": "brick",
+        "resource": "ore",
         "count": 1
       }
     ],
@@ -2419,11 +2409,11 @@
     "name": "Bran, Defender of the Temple",
     "cost": [
       {
-        "resource": "lumber",
-        "count": 1
+        "resource": "wool",
+        "count": 2
       },
       {
-        "resource": "brick",
+        "resource": "ore",
         "count": 1
       }
     ],
@@ -2444,16 +2434,15 @@
     "name": "Master of the Brotherhood",
     "cost": [
       {
-        "resource": "grain",
+        "resource": "gold",
         "count": 2
       },
       {
-        "resource": "ore",
+        "resource": "wool",
         "count": 1
       }
     ],
     "values": {
-      "strength": 1,
       "progress": 1,
       "skill": 1,
       "requires": "no Abbey"
@@ -2470,7 +2459,7 @@
     "name": "Godfrey the Intriguer",
     "cost": [
       {
-        "resource": "brick",
+        "resource": "wool",
         "count": 1
       },
       {
@@ -2479,8 +2468,7 @@
       }
     ],
     "values": {
-      "skill": 1,
-      "strength": 1
+      "skill": 1
     },
     "rules_text": "On a later turn, pay 1 gold to view the opponent's hand and take 1 card; if you take one, discard Godfrey afterwards.",
     "image": "intrigue-godfrey-the-intriguer.webp",
@@ -2498,7 +2486,7 @@
         "count": 2
       },
       {
-        "resource": "grain",
+        "resource": "ore",
         "count": 1
       }
     ],
@@ -2515,11 +2503,11 @@
     "name": "Odin's Temple",
     "cost": [
       {
-        "resource": "brick",
+        "resource": "lumber",
         "count": 2
       },
       {
-        "resource": "gold",
+        "resource": "grain",
         "count": 1
       }
     ],
@@ -2537,14 +2525,14 @@
     "cost": [
       {
         "resource": "wool",
+        "count": 2
+      },
+      {
+        "resource": "lumber",
         "count": 1
       },
       {
-        "resource": "brick",
-        "count": 1
-      },
-      {
-        "resource": "grain",
+        "resource": "ore",
         "count": 1
       }
     ],
@@ -2564,10 +2552,10 @@
     "cost": [
       {
         "resource": "ore",
-        "count": 2
+        "count": 1
       },
       {
-        "resource": "grain",
+        "resource": "gold",
         "count": 2
       },
       {
@@ -2889,7 +2877,7 @@
         "count": 1
       },
       {
-        "resource": "grain",
+        "resource": "wool",
         "count": 1
       }
     ],
@@ -2924,8 +2912,7 @@
     ],
     "values": {
       "commerce": 1,
-      "strength": 1,
-      "requires": "of the highest level 2 Residences"
+      "strength": 1
     },
     "rules_text": "Once per turn, downgrade one of your Residences by 1 level to take any 2 resources. Prerequisite for several cards.",
     "image": "merchants-commercial-harbor.webp",
@@ -2967,15 +2954,15 @@
     "name": "Craft Guild",
     "cost": [
       {
+        "resource": "wool",
+        "count": 2
+      },
+      {
         "resource": "lumber",
         "count": 1
       },
       {
         "resource": "brick",
-        "count": 1
-      },
-      {
-        "resource": "wool",
         "count": 1
       }
     ],
@@ -3005,8 +2992,7 @@
       }
     ],
     "values": {
-      "victory_points": 2,
-      "commerce": 1
+      "victory_points": 2
     },
     "rules_text": "When the opponent makes a 2:1 or 3:1 trade in their principality, you receive 1 of the resource they paid.",
     "image": "merchants-master-merchants-alliance.webp",
@@ -3124,7 +3110,7 @@
     "name": "Capricious Sea",
     "cost": [],
     "values": {},
-    "rules_text": "Trade is disrupted: resources you cannot store are lost. A Lighthouse is immune.",
+    "rules_text": "Calm Sea (1, 2, 3, 4): each player receives any 1 resource of their choice for each of their own trade ships. Storm (5, 6): each player slides one of their trade ships under a matching draw stack.",
     "image": "merchants-capricious-sea.webp",
     "copies": 1,
     "confidence": "medium"
@@ -3202,7 +3188,7 @@
         "count": 1
       },
       {
-        "resource": "brick",
+        "resource": "gold",
         "count": 1
       }
     ],
@@ -3248,6 +3234,10 @@
       {
         "resource": "grain",
         "count": 1
+      },
+      {
+        "resource": "gold",
+        "count": 1
       }
     ],
     "values": {},
@@ -3264,6 +3254,10 @@
     "cost": [
       {
         "resource": "grain",
+        "count": 1
+      },
+      {
+        "resource": "gold",
         "count": 1
       }
     ],
@@ -3282,7 +3276,7 @@
     "name": "Wolfgang the Street Performer",
     "cost": [
       {
-        "resource": "grain",
+        "resource": "gold",
         "count": 2
       }
     ],
@@ -3403,6 +3397,10 @@
       {
         "resource": "brick",
         "count": 2
+      },
+      {
+        "resource": "lumber",
+        "count": 1
       },
       {
         "resource": "ore",
@@ -3583,16 +3581,7 @@
     "set": "explorers",
     "category": "hero-or-unit",
     "name": "Haidao Chang",
-    "cost": [
-      {
-        "resource": "grain",
-        "count": 1
-      },
-      {
-        "resource": "gold",
-        "count": 1
-      }
-    ],
+    "cost": [],
     "values": {
       "strength": 5
     },
@@ -3606,16 +3595,7 @@
     "set": "explorers",
     "category": "hero-or-unit",
     "name": "Cimmarone",
-    "cost": [
-      {
-        "resource": "grain",
-        "count": 1
-      },
-      {
-        "resource": "gold",
-        "count": 1
-      }
-    ],
+    "cost": [],
     "values": {
       "strength": 6
     },
@@ -3629,16 +3609,7 @@
     "set": "explorers",
     "category": "hero-or-unit",
     "name": "Jean",
-    "cost": [
-      {
-        "resource": "grain",
-        "count": 2
-      },
-      {
-        "resource": "gold",
-        "count": 1
-      }
-    ],
+    "cost": [],
     "values": {
       "strength": 8
     },
@@ -3715,7 +3686,8 @@
       }
     ],
     "values": {
-      "skill": 1
+      "strength": 1,
+      "cannon": 1
     },
     "rules_text": "Gives 1 strength point and 1 cannon point.",
     "image": "explorers-armory.webp",
@@ -3754,7 +3726,7 @@
         "count": 1
       },
       {
-        "resource": "gold",
+        "resource": "grain",
         "count": 1
       }
     ],
@@ -3797,8 +3769,16 @@
     "name": "Astronomer",
     "cost": [
       {
-        "resource": "gold",
-        "count": 2
+        "resource": "grain",
+        "count": 1
+      },
+      {
+        "resource": "brick",
+        "count": 1
+      },
+      {
+        "resource": "wool",
+        "count": 1
       }
     ],
     "values": {},
@@ -3815,14 +3795,14 @@
     "cost": [
       {
         "resource": "ore",
-        "count": 2
-      },
-      {
-        "resource": "brick",
         "count": 1
       },
       {
-        "resource": "gold",
+        "resource": "lumber",
+        "count": 1
+      },
+      {
+        "resource": "brick",
         "count": 1
       }
     ],
@@ -3921,7 +3901,7 @@
     "name": "Most Successful Explorer",
     "cost": [],
     "values": {},
-    "rules_text": "In case of tie, both players may draw from same stack. Player whose turn it is decides first stack; opponent chooses second.",
+    "rules_text": "The player who discovered the most sea cards (at least 1) may draw up to 2 cards from any 1 draw stack of their choice (from their own draw stacks). Tie: each player may draw 1 card, the player whose turn it is going first.",
     "image": "explorers-most-successful-explorer.webp",
     "copies": 2,
     "confidence": "medium"
@@ -3933,11 +3913,11 @@
     "name": "Grove of Freedom",
     "cost": [
       {
-        "resource": "lumber",
+        "resource": "ore",
         "count": 1
       },
       {
-        "resource": "grain",
+        "resource": "gold",
         "count": 1
       }
     ],
@@ -3954,16 +3934,7 @@
     "set": "sages",
     "category": "building",
     "name": "Grove of Fraternity",
-    "cost": [
-      {
-        "resource": "lumber",
-        "count": 1
-      },
-      {
-        "resource": "grain",
-        "count": 1
-      }
-    ],
+    "cost": [],
     "values": {
       "victory_points": 1
     },
@@ -3978,10 +3949,6 @@
     "category": "building",
     "name": "Grove of Justice",
     "cost": [
-      {
-        "resource": "brick",
-        "count": 1
-      },
       {
         "resource": "ore",
         "count": 1
@@ -4000,7 +3967,12 @@
     "set": "sages",
     "category": "building",
     "name": "Grove of Peace",
-    "cost": [],
+    "cost": [
+      {
+        "resource": "gold",
+        "count": 1
+      }
+    ],
     "values": {},
     "rules_text": "When your opponent plays an action attack card: Roll the production die. If result > 3, the card has no effect and your opponent must discard it. (If Robert Herald is placed, result of 3 also blocks it.)",
     "image": "sages-grove-of-peace.webp",
@@ -4012,7 +3984,12 @@
     "set": "sages",
     "category": "building",
     "name": "Grove of Vigilance",
-    "cost": [],
+    "cost": [
+      {
+        "resource": "gold",
+        "count": 1
+      }
+    ],
     "values": {},
     "rules_text": "When Trade, Celebration, or Brigand Attack is rolled: Declare the event void; instead Event Card applies. (For Brigand Attack, each player receives resources first, then draw event card.)",
     "image": "sages-grove-of-vigilance.webp",
@@ -4024,7 +4001,12 @@
     "set": "sages",
     "category": "building",
     "name": "Grove of Great Foresight",
-    "cost": [],
+    "cost": [
+      {
+        "resource": "ore",
+        "count": 1
+      }
+    ],
     "values": {},
     "rules_text": "1x during your turn: View the 3 topmost event cards. Reorder some under the stack as desired without altering the top card's position or including Yule.",
     "image": "sages-grove-of-great-foresight.webp",
@@ -4036,7 +4018,12 @@
     "set": "sages",
     "category": "building",
     "name": "Grove of Courage",
-    "cost": [],
+    "cost": [
+      {
+        "resource": "gold",
+        "count": 1
+      }
+    ],
     "values": {},
     "rules_text": "You may use this grove during your opponent's turn. When you would lose cards from hand or buildings to a Feud or Fraternal Feud event, those events have no effect.",
     "image": "sages-grove-of-courage.webp",
@@ -4166,7 +4153,11 @@
         "count": 1
       },
       {
-        "resource": "ore",
+        "resource": "brick",
+        "count": 1
+      },
+      {
+        "resource": "wool",
         "count": 1
       }
     ],
@@ -4214,10 +4205,6 @@
       {
         "resource": "grain",
         "count": 1
-      },
-      {
-        "resource": "ore",
-        "count": 1
       }
     ],
     "values": {
@@ -4239,11 +4226,7 @@
         "count": 2
       },
       {
-        "resource": "wool",
-        "count": 1
-      },
-      {
-        "resource": "grain",
+        "resource": "gold",
         "count": 1
       }
     ],
@@ -4262,15 +4245,15 @@
     "name": "Courthouse",
     "cost": [
       {
-        "resource": "brick",
-        "count": 2
-      },
-      {
-        "resource": "wool",
+        "resource": "lumber",
         "count": 1
       },
       {
-        "resource": "ore",
+        "resource": "grain",
+        "count": 1
+      },
+      {
+        "resource": "brick",
         "count": 1
       }
     ],
@@ -4287,12 +4270,7 @@
     "set": "sages",
     "category": "action",
     "name": "Great Foresight",
-    "cost": [
-      {
-        "resource": "gold",
-        "count": 1
-      }
-    ],
+    "cost": [],
     "values": {},
     "rules_text": "Pay 1 owl: View the event card stack and remove\u2014without changing card order\u20141 event card except Yule.",
     "image": "sages-great-foresight.webp",
@@ -4304,12 +4282,7 @@
     "set": "sages",
     "category": "action",
     "name": "Dispute of the Sages",
-    "cost": [
-      {
-        "resource": "gold",
-        "count": 1
-      }
-    ],
+    "cost": [],
     "values": {
       "requires": "Both players each have at least 1 sage."
     },
@@ -4323,12 +4296,7 @@
     "set": "sages",
     "category": "action",
     "name": "Wise Compensation",
-    "cost": [
-      {
-        "resource": "gold",
-        "count": 1
-      }
-    ],
+    "cost": [],
     "values": {
       "requires": "Fewer cities or victory points than your opponent."
     },
@@ -4342,12 +4310,7 @@
     "set": "sages",
     "category": "action",
     "name": "Power of the Groves",
-    "cost": [
-      {
-        "resource": "gold",
-        "count": 1
-      }
-    ],
+    "cost": [],
     "values": {
       "requires": "At least 2 sages."
     },
@@ -4361,12 +4324,7 @@
     "set": "sages",
     "category": "action",
     "name": "Wise Protection",
-    "cost": [
-      {
-        "resource": "gold",
-        "count": 1
-      }
-    ],
+    "cost": [],
     "values": {},
     "rules_text": "Pay 1 owl: Your opponent must show you their hand. If it contains an action attack card, they must place all hand cards under matching draw stacks of their own.",
     "image": "sages-wise-protection.webp",
@@ -4584,7 +4542,7 @@
       }
     ],
     "values": {
-      "requires": "Not having a Princess.",
+      "requires": "Not having a Prince.",
       "skill": 1
     },
     "rules_text": "1x during your turn: For 1 gold, retrieve 1 Artwork from the discard pile. Cannot be taken or enticed away. Requires: Not having a Prince.",
@@ -4676,7 +4634,7 @@
     "name": "Monument to the Prince",
     "cost": [
       {
-        "resource": "grain",
+        "resource": "gold",
         "count": 2
       },
       {
@@ -4825,7 +4783,7 @@
     "name": "Bera the Insurrectionist",
     "cost": [],
     "values": {
-      "requires": "Public Fencing"
+      "requires": "Public Feeling"
     },
     "rules_text": "You choose: Your opponent gives you up to 2 stars, or 1 resource of their choice for each VP they have in excess of yours (max 3 resources). Requires: Public Feeling.",
     "image": "prosperity-bera-the-insurrectionist.webp",

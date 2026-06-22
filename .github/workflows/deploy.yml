@@ -1,0 +1,34 @@
+# Auto-deploy the game to PartyKit (Cloudflare) on every push to master, so the public
+# URL always reflects the latest repo. ONE-TIME SETUP (after your first manual deploy):
+#   1. Generate a CI token:   npx partykit token generate
+#   2. In GitHub → repo Settings → Secrets and variables → Actions, add:
+#        PARTYKIT_LOGIN  = your GitHub username (the one you deployed with)
+#        PARTYKIT_TOKEN  = the token printed by step 1
+# After that, every push here rebuilds + redeploys automatically. Until the secrets
+# exist the job is skipped, so it never fails a push. (Manual `npm run party:deploy`
+# always works regardless.)
+name: Deploy to PartyKit
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # Hoist the secrets to job-level env so the skip-when-unset check below works.
+    env:
+      PARTYKIT_LOGIN: ${{ secrets.PARTYKIT_LOGIN }}
+      PARTYKIT_TOKEN: ${{ secrets.PARTYKIT_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Deploy (only when the PartyKit secrets are set)
+        if: ${{ env.PARTYKIT_TOKEN != '' }}
+        run: npx partykit deploy

@@ -97,8 +97,14 @@ export interface RegionSlot {
 /** A card placed in play (building/unit/settlement/city/road) at a board position. */
 export interface PlacedCard {
   cardId: string
-  /** free-form position the player arranged it at (manual play) */
+  /** free-form position the player arranged it at (manual play). Region-expansion
+   *  cards (Residences, Border Fortress, Abbey Brewery, Reiner, Triumph) use `rexp-<regionIndex>`;
+   *  road complements use `road-<i>`; metropolis/attached cards carry `attachedTo`. */
   slot?: string
+  /** rotation level (0–3) for rotating region-expansions (Residences, Border Fortress). */
+  level?: number
+  /** the placed-card slot this card is attached to / stacked on (Metropolis→city, Bran→Temple). */
+  attachedTo?: string
   /** for FOREIGN cards (built in the opponent's principality): the player who owns/played
    *  it. The card sits in the host's `placed` but scores for nobody — `owner` just records
    *  who controls its effect and lets the host exclude it from their VP/stats. */

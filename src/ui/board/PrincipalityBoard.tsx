@@ -1,6 +1,6 @@
-import { useState, type CSSProperties } from 'react'
-import type { PlacedCard, PlayerId } from '../../types'
-import { getCard, cardArt } from '../../data/cards'
+import { Fragment, useState, type CSSProperties } from 'react'
+import type { PlacedCard, PlayerId, RegionSlot } from '../../types'
+import { getCard, cardArt, regionExpansionOf, isRoadComplement, isForeignCard } from '../../data/cards'
 import { PieceArt } from './PieceArt'
 import { RegionTile } from './RegionTile'
 import { useGame } from '../../store/gameStore'
@@ -34,12 +34,34 @@ export function PrincipalityBoard({
   const { dragBuild, setDragRemove, clear, payCosts, openZoom } = useUI()
 
   const all = p.placed.map((pc, i) => ({ pc, i, card: getCard(pc.cardId) })).filter((x) => x.card)
-  // foreign cards (built HERE by the opponent) render in a separate strip, not the spine
-  const foreign = all.filter((x) => x.pc.owner && x.pc.owner !== player)
+  const rcMatch = (slot?: string) => /^rc-(\d+)$/.exec(slot ?? '')
+  // foreign cards (built HERE by the opponent) render in a separate strip — EXCEPT foreign road
+  // complements, which render on the road slot they were built on (below).
+  const foreign = all.filter((x) => x.pc.owner && x.pc.owner !== player && !rcMatch(x.pc.slot))
   const spine = all.filter((x) => !(x.pc.owner && x.pc.owner !== player))
   const seats = spine.filter((x) => x.card!.category === 'settlement' || x.card!.category === 'city')
   const roads = spine.filter((x) => x.card!.category === 'road')
-  const buildings = spine.filter((x) => !['settlement', 'city', 'road'].includes(x.card!.category))
+  // region-expansions live ON a region; road complements live ON a road slot — pull both out of the
+  // settlement building sites and render them over their region tile / road slot respectively.
+  const buildings = spine.filter(
+    (x) => !['settlement', 'city', 'road'].includes(x.card!.category) && !/^rexp-/.test(x.pc.slot ?? '') && !rcMatch(x.pc.slot) && !x.pc.attachedTo,
+  )
+  // cards attached on top of another placed card (Bran→Temple, Judith→Church, Metropolis→city)
+  const attachedBySlot = new Map<string, (typeof all)[number][]>()
+  for (const x of spine) {
+    if (x.pc.attachedTo) attachedBySlot.set(x.pc.attachedTo, [...(attachedBySlot.get(x.pc.attachedTo) ?? []), x])
+  }
+  const regionExpansions = new Map<number, (typeof all)[number]>()
+  for (const x of spine) {
+    const m = /^rexp-(\d+)$/.exec(x.pc.slot ?? '')
+    if (m) regionExpansions.set(Number(m[1]), x)
+  }
+  // road complements: own (in spine) + foreign (owner set) — keyed by road-slot index.
+  const roadComplements = new Map<number, (typeof all)[number]>()
+  for (const x of all) {
+    const m = rcMatch(x.pc.slot)
+    if (m) roadComplements.set(Number(m[1]), x)
+  }
 
   const N = Math.max(2, seats.length)
   const cols = 2 * N + 1 // N+1 road-slot columns (odd) + N settlement columns (even)
@@ -75,46 +97,55 @@ export function PrincipalityBoard({
   return (
     <div className={`pboard${flipped ? ' flipped' : ''}`} style={gridStyle} data-player={player}>
       {/* regions: above & below each road slot (diagonal to the settlements) */}
-      {topRegions.map((r, i) => (
-        <div key={`t${i}`} className="pb-region" style={{ gridRow: aboveRow, gridColumn: roadSlotCol(i), alignSelf: 'end' }}>
-          <RegionTile player={player} region={r} index={p.regions.indexOf(r)} />
-        </div>
-      ))}
-      {botRegions.map((r, i) => (
-        <div key={`b${i}`} className="pb-region" style={{ gridRow: belowRow, gridColumn: roadSlotCol(i), alignSelf: 'start' }}>
-          <RegionTile player={player} region={r} index={p.regions.indexOf(r)} />
-        </div>
-      ))}
+      {topRegions.map((r, i) => {
+        const gi = p.regions.indexOf(r)
+        return (
+          <RegionCell key={`t${i}`} player={player} region={r} index={gi} interactive={interactive} expansion={regionExpansions.get(gi)} style={{ gridRow: aboveRow, gridColumn: roadSlotCol(i), alignSelf: 'end' }} />
+        )
+      })}
+      {botRegions.map((r, i) => {
+        const gi = p.regions.indexOf(r)
+        return (
+          <RegionCell key={`b${i}`} player={player} region={r} index={gi} interactive={interactive} expansion={regionExpansions.get(gi)} style={{ gridRow: belowRow, gridColumn: roadSlotCol(i), alignSelf: 'start' }} />
+        )
+      })}
 
       {/* spine: settlements on even columns, roads / empty road slots on odd */}
       {seats.map((s, j) => {
         const canCity = interactive && dragBuild === 'city' && s.card!.category === 'settlement'
+        const att = attachedBySlot.get(s.pc.slot ?? '')
         return (
-          <button
-            key={`seat${j}-${s.card!.id}`}
-            className={`pb-seat${interactive && s.card!.category === 'settlement' ? ' upgradable' : ''}${canCity ? ' droppable' : ''}`}
-            style={{ gridRow: 2, gridColumn: seatCol(j) }}
-            disabled={!interactive}
-            draggable={interactive}
-            title={
-              !interactive
-                ? s.card!.category === 'city' ? 'City' : 'Settlement'
-                : s.card!.category === 'settlement'
-                  ? 'Click to upgrade to a city · drag to the build bar to remove'
-                  : 'City · drag to the build bar to remove'
-            }
-            onClick={() =>
-              s.card!.category === 'settlement'
-                ? dispatch({ type: 'upgradeCity', player, seat: j, pay: payCosts })
-                : openZoom({ cardId: s.card!.id, from: 'play', player, placedIndex: s.i })
-            }
-            onDragStart={interactive ? () => setDragRemove({ placedIndex: s.i, player }) : undefined}
-            onDragEnd={interactive ? () => setDragRemove(null) : undefined}
-            onDragOver={canCity ? (e) => e.preventDefault() : undefined}
-            onDrop={canCity ? (e) => { e.preventDefault(); dispatch({ type: 'upgradeCity', player, seat: j, pay: payCosts }); playSfx('build'); clear() } : undefined}
-          >
-            <PieceArt card={s.card!} />
-          </button>
+          <Fragment key={`seat${j}-${s.card!.id}`}>
+            <button
+              className={`pb-seat${interactive && s.card!.category === 'settlement' ? ' upgradable' : ''}${canCity ? ' droppable' : ''}`}
+              style={{ gridRow: 2, gridColumn: seatCol(j) }}
+              disabled={!interactive}
+              draggable={interactive}
+              title={
+                !interactive
+                  ? s.card!.category === 'city' ? 'City' : 'Settlement'
+                  : s.card!.category === 'settlement'
+                    ? 'Click to upgrade to a city · drag to the build bar to remove'
+                    : 'City · drag to the build bar to remove'
+              }
+              onClick={() =>
+                s.card!.category === 'settlement'
+                  ? dispatch({ type: 'upgradeCity', player, seat: j, pay: payCosts })
+                  : openZoom({ cardId: s.card!.id, from: 'play', player, placedIndex: s.i })
+              }
+              onDragStart={interactive ? () => setDragRemove({ placedIndex: s.i, player }) : undefined}
+              onDragEnd={interactive ? () => setDragRemove(null) : undefined}
+              onDragOver={canCity ? (e) => e.preventDefault() : undefined}
+              onDrop={canCity ? (e) => { e.preventDefault(); dispatch({ type: 'upgradeCity', player, seat: j, pay: payCosts }); playSfx('build'); clear() } : undefined}
+            >
+              <PieceArt card={s.card!} />
+            </button>
+            {att && att.length > 0 && (
+              <div className="pb-attach pb-attach-seat" style={{ gridRow: 2, gridColumn: seatCol(j) }}>
+                {att.map((a) => <AttachBadge key={a.i} entry={a} player={player} interactive={interactive} />)}
+              </div>
+            )}
+          </Fragment>
         )
       })}
       {roads.map((r) => (
@@ -144,6 +175,12 @@ export function PrincipalityBoard({
             />
           )
         })}
+
+      {/* road complements (Trading Post on your own road; foreign Brigand Camp / Red Light Tavern /
+          Barbarian Stronghold) sit ON a road slot — overlay + own-road drop target */}
+      {Array.from({ length: N + 1 }, (_, i) => i).map((i) => (
+        <RoadComplementCell key={`rc${i}`} player={player} index={i} entry={roadComplements.get(i)} interactive={interactive} style={{ gridRow: 2, gridColumn: roadSlotCol(i) }} />
+      ))}
 
       {/* a frontier road opens a settlement slot beyond it (drop a Settlement) */}
       {extendLeft && (
@@ -176,7 +213,7 @@ export function PrincipalityBoard({
               style={{ gridRow: row, gridColumn: seatCol(j), alignSelf: where === 'up' ? 'end' : 'start' }}
             >
               {Array.from({ length: cap }, (_, k) => slotName(j, where, k)).map((slot) => (
-                <Site key={slot} player={player} slot={slot} entry={cardForSlot(slot)} interactive={interactive} />
+                <Site key={slot} player={player} slot={slot} entry={cardForSlot(slot)} attached={attachedBySlot.get(slot)} interactive={interactive} />
               ))}
             </div>
           )
@@ -209,15 +246,170 @@ export function PrincipalityBoard({
   )
 }
 
+type PlacedEntry = { pc: PlacedCard; card: ReturnType<typeof getCard>; i: number }
+
+/** A region tile cell that ALSO hosts any region-expansion card placed on it and accepts a
+ *  region-expansion card dropped from the hand (Residences onto pasture/forest, Border Fortress
+ *  onto hills, Reiner/Abbey onto fields, Triumph onto any region). */
+function RegionCell({
+  player,
+  region,
+  index,
+  interactive,
+  expansion,
+  style,
+}: {
+  player: PlayerId
+  region: RegionSlot
+  index: number
+  interactive?: boolean
+  expansion?: PlacedEntry
+  style?: CSSProperties
+}) {
+  const dispatch = useGame((s) => s.dispatch)
+  const { dragCardId, selectedCardId, payCosts, clear } = useUI()
+  const [over, setOver] = useState(false)
+  const armedId = interactive && !region.empty ? dragCardId || selectedCardId : null
+  const def = armedId ? regionExpansionOf(armedId) : undefined
+  const matches = !!def && !expansion && (def.resource === 'any' || def.resource === region.resource)
+  const place = (cardId: string) => {
+    if (!cardId) return
+    dispatch({ type: 'playRegionExpansion', player, cardId, regionIndex: index, pay: payCosts })
+    playSfx(cardSfx(cardId), cardId)
+    clear()
+  }
+  return (
+    <div
+      className={`pb-region${matches ? ' rexp-armed' : ''}${over ? ' rexp-over' : ''}`}
+      style={style}
+      onDragOver={matches ? (e) => { e.preventDefault(); setOver(true) } : undefined}
+      onDragLeave={matches ? () => setOver(false) : undefined}
+      onDrop={matches ? (e) => { e.preventDefault(); setOver(false); place(e.dataTransfer.getData('text/cardid') || dragCardId || '') } : undefined}
+      onClick={matches && selectedCardId ? () => place(selectedCardId) : undefined}
+    >
+      <RegionTile player={player} region={region} index={index} />
+      {expansion?.card && <RegionExpansionBadge player={player} entry={expansion} interactive={interactive} />}
+    </div>
+  )
+}
+
+/** The card sitting on a region: art + (for rotating ones) a level badge with rotate buttons. */
+function RegionExpansionBadge({ player, entry, interactive }: { player: PlayerId; entry: PlacedEntry; interactive?: boolean }) {
+  const dispatch = useGame((s) => s.dispatch)
+  const { openZoom, setDragRemove, payCosts } = useUI()
+  const card = entry.card!
+  const def = regionExpansionOf(card.id)
+  const level = entry.pc.level ?? 0
+  return (
+    <div className="pb-rexp">
+      <button
+        className="pb-rexp-card"
+        title={`${card.name} — tap to read, drag to the build bar to remove`}
+        draggable={interactive}
+        onDragStart={interactive ? () => setDragRemove({ placedIndex: entry.i, player }) : undefined}
+        onDragEnd={interactive ? () => setDragRemove(null) : undefined}
+        onClick={() => openZoom({ cardId: card.id, from: 'play', player, placedIndex: entry.i })}
+      >
+        {cardArt(card.id) ? <img src={cardArt(card.id)} alt={card.name} /> : <span>{card.name}</span>}
+      </button>
+      {def?.rotates && (
+        <div className="pb-rexp-rot">
+          {interactive && (
+            <button className="pb-rexp-btn" title="Rotate down a level" onClick={() => dispatch({ type: 'rotatePlaced', player, placedIndex: entry.i, delta: -1, pay: payCosts })}>−</button>
+          )}
+          <span className="pb-rexp-lvl" title="Rotation level">L{level}</span>
+          {interactive && (
+            <button className="pb-rexp-btn" title="Rotate up a level (spends its rotation cost)" onClick={() => dispatch({ type: 'rotatePlaced', player, placedIndex: entry.i, delta: 1, pay: payCosts })}>＋</button>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+/** A small card stacked on its host (Bran on Temple, Judith on Church, Metropolis on a city). */
+function AttachBadge({ player, entry, interactive }: { player: PlayerId; entry: PlacedEntry; interactive?: boolean }) {
+  const { openZoom, setDragRemove } = useUI()
+  const card = entry.card!
+  return (
+    <button
+      className="pb-attach-card"
+      title={`${card.name} — placed on its host; tap to read, drag to the build bar to remove`}
+      draggable={interactive}
+      onDragStart={interactive ? () => setDragRemove({ placedIndex: entry.i, player }) : undefined}
+      onDragEnd={interactive ? () => setDragRemove(null) : undefined}
+      onClick={() => openZoom({ cardId: card.id, from: 'play', player, placedIndex: entry.i })}
+    >
+      {cardArt(card.id) ? <img src={cardArt(card.id)} alt={card.name} /> : <span>{card.name}</span>}
+    </button>
+  )
+}
+
+/** A road slot's road-complement layer: hosts a placed complement (own or foreign) and accepts a
+ *  dropped OWN road complement (Trading Post) on your own board. Foreign ones are placed via CardZoom. */
+function RoadComplementCell({
+  player,
+  index,
+  entry,
+  interactive,
+  style,
+}: {
+  player: PlayerId
+  index: number
+  entry?: PlacedEntry
+  interactive?: boolean
+  style?: CSSProperties
+}) {
+  const dispatch = useGame((s) => s.dispatch)
+  const { dragCardId, selectedCardId, payCosts, clear, openZoom, setDragRemove } = useUI()
+  const [over, setOver] = useState(false)
+  const armedId = interactive && !entry ? dragCardId || selectedCardId : null
+  // only your OWN (non-foreign) road complement can be dropped on your own road
+  const armed = !!armedId && isRoadComplement(armedId) && !isForeignCard(armedId)
+  const place = (cardId: string) => {
+    if (!cardId) return
+    dispatch({ type: 'playCard', player, cardId, slot: `rc-${index}`, pay: payCosts })
+    playSfx(cardSfx(cardId), cardId)
+    clear()
+  }
+  if (!entry && !armed) return null
+  const isForeignHere = !!entry?.pc.owner && entry.pc.owner !== player
+  return (
+    <div
+      className={`pb-rc${armed ? ' rc-armed' : ''}${over ? ' rc-over' : ''}`}
+      style={style}
+      onDragOver={armed ? (e) => { e.preventDefault(); setOver(true) } : undefined}
+      onDragLeave={armed ? () => setOver(false) : undefined}
+      onDrop={armed ? (e) => { e.preventDefault(); setOver(false); place(e.dataTransfer.getData('text/cardid') || dragCardId || '') } : undefined}
+      onClick={armed && selectedCardId ? () => place(selectedCardId) : undefined}
+    >
+      {entry?.card && (
+        <button
+          className={`pb-rc-card${isForeignHere ? ' foreign' : ''}`}
+          title={`${entry.card.name}${isForeignHere ? ' (foreign — built by your opponent)' : ''}`}
+          draggable={interactive}
+          onDragStart={interactive ? () => setDragRemove({ placedIndex: entry.i, player }) : undefined}
+          onDragEnd={interactive ? () => setDragRemove(null) : undefined}
+          onClick={() => openZoom({ cardId: entry.card!.id, from: 'play', player, placedIndex: entry.i })}
+        >
+          {cardArt(entry.card.id) ? <img src={cardArt(entry.card.id)} alt={entry.card.name} /> : <span>{entry.card.name}</span>}
+        </button>
+      )}
+    </div>
+  )
+}
+
 function Site({
   player,
   slot,
   entry,
+  attached,
   interactive,
 }: {
   player: PlayerId
   slot: string
   entry: { pc: PlacedCard; card: ReturnType<typeof getCard>; i: number } | undefined
+  attached?: PlacedEntry[]
   interactive?: boolean
 }) {
   const dispatch = useGame((s) => s.dispatch)
@@ -273,6 +465,11 @@ function Site({
           }}
         >
           {cardArt(entry.card!.id) ? <img src={cardArt(entry.card!.id)} alt={entry.card!.name} /> : <span>{entry.card!.name}</span>}
+        </div>
+      )}
+      {attached && attached.length > 0 && (
+        <div className="pb-attach pb-attach-site">
+          {attached.map((a) => <AttachBadge key={a.i} entry={a} player={player} interactive={interactive} />)}
         </div>
       )}
     </div>

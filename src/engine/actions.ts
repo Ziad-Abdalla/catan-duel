@@ -6,7 +6,7 @@
 // could do at the table is allowed here too.
 
 import type { GameState, PlayerId, PlayerState, Phase, RegionSlot, ResourceType, Stat, MarkerId } from '../types'
-import { getCard } from '../data/cards'
+import { getCard, regionExpansionOf, levelValuesOf } from '../data/cards'
 import { makeRng, shuffle } from './rng'
 import type { EventFace } from './dice'
 
@@ -46,6 +46,9 @@ export type Action =
   | { type: 'expandSpine'; player: PlayerId } // +settlement +road, draw 2 regions
   | { type: 'buildPiece'; player: PlayerId; piece: 'road' | 'settlement'; end?: 'left' | 'right'; slot?: number; pay?: boolean } // manual placement; road `slot` = road-slot index
   | { type: 'placeLandscape'; player: PlayerId; regionIndex: number } // fill an empty landscape slot from the region stack
+  | { type: 'playRegionExpansion'; player: PlayerId; cardId: string; regionIndex: number; pay?: boolean } // place a Residence/Border Fortress/Reiner/Triumph adjacent to a region
+  | { type: 'rotatePlaced'; player: PlayerId; placedIndex: number; delta: 1 | -1; pay?: boolean } // rotate a placed region-expansion up/down a level (spends rotateCost when going up + pay)
+  | { type: 'attachCard'; player: PlayerId; cardId: string; hostSlot: string; pay?: boolean } // place a card ON another (Bran→Temple, Judith→Church, Metropolis→city)
   | { type: 'removePlaced'; player: PlayerId; placedIndex: number } // drag a placed road/building back off the board
   | { type: 'movePlaced'; player: PlayerId; placedIndex: number; slot: string } // relocate a placed piece to another slot (no remove)
   | { type: 'playForeign'; player: PlayerId; cardId: string; slot?: string; pay?: boolean } // build a FOREIGN card in the OPPONENT's principality (Red Light Tavern, Brigand Camp, Trading Station)
@@ -82,7 +85,9 @@ export type Action =
   | { type: 'nextPhase' }
   | { type: 'endTurn' }
 
-/** Derived victory points: settlements (1) + cities (2) + building/hero VP + manual adjust. */
+/** Derived victory points: settlements (1) + cities (2) + building/hero VP + the Triumph marker
+ *  level (Era of Barbarians: the Triumph Card "indicates N victory points" — tracked on the plate;
+ *  the card itself carries none, so this never double-counts) + manual adjust. */
 export function computeVP(p: PlayerState): number {
   let vp = 0
   for (const pc of p.placed) {
@@ -91,9 +96,9 @@ export function computeVP(p: PlayerState): number {
     if (!c) continue
     if (c.category === 'settlement') vp += 1
     else if (c.category === 'city') vp += 2
-    else vp += c.values?.victory_points ?? 0
+    else vp += (levelValuesOf(pc.cardId, pc.level) ?? c.values)?.victory_points ?? 0
   }
-  return vp + p.vpAdjust
+  return vp + (p.markers?.triumph ?? 0) + p.vpAdjust
 }
 
 export interface Stats {
@@ -121,7 +126,8 @@ export function computeStats(p: PlayerState): Stats {
     cannon = 0
   for (const pc of p.placed) {
     if (pc.owner && pc.owner !== p.id) continue // foreign cards don't add to the host's stats
-    const v = getCard(pc.cardId)?.values
+    // a rotating region-expansion contributes its CURRENT level's values, not the static print
+    const v = levelValuesOf(pc.cardId, pc.level) ?? getCard(pc.cardId)?.values
     if (!v) continue
     strength += v.strength ?? 0
     skill += v.skill ?? 0
@@ -604,6 +610,62 @@ function reduce(s: GameState, a: Action): GameState {
       return logged({ ...out, regionStack }, a.player, `Placed landscape ${resLabel(resource)}${number != null ? ` #${number}` : ''}`)
     }
 
+    case 'playRegionExpansion': {
+      const pay = a.pay !== false
+      const card = getCard(a.cardId)
+      const cost = card?.cost ?? []
+      const name = card?.name ?? a.cardId
+      const def = regionExpansionOf(a.cardId)
+      const out = finalize(
+        withPlayer(s, a.player, (p) => {
+          const i = p.hand.indexOf(a.cardId)
+          if (i >= 0) p.hand.splice(i, 1)
+          if (pay) spendCost(p, cost)
+          p.placed.push({ cardId: a.cardId, slot: `rexp-${a.regionIndex}`, ...(def?.rotates ? { level: 0 } : {}) })
+        }),
+      )
+      const where = s.players[a.player].regions[a.regionIndex]
+      const adj = where && !where.empty ? ` adjacent to ${resLabel(where.resource)}` : ''
+      return logged(out, a.player, `Placed ${name}${adj}${pay && cost.length ? ` (${fmtCost(cost)})` : ''}`)
+    }
+
+    case 'rotatePlaced': {
+      const pc = s.players[a.player].placed[a.placedIndex]
+      if (!pc) return s
+      const def = regionExpansionOf(pc.cardId)
+      const cur = pc.level ?? 0
+      const next = Math.max(0, Math.min(3, cur + a.delta))
+      if (next === cur) return s
+      const pay = a.pay !== false
+      const spend = a.delta > 0 && pay ? def?.rotateCost : undefined
+      return logged(
+        finalize(
+          withPlayer(s, a.player, (p) => {
+            if (spend) spendCost(p, spend)
+            p.placed[a.placedIndex] = { ...p.placed[a.placedIndex], level: next }
+          }),
+        ),
+        a.player,
+        `Rotated ${getCard(pc.cardId)?.name ?? pc.cardId} → level ${next}${spend && spend.length ? ` (${fmtCost(spend)})` : ''}`,
+      )
+    }
+
+    case 'attachCard': {
+      const pay = a.pay !== false
+      const card = getCard(a.cardId)
+      const cost = card?.cost ?? []
+      const name = card?.name ?? a.cardId
+      const out = finalize(
+        withPlayer(s, a.player, (p) => {
+          const i = p.hand.indexOf(a.cardId)
+          if (i >= 0) p.hand.splice(i, 1)
+          if (pay) spendCost(p, cost)
+          p.placed.push({ cardId: a.cardId, slot: `att-${a.hostSlot}`, attachedTo: a.hostSlot })
+        }),
+      )
+      return logged(out, a.player, `Placed ${name} on its host${pay && cost.length ? ` (${fmtCost(cost)})` : ''}`)
+    }
+
     case 'removePlaced': {
       const pc = s.players[a.player].placed[a.placedIndex]
       if (!pc) return s
@@ -865,10 +927,13 @@ function reduce(s: GameState, a: Action): GameState {
     case 'setMarker': {
       const level = Math.max(0, Math.min(9, a.level))
       const label = { triumph: 'Triumph', manifesto: 'Manifesto', publicFeeling: 'Public Feeling' }[a.marker]
+      // finalize so the Triumph level (which now contributes VP) refreshes the shown VP + eligibility.
       return logged(
-        withPlayer(s, a.player, (p) => {
-          p.markers = { ...(p.markers ?? {}), [a.marker]: level }
-        }),
+        finalize(
+          withPlayer(s, a.player, (p) => {
+            p.markers = { ...(p.markers ?? {}), [a.marker]: level }
+          }),
+        ),
         a.player,
         `${label} → level ${level}`,
       )

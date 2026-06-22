@@ -166,6 +166,25 @@ export const EFFECTS: Record<string, EffectStep[]> = {
   'intrigue-good-neighbors': [{ text: 'A peaceful event — no attack occurs. Resolve any draw-stack effect printed on the card.' }],
   'intrigue-religious-dispute': [{ text: 'Each player with ≥1 city loses hand cards under matching draw stacks; a Church and an Odin’s Temple each reduce the loss. Resolve by hand.' }],
 
+  'intrigue-judith-guardian-of-the-church': [
+    { text: 'Placed on your Church (it becomes protected). 1x per turn: pay 1 non-gold resource…', quick: [{ kind: 'gainChoice', who: 'owner', count: -1, label: 'Pay 1 (not gold)' }] },
+    { text: '…then receive up to 2 gold.', quick: [{ kind: 'gainFixed', who: 'owner', resource: 'gold', count: 1, label: '+1 gold' }, { kind: 'gainFixed', who: 'owner', resource: 'gold', count: 1, label: '+1 more' }, { kind: 'used', key: 'intrigue-judith', label: 'Mark used this turn' }] },
+  ],
+  'intrigue-godfrey-the-intriguer': [
+    { text: 'Pay 1 gold to view your opponent’s hand, then take 1 unit or action card.', quick: [{ kind: 'gainFixed', who: 'owner', resource: 'gold', count: -1, label: 'Pay 1 gold' }, { kind: 'grant', label: 'Take a card' }] },
+    { text: 'If you take a card, discard Godfrey.' },
+  ],
+  'intrigue-master-of-the-brotherhood': [
+    { text: 'When your opponent plays an action that could cost you a card, they first pay 2 gold per VP they lead you by; you receive up to 1 gold.', quick: [{ kind: 'gainFixed', who: 'owner', resource: 'gold', count: 1, label: '+1 gold' }] },
+  ],
+  'intrigue-sacrificial-site': [{ text: 'Trade wool 2:1 for other resources (use the toolkit). Wool on adjacent pasture regions is safe from a Brigand Attack.' }],
+  'intrigue-odins-fountain': [{ text: 'Extraordinary site. At end of turn you may exchange up to 2 cards instead of 1. On Good Neighbors, draw 1 card from a stack.', quick: [{ kind: 'grant', label: 'Draw a card (Good Neighbors)' }] }],
+  'intrigue-pilgrimage-site': [{ text: 'Extraordinary site. When an opponent’s event/action makes you discard from hand, immediately replenish to your hand limit.', quick: [{ kind: 'grant', label: 'Draw to refill' }] }],
+  'intrigue-reiner-the-miller': [{ text: 'Placed on a fields region. Trade its grain 2:1 for other resources; with an adjacent Grain Mill, once per turn at 1:1. Use the toolkit.' }],
+  'intrigue-abbey-brewery': [{ text: 'Region expansion on a fields region: pay 2 grain from it to rotate (± on the tile); each side gives a different benefit.' }],
+  'intrigue-great-thingstead': [{ text: 'Extraordinary site. While in play, neither player may play action-attack cards and the event Religious Dispute no longer affects anyone.' }],
+  'intrigue-red-light-tavern': [{ text: 'Foreign road complement: units in the adjacent settlements/cities have their strength reduced to 1 — adjust via the toolkit. Remove when the opponent has 3 heroines.' }],
+
   // ===== Era of Merchant Princes =====
   'merchants-gero-the-master-merchant': [{ text: 'Take any 1–2 resources of your choice. Requires: 2+ trade ships.', quick: [gain(1, 'Gain 1'), gain(1, 'Gain another')] }],
   'merchants-guild-master': [{ text: 'Take up to 2 resources of your choice. Requires: Craft Guild.', quick: [gain(1, 'Gain 1'), gain(1, 'Gain another')] }],
@@ -181,6 +200,21 @@ export const EFFECTS: Record<string, EffectStep[]> = {
   'merchants-fortunate-trade-voyage': [{ text: 'Each player receives resources according to their trade ships.', quick: [gain(1, 'You gain 1'), oppGain(1, 'Opponent gains 1')] }],
   'merchants-capricious-sea': [{ text: 'Trade is disrupted: resources you cannot store are lost. A Lighthouse is immune. Resolve by hand.' }],
 
+  'merchants-wainwright': [{ text: '1x per turn (one only): move resources between two regions of the same type, OR trade 3 of your choice for 1 different. Use the toolkit.' }],
+  'merchants-cloth-merchants-residence': [{ text: 'Region expansion on a pasture: pay 2 wool to rotate up a level (± on the tile). Higher levels give more commerce.' }],
+  'merchants-paper-merchants-residence': [{ text: 'Region expansion on a forest: pay 2 lumber to rotate up a level (± on the tile). Higher levels give more commerce.' }],
+  'merchants-trading-post': [{ text: 'Road complement: 1x per turn, trade 1 resource 1:1 between the two regions adjacent to this road. Use the toolkit.' }],
+  'merchants-brigand-camp': [{ text: 'Foreign road complement: your opponent’s commerce −1 (adjust via the toolkit). Each time they store a resource via their Marketplace, you receive 1 gold.', quick: [{ kind: 'gainFixed', who: 'owner', resource: 'gold', count: 1, label: '+1 gold' }] }],
+  'merchants-ship-builder': [{ text: 'Each ship you build costs 1 lumber OR 1 wool less. For 1 gold, retrieve 1 trade ship from the discard pile.', quick: [{ kind: 'gainFixed', who: 'owner', resource: 'gold', count: -1, label: 'Pay 1 gold' }, { kind: 'grant', label: 'Take a ship from discard' }] }],
+  'merchants-olaf-the-merchant-ship-captain': [
+    { text: 'Demand 1 or 2 resources from your opponent…', quick: [steal(1, 'Take 1'), steal(1, 'Take another')] },
+    { text: '…give them any 1 resource back, then discard Olaf.', quick: [{ kind: 'give', count: 1, label: 'Give 1 back' }] },
+  ],
+  'merchants-trading-station': [{ text: 'Foreign card on an opponent city site. 1x per turn: pay 1 gold to buy any 1 resource from your opponent.', quick: [{ kind: 'gainFixed', who: 'owner', resource: 'gold', count: -1, label: 'Pay 1 gold' }, steal(1, 'Take 1 resource')] }],
+  'merchants-commercial-metropolis': [{ text: 'Place on one of your cities (upgrades it to 4 VP total; counts as a city; cannot be removed).' }],
+  'merchants-lighthouse': [{ text: '1x per turn: a trade ship next to the Lighthouse trades 1:1 (also extends the Large Trade Ship); your ships are safe from Capricious Sea. Use the toolkit.' }],
+  'merchants-master-merchants-alliance': [{ text: 'When your opponent trades 2 or 3 of one type for 1 different, you receive 1 of the type they paid.', quick: [gain(1, 'Gain 1 (type they paid)')] }],
+
   // ===== Era of Barbarians ===== (Triumph rotates on the plate marker strip)
   'barbarians-siegfried-vanquisher-of-the-barbarians': [{ text: 'Take 1 or 2 resources of your choice — OR rotate your Triumph track up a level (use the plate). Requires: Castle and 2+ heroes.', quick: [gain(1, 'Gain 1'), gain(1, 'Gain another')] }],
   'barbarians-alliance-against-the-barbarians': [{ text: 'Each player with 1+ unit takes any 1 resource; the player with the most units takes 1 more. Requires: Triumph at 1 VP.', quick: [gain(1, 'You gain 1'), oppGain(1, 'Opponent gains 1'), gain(1, 'Most units: +1')] }],
@@ -189,6 +223,27 @@ export const EFFECTS: Record<string, EffectStep[]> = {
   'barbarians-contest-of-the-heroes': [{ text: 'Name 1 of your heroes and 1 opponent hero; each rolls the die and adds strength. Roll for each (tie: roll again).', quick: [{ kind: 'setDie', label: 'Roll the die' }] }, { text: 'The winner gains 1 resource and may take 1 from the loser.', quick: [gain(1, 'Winner gains 1'), steal(1, 'Take 1 from loser')] }],
   'barbarians-barbarian-attack': [{ text: 'Fewer units than your city/metropolis/expansion VP → discard 2 resources. More units and 1+ city → gain 2 resources. Then the card goes under the event stack.', quick: [gain(1, 'Defender gains 1'), gain(1, 'Defender +1')] }],
   'barbarians-retreat-of-the-barbarians': [{ text: 'Each player with 1+ unit chooses 1 card from a draw stack; with 1+ unit AND strength advantage, up to 2 cards.', quick: [{ kind: 'grant', label: 'Take a card' }, { kind: 'grant', label: 'Take another' }] }],
+
+  'barbarians-white-raven-tavern': [
+    { text: '1x per turn: pay 1 gold and roll the die.', quick: [{ kind: 'gainFixed', who: 'owner', resource: 'gold', count: -1, label: 'Pay 1 gold' }, { kind: 'setDie', label: 'Roll the die' }] },
+    { text: '1–2: nothing · 3–5: take 1 resource · 6: take 2 (gold allowed).', quick: [gain(1, 'Take 1'), gain(1, 'Take another (on a 6)')] },
+  ],
+  'barbarians-border-fortress': [{ text: 'Region expansion on a hills region (pay 1 brick from it to place). Pay 1 ore + 1 wool to rotate up a level (± on the tile). Its strength counts as units via the Castle in a Barbarian Attack.' }],
+  'barbarians-triumph-card': [{ text: 'Marker card. Track your Triumph level on your plate (the ± strip) — it counts directly as victory points. Place the card adjacent to any region.' }],
+  'barbarians-barbarian-stronghold': [{ text: 'Foreign road complement next to an opponent city: the barbarians’ strength against your opponent +1. Remove when their Triumph shows 3 VP.' }],
+  'barbarians-arad-the-strategist': [{ text: 'In a Barbarian Attack, each OTHER hero in the same settlement/city counts as 2 units (not Arnd).' }],
+  'barbarians-baroc-the-barbarian': [{ text: 'After a Brigand Attack, receive 1 ore (2 if your opponent has a Barbarian Stronghold).', quick: [{ kind: 'gainFixed', who: 'owner', resource: 'ore', count: 1, label: '+1 ore' }, { kind: 'gainFixed', who: 'owner', resource: 'ore', count: 1, label: '+1 more (Stronghold)' }] }],
+  'barbarians-siward-the-scout': [{ text: '1x per turn (action phase): view the top 3 of the event stack or any draw stack for free — or pay 1 gold to view your opponent’s hand.', quick: [{ kind: 'gainFixed', who: 'owner', resource: 'gold', count: -1, label: 'Pay 1 gold (view hand)' }] }],
+  'barbarians-wolfgang-the-street-performer': [
+    { text: 'On the event Celebration: add 1 resource to each region adjacent to Wolfgang.', quick: [gain(1, 'Region +1'), gain(1, 'Region +1')] },
+    { text: 'If you take resources, your opponent may pay 2 gold to take Wolfgang into their principality.' },
+  ],
+  'barbarians-caravel': [{ text: 'In a Barbarian Attack, each OTHER ship in the same settlement/city counts as 2 units (not the Caravel).' }],
+  'barbarians-marie-the-shieldmaiden': [{ text: 'Your opponent picks 2 of their heroes that could sit on Marie’s site; take 1 into your principality, then discard Marie.', quick: [{ kind: 'grant', label: 'Take a hero' }] }],
+  'barbarians-secret-brotherhood': [{ text: '(1) If you lose a Barbarian Attack, pay only 1 resource. (2) 1x per turn: discard an unplayed unit/action card to receive any 1 resource.', quick: [gain(1, 'Gain 1 (discard a card)'), { kind: 'used', key: 'barbarians-secret-brotherhood', label: 'Mark used this turn' }] }],
+  'barbarians-bailwick': [{ text: '1x per turn: draw the top card from a draw stack.', quick: [{ kind: 'grant', label: 'Draw a card' }, { kind: 'used', key: 'barbarians-bailwick', label: 'Mark used this turn' }] }],
+  'barbarians-castle': [{ text: 'Your Border Fortress’s strength points count as additional units in a Barbarian Attack. Required by some cards.' }],
+  'barbarians-arsenal': [{ text: 'Resources in the regions adjacent to the Arsenal are never counted or stolen in a Brigand Attack.' }],
 
   // ===== Era of Explorers ===== (sea cards / ships resolve on the sea board)
   'explorers-cartographer': [{ text: 'View up to 2 face-down sea cards and/or swap the positions of 2 sea cards in your principality. Requires: 1 sail point. Resolve on the sea board.' }],

@@ -1,6 +1,6 @@
 import { useState, type CSSProperties } from 'react'
-import type { PlacedCard, PlayerId } from '../../types'
-import { getCard, cardArt } from '../../data/cards'
+import type { PlacedCard, PlayerId, RegionSlot } from '../../types'
+import { getCard, cardArt, regionExpansionOf } from '../../data/cards'
 import { PieceArt } from './PieceArt'
 import { RegionTile } from './RegionTile'
 import { useGame } from '../../store/gameStore'
@@ -37,7 +37,14 @@ export function PrincipalityBoard({
   const spine = all.filter((x) => !(x.pc.owner && x.pc.owner !== player))
   const seats = spine.filter((x) => x.card!.category === 'settlement' || x.card!.category === 'city')
   const roads = spine.filter((x) => x.card!.category === 'road')
-  const buildings = spine.filter((x) => !['settlement', 'city', 'road'].includes(x.card!.category))
+  // region-expansions (Residences, Border Fortress, Reiner, Triumph) live ON a region, not in a
+  // settlement building site — pull them out of `buildings` and render them over their region tile.
+  const buildings = spine.filter((x) => !['settlement', 'city', 'road'].includes(x.card!.category) && !/^rexp-/.test(x.pc.slot ?? ''))
+  const regionExpansions = new Map<number, (typeof all)[number]>()
+  for (const x of spine) {
+    const m = /^rexp-(\d+)$/.exec(x.pc.slot ?? '')
+    if (m) regionExpansions.set(Number(m[1]), x)
+  }
 
   const N = Math.max(2, seats.length)
   const cols = 2 * N + 1 // N+1 road-slot columns (odd) + N settlement columns (even)
@@ -73,16 +80,18 @@ export function PrincipalityBoard({
   return (
     <div className={`pboard${flipped ? ' flipped' : ''}`} style={gridStyle} data-player={player}>
       {/* regions: above & below each road slot (diagonal to the settlements) */}
-      {topRegions.map((r, i) => (
-        <div key={`t${i}`} className="pb-region" style={{ gridRow: aboveRow, gridColumn: roadSlotCol(i), alignSelf: 'end' }}>
-          <RegionTile player={player} region={r} index={p.regions.indexOf(r)} />
-        </div>
-      ))}
-      {botRegions.map((r, i) => (
-        <div key={`b${i}`} className="pb-region" style={{ gridRow: belowRow, gridColumn: roadSlotCol(i), alignSelf: 'start' }}>
-          <RegionTile player={player} region={r} index={p.regions.indexOf(r)} />
-        </div>
-      ))}
+      {topRegions.map((r, i) => {
+        const gi = p.regions.indexOf(r)
+        return (
+          <RegionCell key={`t${i}`} player={player} region={r} index={gi} interactive={interactive} expansion={regionExpansions.get(gi)} style={{ gridRow: aboveRow, gridColumn: roadSlotCol(i), alignSelf: 'end' }} />
+        )
+      })}
+      {botRegions.map((r, i) => {
+        const gi = p.regions.indexOf(r)
+        return (
+          <RegionCell key={`b${i}`} player={player} region={r} index={gi} interactive={interactive} expansion={regionExpansions.get(gi)} style={{ gridRow: belowRow, gridColumn: roadSlotCol(i), alignSelf: 'start' }} />
+        )
+      })}
 
       {/* spine: settlements on even columns, roads / empty road slots on odd */}
       {seats.map((s, j) => {
@@ -188,6 +197,87 @@ export function PrincipalityBoard({
               )}
             </button>
           ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+type PlacedEntry = { pc: PlacedCard; card: ReturnType<typeof getCard>; i: number }
+
+/** A region tile cell that ALSO hosts any region-expansion card placed on it and accepts a
+ *  region-expansion card dropped from the hand (Residences onto pasture/forest, Border Fortress
+ *  onto hills, Reiner/Abbey onto fields, Triumph onto any region). */
+function RegionCell({
+  player,
+  region,
+  index,
+  interactive,
+  expansion,
+  style,
+}: {
+  player: PlayerId
+  region: RegionSlot
+  index: number
+  interactive?: boolean
+  expansion?: PlacedEntry
+  style?: CSSProperties
+}) {
+  const dispatch = useGame((s) => s.dispatch)
+  const { dragCardId, selectedCardId, payCosts, clear } = useUI()
+  const [over, setOver] = useState(false)
+  const armedId = interactive && !region.empty ? dragCardId || selectedCardId : null
+  const def = armedId ? regionExpansionOf(armedId) : undefined
+  const matches = !!def && !expansion && (def.resource === 'any' || def.resource === region.resource)
+  const place = (cardId: string) => {
+    if (!cardId) return
+    dispatch({ type: 'playRegionExpansion', player, cardId, regionIndex: index, pay: payCosts })
+    playSfx(cardSfx(cardId), cardId)
+    clear()
+  }
+  return (
+    <div
+      className={`pb-region${matches ? ' rexp-armed' : ''}${over ? ' rexp-over' : ''}`}
+      style={style}
+      onDragOver={matches ? (e) => { e.preventDefault(); setOver(true) } : undefined}
+      onDragLeave={matches ? () => setOver(false) : undefined}
+      onDrop={matches ? (e) => { e.preventDefault(); setOver(false); place(e.dataTransfer.getData('text/cardid') || dragCardId || '') } : undefined}
+      onClick={matches && selectedCardId ? () => place(selectedCardId) : undefined}
+    >
+      <RegionTile player={player} region={region} index={index} />
+      {expansion?.card && <RegionExpansionBadge player={player} entry={expansion} interactive={interactive} />}
+    </div>
+  )
+}
+
+/** The card sitting on a region: art + (for rotating ones) a level badge with rotate buttons. */
+function RegionExpansionBadge({ player, entry, interactive }: { player: PlayerId; entry: PlacedEntry; interactive?: boolean }) {
+  const dispatch = useGame((s) => s.dispatch)
+  const { openZoom, setDragRemove, payCosts } = useUI()
+  const card = entry.card!
+  const def = regionExpansionOf(card.id)
+  const level = entry.pc.level ?? 0
+  return (
+    <div className="pb-rexp">
+      <button
+        className="pb-rexp-card"
+        title={`${card.name} — tap to read, drag to the build bar to remove`}
+        draggable={interactive}
+        onDragStart={interactive ? () => setDragRemove({ placedIndex: entry.i, player }) : undefined}
+        onDragEnd={interactive ? () => setDragRemove(null) : undefined}
+        onClick={() => openZoom({ cardId: card.id, from: 'play', player, placedIndex: entry.i })}
+      >
+        {cardArt(card.id) ? <img src={cardArt(card.id)} alt={card.name} /> : <span>{card.name}</span>}
+      </button>
+      {def?.rotates && (
+        <div className="pb-rexp-rot">
+          {interactive && (
+            <button className="pb-rexp-btn" title="Rotate down a level" onClick={() => dispatch({ type: 'rotatePlaced', player, placedIndex: entry.i, delta: -1, pay: payCosts })}>−</button>
+          )}
+          <span className="pb-rexp-lvl" title="Rotation level">L{level}</span>
+          {interactive && (
+            <button className="pb-rexp-btn" title="Rotate up a level (spends its rotation cost)" onClick={() => dispatch({ type: 'rotatePlaced', player, placedIndex: entry.i, delta: 1, pay: payCosts })}>＋</button>
+          )}
         </div>
       )}
     </div>

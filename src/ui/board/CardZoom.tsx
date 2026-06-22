@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
-import { getCard, isForeignCard } from '../../data/cards'
+import { getCard, isForeignCard, isRegionExpansion, regionExpansionOf } from '../../data/cards'
+import type { ResourceType } from '../../types'
 import { CardView } from '../CardView'
 import { requirementMet } from '../../engine/requirements'
 import { resourceTotalOf } from '../../engine/actions'
@@ -8,6 +9,8 @@ import { useUI } from '../../store/uiStore'
 import { playSfx } from '../../audio/sfx'
 import { cardSfx } from '../../audio/cardSound'
 import './cardzoom.css'
+
+const TERRAIN_LABEL: Record<ResourceType, string> = { lumber: 'forest', brick: 'hills', wool: 'pasture', grain: 'fields', ore: 'mountains', gold: 'gold field' }
 
 /** First empty building site for a player, scanning up/down across each seat. A city
  *  exposes 2 sites per side, a settlement 1 (official capacity). Falls back to s0-up. */
@@ -55,6 +58,8 @@ export function CardZoom() {
   const card = getCard(zoom.cardId)
   if (!card) return null
   const met = requirementMet(card, state, zoom.player)
+  const rexpDef = isRegionExpansion(zoom.cardId) ? regionExpansionOf(zoom.cardId) : undefined
+  const rexpTerrain = rexpDef ? (rexpDef.resource === 'any' ? 'any' : TERRAIN_LABEL[rexpDef.resource]) : ''
   const hasCost = !!card.cost && card.cost.length > 0
   // Affordability flag: does the owner currently store enough of each cost resource?
   const costMet = hasCost
@@ -84,6 +89,26 @@ export function CardZoom() {
   const showOpponent = () => {
     dispatch({ type: 'showcaseCard', player: zoom.player, cardId: zoom.cardId })
     playSfx('flip')
+    closeZoom()
+  }
+  // Region expansions (Residences, Border Fortress, Reiner, Triumph) go ON a region, not in a
+  // building site. Auto-place on the first matching free region; players can also drag onto a tile.
+  const placeRegionExpansion = (pay: boolean) => {
+    const def = regionExpansionOf(zoom.cardId)
+    const me = state.players[zoom.player]
+    const used = new Set(
+      me.placed.map((pc) => {
+        const m = /^rexp-(\d+)$/.exec(pc.slot ?? '')
+        return m ? Number(m[1]) : -1
+      }),
+    )
+    const match = (r: { empty?: boolean; resource: ResourceType }) => !r.empty && (def?.resource === 'any' || r.resource === def?.resource)
+    let idx = me.regions.findIndex((r, i) => match(r) && !used.has(i))
+    if (idx < 0) idx = me.regions.findIndex((r, i) => !r.empty && !used.has(i)) // fall back to any free region
+    if (idx < 0) { closeZoom(); return }
+    dispatch({ type: 'playRegionExpansion', player: zoom.player, cardId: zoom.cardId, regionIndex: idx, pay })
+    dispatch({ type: 'showcaseCard', player: zoom.player, cardId: zoom.cardId })
+    playSfx(cardSfx(zoom.cardId), zoom.cardId)
     closeZoom()
   }
   const exchange = (stackIndex: number) => {
@@ -143,6 +168,16 @@ export function CardZoom() {
                     </button>
                   )}
                   <p className="cz-hint">A foreign card — it is built in your opponent’s principality and affects them.</p>
+                </>
+              ) : rexpDef ? (
+                <>
+                  <button className="cz-btn cz-play" onClick={() => placeRegionExpansion(false)}>Place on {rexpTerrain === 'any' ? 'a region' : `a ${rexpTerrain} region`}</button>
+                  {hasCost && (
+                    <button className="cz-btn" onClick={() => placeRegionExpansion(true)} title="Place it and spend its cost from your regions">
+                      Place &amp; pay cost
+                    </button>
+                  )}
+                  <p className="cz-hint">A region expansion — placed on a matching region (or drag the card onto the tile).{rexpDef.rotates ? ' Rotate it through levels with the ± buttons on the tile.' : ''}</p>
                 </>
               ) : (
                 <>

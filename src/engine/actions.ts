@@ -6,7 +6,7 @@
 // could do at the table is allowed here too.
 
 import type { GameState, PlayerId, PlayerState, Phase, RegionSlot, ResourceType, Stat, MarkerId } from '../types'
-import { getCard } from '../data/cards'
+import { getCard, regionExpansionOf } from '../data/cards'
 import { makeRng, shuffle } from './rng'
 import type { EventFace } from './dice'
 
@@ -46,6 +46,8 @@ export type Action =
   | { type: 'expandSpine'; player: PlayerId } // +settlement +road, draw 2 regions
   | { type: 'buildPiece'; player: PlayerId; piece: 'road' | 'settlement'; end?: 'left' | 'right'; slot?: number; pay?: boolean } // manual placement; road `slot` = road-slot index
   | { type: 'placeLandscape'; player: PlayerId; regionIndex: number } // fill an empty landscape slot from the region stack
+  | { type: 'playRegionExpansion'; player: PlayerId; cardId: string; regionIndex: number; pay?: boolean } // place a Residence/Border Fortress/Reiner/Triumph adjacent to a region
+  | { type: 'rotatePlaced'; player: PlayerId; placedIndex: number; delta: 1 | -1; pay?: boolean } // rotate a placed region-expansion up/down a level (spends rotateCost when going up + pay)
   | { type: 'removePlaced'; player: PlayerId; placedIndex: number } // drag a placed road/building back off the board
   | { type: 'movePlaced'; player: PlayerId; placedIndex: number; slot: string } // relocate a placed piece to another slot (no remove)
   | { type: 'playForeign'; player: PlayerId; cardId: string; slot?: string; pay?: boolean } // build a FOREIGN card in the OPPONENT's principality (Red Light Tavern, Brigand Camp, Trading Station)
@@ -602,6 +604,46 @@ function reduce(s: GameState, a: Action): GameState {
       })
       const { resource, number } = parseRegionId(id)
       return logged({ ...out, regionStack }, a.player, `Placed landscape ${resLabel(resource)}${number != null ? ` #${number}` : ''}`)
+    }
+
+    case 'playRegionExpansion': {
+      const pay = a.pay !== false
+      const card = getCard(a.cardId)
+      const cost = card?.cost ?? []
+      const name = card?.name ?? a.cardId
+      const def = regionExpansionOf(a.cardId)
+      const out = finalize(
+        withPlayer(s, a.player, (p) => {
+          const i = p.hand.indexOf(a.cardId)
+          if (i >= 0) p.hand.splice(i, 1)
+          if (pay) spendCost(p, cost)
+          p.placed.push({ cardId: a.cardId, slot: `rexp-${a.regionIndex}`, ...(def?.rotates ? { level: 0 } : {}) })
+        }),
+      )
+      const where = s.players[a.player].regions[a.regionIndex]
+      const adj = where && !where.empty ? ` adjacent to ${resLabel(where.resource)}` : ''
+      return logged(out, a.player, `Placed ${name}${adj}${pay && cost.length ? ` (${fmtCost(cost)})` : ''}`)
+    }
+
+    case 'rotatePlaced': {
+      const pc = s.players[a.player].placed[a.placedIndex]
+      if (!pc) return s
+      const def = regionExpansionOf(pc.cardId)
+      const cur = pc.level ?? 0
+      const next = Math.max(0, Math.min(3, cur + a.delta))
+      if (next === cur) return s
+      const pay = a.pay !== false
+      const spend = a.delta > 0 && pay ? def?.rotateCost : undefined
+      return logged(
+        finalize(
+          withPlayer(s, a.player, (p) => {
+            if (spend) spendCost(p, spend)
+            p.placed[a.placedIndex] = { ...p.placed[a.placedIndex], level: next }
+          }),
+        ),
+        a.player,
+        `Rotated ${getCard(pc.cardId)?.name ?? pc.cardId} → level ${next}${spend && spend.length ? ` (${fmtCost(spend)})` : ''}`,
+      )
     }
 
     case 'removePlaced': {

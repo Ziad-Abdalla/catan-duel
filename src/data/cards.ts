@@ -1,4 +1,4 @@
-import type { Card, ResourceType, SetId } from '../types'
+import type { Card, Cost, ResourceType, SetId } from '../types'
 import raw from './cards.json'
 
 /** The full card corpus (base + Era of Gold/Turmoil/Progress), read-only. */
@@ -20,6 +20,29 @@ export const FOREIGN_CARD_IDS = new Set<string>([
   'prosperity-thieves-hideout',
 ])
 export const isForeignCard = (id: string): boolean => FOREIGN_CARD_IDS.has(id)
+
+/**
+ * REGION EXPANSIONS — cards placed ADJACENT TO A REGION (not in a settlement building site):
+ * Residences, Border Fortress, Abbey Brewery, Reiner, the Triumph marker card. `resource` is the
+ * terrain they attach to ('any' = any region); `rotates` ones cycle through levels 0–3, spending
+ * `rotateCost` per step up (paid from your regions, trust-based). Per-level BENEFIT values (the
+ * commerce a Residence yields at each level) are not in the corpus yet — flagged on the cards.
+ */
+export interface RegionExpansionDef {
+  resource: ResourceType | 'any'
+  rotates: boolean
+  rotateCost?: Cost[]
+}
+export const REGION_EXPANSIONS: Record<string, RegionExpansionDef> = {
+  'intrigue-reiner-the-miller': { resource: 'grain', rotates: false },
+  'intrigue-abbey-brewery': { resource: 'grain', rotates: true, rotateCost: [{ resource: 'grain', count: 2 }] },
+  'merchants-cloth-merchants-residence': { resource: 'wool', rotates: true, rotateCost: [{ resource: 'wool', count: 2 }] },
+  'merchants-paper-merchants-residence': { resource: 'lumber', rotates: true, rotateCost: [{ resource: 'lumber', count: 2 }] },
+  'barbarians-border-fortress': { resource: 'brick', rotates: true, rotateCost: [{ resource: 'ore', count: 1 }, { resource: 'wool', count: 1 }] },
+  'barbarians-triumph-card': { resource: 'any', rotates: false },
+}
+export const isRegionExpansion = (id: string): boolean => id in REGION_EXPANSIONS
+export const regionExpansionOf = (id: string): RegionExpansionDef | undefined => REGION_EXPANSIONS[id]
 
 /**
  * The base region Card for a produced resource (one per terrain) — used to render

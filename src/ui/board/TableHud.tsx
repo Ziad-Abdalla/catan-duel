@@ -65,8 +65,8 @@ export function TableHud({ mode, setMode }: { mode: AppMode; setMode: (m: AppMod
   const enabledSets = useGame((s) => s.state.enabledSets)
   const winThreshold = useGame((s) => s.state.winThreshold)
   const toggleAudit = useUI((s) => s.toggleAudit)
-  const payCosts = useUI((s) => s.payCosts)
-  const setPayCosts = useUI((s) => s.setPayCosts)
+  const hudCollapsed = useUI((s) => s.hudCollapsed)
+  const setHudCollapsed = useUI((s) => s.setHudCollapsed)
   const tableTheme = useUI((s) => s.tableTheme)
   const setTableTheme = useUI((s) => s.setTableTheme)
   const audio = useAudioPrefs()
@@ -81,8 +81,19 @@ export function TableHud({ mode, setMode }: { mode: AppMode; setMode: (m: AppMod
     playSfx('ui')
   }
 
+  // Collapsed: the whole bar folds away to a single corner handle so it never
+  // sits over the board. The choice persists across reloads.
+  if (hudCollapsed) {
+    return (
+      <button className="hud-handle" title="Show menu" aria-label="Show menu" onClick={() => { setHudCollapsed(false); playSfx('ui') }}>
+        ☰
+      </button>
+    )
+  }
+
   return (
     <div className="table-hud">
+      <button className="hud-btn hud-collapse" title="Hide this bar" aria-label="Hide menu bar" onClick={() => { setHudCollapsed(true); playSfx('ui') }}>⌄</button>
       <span className="hud-title">Catan Duel</span>
 
       <div className="hud-setup-wrap">
@@ -138,14 +149,6 @@ export function TableHud({ mode, setMode }: { mode: AppMode; setMode: (m: AppMod
 
       <div className="hud-spacer" />
 
-      <button
-        className={`hud-chip hud-pay${payCosts ? ' on' : ''}`}
-        title={payCosts ? 'Building spends its cost — click for free placement' : 'Free placement — click to spend costs when building'}
-        aria-pressed={payCosts}
-        onClick={() => { setPayCosts(!payCosts); playSfx('ui') }}
-      >
-        {payCosts ? '💰 Pay' : '🆓 Free'}
-      </button>
       <button className="hud-btn" onClick={() => { toggleAudit(); playSfx('ui') }} title="Action history log">☰ Log</button>
       <button
         className="hud-btn hud-mute"
@@ -154,17 +157,6 @@ export function TableHud({ mode, setMode }: { mode: AppMode; setMode: (m: AppMod
         onClick={() => { const nowMuted = toggleMute(); if (!nowMuted) playSfx('ui') }}
       >
         {muted ? '🔇' : '🔊'}
-      </button>
-      <button
-        className="hud-btn"
-        title="Toggle fullscreen (optional — the table fits without it too)"
-        onClick={() => {
-          if (document.fullscreenElement) void document.exitFullscreen()
-          else void document.documentElement.requestFullscreen?.()
-          playSfx('ui')
-        }}
-      >
-        ⛶
       </button>
       {!online && (
         <button className="hud-btn" title="Start a new game" onClick={() => newHotseat({ p0Name: names.p0, p1Name: names.p1 })}>⟳ New</button>

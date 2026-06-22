@@ -124,9 +124,15 @@ export const useGame = create<GameStore>((set, get) => {
           const moved: PlayerId = st.mySeat === 'p0' ? 'p1' : 'p0'
           set({ mySeat: moved })
           transport?.send({ t: 'hello', from: myId, name: st.myName, seat: moved })
+          // carry my name to my new seat so the board still shows it correctly
+          if (st.myName) get().dispatch({ type: 'renamePlayer', player: moved, name: st.myName })
+        }
+        // adopt the peer's chosen name onto their seat (so both boards show real names)
+        if (m.name && st.state.players[m.seat]?.name !== m.name) {
+          get().dispatch({ type: 'renamePlayer', player: m.seat, name: m.name })
         }
         // someone joined → reply with our state so they sync to us
-        broadcast(st.state, true)
+        broadcast(get().state, true)
         break
       }
       case 'sync-request':
@@ -188,6 +194,10 @@ export const useGame = create<GameStore>((set, get) => {
       // announce + pull current game from whoever's already in the room
       tp.send({ t: 'hello', from: tp.id, name, seat })
       tp.send({ t: 'sync-request', from: tp.id })
+      // Write the chosen name into the shared game state for my seat so it shows on the
+      // board (and syncs to the peer). Per-seat versioning keeps this monotonic on merge.
+      const myName = name.trim()
+      if (myName) get().dispatch({ type: 'renamePlayer', player: seat, name: myName })
     },
 
     disconnect: () => {

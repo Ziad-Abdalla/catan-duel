@@ -47,11 +47,16 @@ test('click through the real UI surfaces', async ({ page }) => {
   await d.check('theme-gold')
   await page.locator('.hud-pop-scrim').click() // close the popover
 
-  // toggle the pay/free chip (stays on the bar)
-  await page.locator('.hud-pay').click()
+  // collapse the HUD bar to its corner handle, then restore it
+  await page.locator('.hud-collapse').click()
   await page.waitForTimeout(100)
-  await d.shot('05-pay-toggled')
-  await d.check('pay-toggled')
+  await expect(page.locator('.hud-handle')).toBeVisible()
+  await expect(page.locator('.table-hud')).toHaveCount(0)
+  await d.shot('05-hud-collapsed')
+  await d.check('hud-collapsed')
+  await page.locator('.hud-handle').click() // bring it back for the rest of the flow
+  await page.waitForTimeout(100)
+  await expect(page.locator('.table-hud')).toBeVisible()
 
   // peek a draw stack → take the top card → shuffle → close
   await page.locator('.cardstack-wrap').first().hover()

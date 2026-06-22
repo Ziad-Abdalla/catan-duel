@@ -486,9 +486,10 @@ export function ResolutionPanel() {
               <p className="rl-step-text">Play this event's effect (sound + animation) — use it when a card forces this event, or to replay it.</p>
               <button className="rl-apply" onClick={() => fireEventFx(resolve.event!)}>▶ Play {EVENT_NAME[resolve.event]} effect</button>
               {resolve.event === 'brigand' && (
-                <button className="rl-apply alt" onClick={() => { dispatch({ type: 'resolveBrigand' }); fireEventFx('brigand') }}>
-                  Apply Brigand to both players (auto-logs the loss)
-                </button>
+                <p className="rl-step-text rl-manual-note">
+                  Manual: anyone holding more than 7 resources loses all their gold &amp; wool —
+                  rotate those region discs down to 0 yourself (Resources below).
+                </p>
               )}
             </section>
           )}

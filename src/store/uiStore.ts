@@ -16,6 +16,23 @@ export interface Flight {
 
 export type BuildKind = 'settlement' | 'road' | 'city' | 'landscape'
 
+/** The HUD-collapsed flag is persisted on its own (the rest of UI state is ephemeral). */
+const HUD_KEY = 'catan-duel.hudCollapsed'
+function loadHudCollapsed(): boolean {
+  try {
+    return localStorage.getItem(HUD_KEY) === '1'
+  } catch {
+    return false
+  }
+}
+function saveHudCollapsed(v: boolean): void {
+  try {
+    localStorage.setItem(HUD_KEY, v ? '1' : '0')
+  } catch {
+    /* ignore */
+  }
+}
+
 /** A card opened to its large, readable detail view (with rules text). */
 export interface Zoom {
   cardId: string
@@ -71,10 +88,15 @@ interface UIState {
   /** The collapsible action-history ledger (audit log) sidebar. */
   auditOpen: boolean
   toggleAudit: () => void
-  /** When true, building/playing a card spends its printed cost; off = free placement
-   *  (the manual sandbox lets you opt out of auto-paying). */
+  /** When true, building/playing a card spends its printed cost; off = manual play
+   *  (players rotate their own region discs to pay). Defaults OFF: this is a hands-on
+   *  tabletop — the engine never auto-deducts in human play. */
   payCosts: boolean
   setPayCosts: (v: boolean) => void
+  /** Whether the top HUD bar is collapsed to its corner handle (persisted, so it
+   *  stops covering the board across reloads). */
+  hudCollapsed: boolean
+  setHudCollapsed: (v: boolean) => void
   /** Visual felt theme, decoupled from which card sets are enabled. 'auto' follows the
    *  enabled eras; otherwise the player picks the atmosphere they want to see. */
   tableTheme: 'auto' | 'base' | 'gold' | 'turmoil' | 'progress' | 'duel'
@@ -130,8 +152,10 @@ export const useUI = create<UIState>((set) => ({
   dice: null,
   auditOpen: false,
   toggleAudit: () => set((s) => ({ auditOpen: !s.auditOpen })),
-  payCosts: true,
+  payCosts: false,
   setPayCosts: (payCosts) => set({ payCosts }),
+  hudCollapsed: loadHudCollapsed(),
+  setHudCollapsed: (hudCollapsed) => { saveHudCollapsed(hudCollapsed); set({ hudCollapsed }) },
   tableTheme: 'auto',
   setTableTheme: (tableTheme) => set({ tableTheme }),
   stackBrowse: null,

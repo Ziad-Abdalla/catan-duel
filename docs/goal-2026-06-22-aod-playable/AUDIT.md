@@ -89,3 +89,31 @@ Baroc, Siward, Castle, Arsenal, Caravel, Arad, Sacrificial Site…). Extend exis
 religious-dispute, capricious-sea Calm/Storm, fortunate-trade-voyage 2-per-player) with missing sub-steps.
 
 ## 5. Open decisions for the owner — see the questions posed in chat (depth, physical-card data, commit cadence).
+Owner chose: full real mechanics · apply rulebook-stated values now + flag unknowns · commit as you go.
+
+---
+
+## IMPLEMENTED (2026-06-22) — commits 645c22d…ee020ef
+
+- **Data + rules_text** for all 66 cards rewritten from the rulebook (apply-data-fixes.mjs): typos,
+  `requires`, categories, names, spurious-VP removal, rulebook-stated hero strength, copies.
+- **Requirements parser** rewritten as OR-alternatives over atomic predicates: negation,
+  trade-ship/hero/unit counts, Triumph level, comma lists, trailing periods (+8 tests).
+- **Residence / region-expansion rotation** — `PlacedCard.level`, `playRegionExpansion` +
+  `rotatePlaced` (spends rotateCost), region tiles are drop targets with a level badge + ± buttons.
+- **Road-complement placement** — Trading Post on your own road; foreign Brigand Camp / Red Light
+  Tavern / Barbarian Stronghold on an opponent road; rendered on the road slot.
+- **Place-on-card** — Commercial Metropolis upgrades a city (4 VP), Bran/Judith stack on Temple/Church.
+- **Triumph → VP** — the plate marker level counts as victory points; setMarker re-finalizes.
+- **EFFECTS guided steps** added for ~35 more AoD cards.
+- **Live e2e probe** (`e2e/aod-placements.spec.ts`) drives every new surface, asserting clean render.
+- Gate: tsc + 208 unit tests + the e2e probe + production build all green.
+
+### STILL NEEDS PHYSICAL-CARD DATA (flagged `unclear` in cards.json — never fabricated)
+Per-level Residence/Border-Fortress commerce & strength; exact Triumph level→VP (used identity,
+max 3); costs for Lighthouse, Herold, Gero, Olaf, Wolfgang, Pilgrimage Site, Great Thingstead;
+Judith/Bran skill-vs-commerce; Master Merchants' Alliance commerce; White Raven point values;
+Triumph/Castle copy counts (set to 2 from the rulebook index — confirm).
+
+### OUT OF SCOPE (not requested this round)
+AI-opponent support for AoD (always a deferred follow-up); the 3 Age-of-Enlightenment sets.

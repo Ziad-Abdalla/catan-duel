@@ -6,7 +6,7 @@
 // could do at the table is allowed here too.
 
 import type { GameState, PlayerId, PlayerState, Phase, RegionSlot, ResourceType, Stat, MarkerId } from '../types'
-import { getCard, regionExpansionOf } from '../data/cards'
+import { getCard, regionExpansionOf, levelValuesOf } from '../data/cards'
 import { makeRng, shuffle } from './rng'
 import type { EventFace } from './dice'
 
@@ -96,7 +96,7 @@ export function computeVP(p: PlayerState): number {
     if (!c) continue
     if (c.category === 'settlement') vp += 1
     else if (c.category === 'city') vp += 2
-    else vp += c.values?.victory_points ?? 0
+    else vp += (levelValuesOf(pc.cardId, pc.level) ?? c.values)?.victory_points ?? 0
   }
   return vp + (p.markers?.triumph ?? 0) + p.vpAdjust
 }
@@ -126,7 +126,8 @@ export function computeStats(p: PlayerState): Stats {
     cannon = 0
   for (const pc of p.placed) {
     if (pc.owner && pc.owner !== p.id) continue // foreign cards don't add to the host's stats
-    const v = getCard(pc.cardId)?.values
+    // a rotating region-expansion contributes its CURRENT level's values, not the static print
+    const v = levelValuesOf(pc.cardId, pc.level) ?? getCard(pc.cardId)?.values
     if (!v) continue
     strength += v.strength ?? 0
     skill += v.skill ?? 0

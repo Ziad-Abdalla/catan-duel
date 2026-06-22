@@ -1,4 +1,4 @@
-import type { Card, CardCategory, Cost, ResourceType, SetId } from '../types'
+import type { Card, CardCategory, CardValues, Cost, ResourceType, SetId } from '../types'
 import raw from './cards.json'
 
 /** The full card corpus (base + Era of Gold/Turmoil/Progress), read-only. */
@@ -43,6 +43,21 @@ export const REGION_EXPANSIONS: Record<string, RegionExpansionDef> = {
 }
 export const isRegionExpansion = (id: string): boolean => id in REGION_EXPANSIONS
 export const regionExpansionOf = (id: string): RegionExpansionDef | undefined => REGION_EXPANSIONS[id]
+
+/**
+ * Per-rotation-level point values for rotating region-expansions (index = level 0–3). When present,
+ * these OVERRIDE the card's static `values` in computeStats/computeVP, so a rotated Residence scores
+ * its current level. Read off the physical cards (owner-confirmed):
+ *  · Cloth Merchant's Residence — commerce 0/1/2/3
+ *  · Paper Merchant's Residence — 0 · 1 commerce · 1 commerce+1 progress · 1 commerce+1 progress+1 VP
+ * Border Fortress's per-level strength is still pending physical confirmation (kept flagged).
+ */
+export const PLACED_LEVEL_VALUES: Record<string, Array<Partial<CardValues>>> = {
+  'merchants-cloth-merchants-residence': [{}, { commerce: 1 }, { commerce: 2 }, { commerce: 3 }],
+  'merchants-paper-merchants-residence': [{}, { commerce: 1 }, { commerce: 1, progress: 1 }, { commerce: 1, progress: 1, victory_points: 1 }],
+}
+export const levelValuesOf = (id: string, level: number | undefined): Partial<CardValues> | undefined =>
+  PLACED_LEVEL_VALUES[id]?.[Math.max(0, Math.min(3, level ?? 0))]
 
 /**
  * ROAD COMPLEMENTS — cards placed ON a road slot. Trading Post is your OWN road; the rest are

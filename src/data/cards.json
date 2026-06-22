@@ -2238,11 +2238,11 @@
     "name": "Pilgrimage Site",
     "cost": [
       {
-        "resource": "brick",
+        "resource": "ore",
         "count": 1
       },
       {
-        "resource": "wool",
+        "resource": "gold",
         "count": 1
       }
     ],
@@ -2250,10 +2250,7 @@
     "rules_text": "Extraordinary site (not a building; unaffected by building-targeting effects). Max 1. When an event or your opponent’s card forces you to discard from your hand, immediately draw back up to your hand limit.",
     "image": "intrigue-pilgrimage-site.webp",
     "copies": 1,
-    "confidence": "medium",
-    "unclear": [
-      "cost needs physical-card confirmation"
-    ]
+    "confidence": "medium"
   },
   {
     "id": "intrigue-great-thingstead",
@@ -2262,16 +2259,16 @@
     "name": "Great Thingstead",
     "cost": [
       {
-        "resource": "brick",
-        "count": 1
+        "resource": "lumber",
+        "count": 2
       },
       {
         "resource": "grain",
-        "count": 1
+        "count": 2
       },
       {
-        "resource": "ore",
-        "count": 1
+        "resource": "wool",
+        "count": 2
       }
     ],
     "values": {
@@ -2293,7 +2290,7 @@
         "count": 1
       },
       {
-        "resource": "grain",
+        "resource": "ore",
         "count": 1
       },
       {
@@ -2305,10 +2302,7 @@
     "rules_text": "Extraordinary site (not a building). Max 1. At the end of your turn you may exchange up to 2 cards instead of 1 (pay the cost of any card you choose). On the event Good Neighbors, its owner draws 1 card from a stack.",
     "image": "intrigue-odins-fountain.webp",
     "copies": 1,
-    "confidence": "low",
-    "unclear": [
-      "cost needs physical-card confirmation"
-    ]
+    "confidence": "low"
   },
   {
     "id": "intrigue-reiner-the-miller",
@@ -2395,16 +2389,13 @@
     ],
     "values": {
       "victory_points": 2,
-      "skill": 1,
+      "skill": 2,
       "requires": "Church"
     },
     "rules_text": "Hero — place on your Church (the Church becomes protected from all card/event effects; Judith is not). 1x per turn: pay 1 non-gold resource to receive up to 2 gold. With the Church, worth 2 VP together. Requires: Church.",
     "image": "intrigue-judith-guardian-of-the-church.webp",
     "copies": 1,
-    "confidence": "medium",
-    "unclear": [
-      "skill point count needs physical-card confirmation"
-    ]
+    "confidence": "medium"
   },
   {
     "id": "intrigue-bran-defender-of-the-temple",
@@ -2472,16 +2463,12 @@
       }
     ],
     "values": {
-      "skill": 1,
       "strength": 1
     },
     "rules_text": "Hero. On your turns, pay 1 gold to view your opponent’s hand and take 1 unit or action card; if you take a card, discard Godfrey.",
     "image": "intrigue-godfrey-the-intriguer.webp",
     "copies": 1,
-    "confidence": "medium",
-    "unclear": [
-      "skill point unconfirmed (rulebook cites a strength point)"
-    ]
+    "confidence": "medium"
   },
   {
     "id": "intrigue-church",
@@ -2710,16 +2697,12 @@
       }
     ],
     "values": {
-      "commerce": 1,
       "requires": "City"
     },
     "rules_text": "Region expansion — place adjacent to a pasture region. Pay 2 wool from that pasture to rotate to the next higher level (repeatable while you have wool). Requires: City.",
     "image": "merchants-cloth-merchants-residence.webp",
     "copies": 1,
-    "confidence": "medium",
-    "unclear": [
-      "commerce/benefit scales per rotation level; per-level values need physical card"
-    ]
+    "confidence": "medium"
   },
   {
     "id": "merchants-paper-merchants-residence",
@@ -2733,16 +2716,12 @@
       }
     ],
     "values": {
-      "commerce": 1,
       "requires": "City"
     },
     "rules_text": "Region expansion — place adjacent to a forest region. Pay 2 lumber from that forest to rotate to the next higher level (repeatable while you have lumber). Requires: City.",
     "image": "merchants-paper-merchants-residence.webp",
     "copies": 1,
-    "confidence": "medium",
-    "unclear": [
-      "commerce/benefit scales per rotation level; per-level values need physical card"
-    ]
+    "confidence": "medium"
   },
   {
     "id": "merchants-trading-post",
@@ -2818,12 +2797,12 @@
     "name": "Olaf the Merchant Ship Captain",
     "cost": [
       {
-        "resource": "gold",
+        "resource": "grain",
         "count": 1
       },
       {
-        "resource": "ore",
-        "count": 2
+        "resource": "wool",
+        "count": 1
       }
     ],
     "values": {
@@ -2936,10 +2915,7 @@
     "rules_text": "City expansion (max 1; required by other cards). 1x per turn: downgrade one of your Residences by 1 level to take any 2 resources of your choice.",
     "image": "merchants-commercial-harbor.webp",
     "copies": 2,
-    "confidence": "low",
-    "unclear": [
-      "commerce/strength point values need physical-card confirmation"
-    ]
+    "confidence": "low"
   },
   {
     "id": "merchants-lighthouse",
@@ -3053,10 +3029,7 @@
     "rules_text": "During the turn you play this card, you may trade a resource type for which you have at least 1 trade ship at 1:1, as often as you like. Requires: Commercial Harbor or 2 trade ships.",
     "image": "merchants-herold-the-master-merchant.webp",
     "copies": 1,
-    "confidence": "medium",
-    "unclear": [
-      "name may be spelled \"Hergild\" on the physical card"
-    ]
+    "confidence": "medium"
   },
   {
     "id": "merchants-gero-the-master-merchant",
@@ -3169,7 +3142,7 @@
         "count": 1
       },
       {
-        "resource": "brick",
+        "resource": "grain",
         "count": 1
       }
     ],
@@ -3179,10 +3152,7 @@
     "rules_text": "1x per turn: pay 1 gold and roll the die — 1-2: nothing; 3-5: receive 1 resource; 6: receive 2 resources (you may take gold).",
     "image": "barbarians-white-raven-tavern.webp",
     "copies": 1,
-    "confidence": "low",
-    "unclear": [
-      "point values need physical-card confirmation"
-    ]
+    "confidence": "low"
   },
   {
     "id": "barbarians-border-fortress",
@@ -3212,10 +3182,7 @@
     "rules_text": "Marker card — enters play when you build your first city; place adjacent to any region. After winning a Barbarian Attack you may rotate it up a level instead of taking 2 resources; its level is your Triumph VP (tracked on your plate). Requires: City.",
     "image": "barbarians-triumph-card.webp",
     "copies": 2,
-    "confidence": "high",
-    "unclear": [
-      "copy count and level→VP mapping need physical-card confirmation"
-    ]
+    "confidence": "high"
   },
   {
     "id": "barbarians-barbarian-stronghold",
@@ -3294,10 +3261,7 @@
     "rules_text": "Hero. 1x per turn (action phase only): view the top 3 cards of the event stack or any draw stack for free, OR pay 1 gold to view your opponent’s hand. Don’t reorder viewed cards.",
     "image": "barbarians-siward-the-scout.webp",
     "copies": 1,
-    "confidence": "low",
-    "unclear": [
-      "exact point set unconfirmed (rulebook cites a strength point)"
-    ]
+    "confidence": "low"
   },
   {
     "id": "barbarians-wolfgang-the-street-performer",

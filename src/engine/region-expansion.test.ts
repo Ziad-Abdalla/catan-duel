@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { newGame } from './newGame'
-import { applyAction, computeVP, resourceTotalOf } from './actions'
+import { applyAction, computeStats, computeVP, resourceTotalOf } from './actions'
 
 const CLOTH = 'merchants-cloth-merchants-residence'
 
@@ -73,5 +73,31 @@ describe('Triumph marker contributes VP (Era of Barbarians)', () => {
     s = applyAction(s, { type: 'setMarker', player: 'p0', marker: 'triumph', level: 2 })
     expect(computeVP(s.players.p0)).toBe(before + 2)
     expect(s.players.p0.victoryPoints).toBe(before + 2) // finalize() synced the shown VP
+  })
+})
+
+describe('per-level Residence scoring', () => {
+  it('Cloth Residence commerce scales with rotation level', () => {
+    let s = newGame({ seed: 9, enabledSets: ['merchants'] })
+    s.players.p0.hand.push(CLOTH)
+    s = applyAction(s, { type: 'playRegionExpansion', player: 'p0', cardId: CLOTH, regionIndex: 3, pay: false })
+    const idx = s.players.p0.placed.findIndex((p) => p.cardId === CLOTH)
+    const base = computeStats(s.players.p0).commerce
+    for (let i = 0; i < 2; i++) s = applyAction(s, { type: 'rotatePlaced', player: 'p0', placedIndex: idx, delta: 1, pay: false })
+    expect(computeStats(s.players.p0).commerce).toBe(base + 2) // level 2 => +2 commerce
+  })
+
+  it('Paper Residence at top level yields commerce + progress + VP', () => {
+    const PAPER = 'merchants-paper-merchants-residence'
+    let s = newGame({ seed: 11, enabledSets: ['merchants'] })
+    s.players.p0.hand.push(PAPER)
+    s = applyAction(s, { type: 'playRegionExpansion', player: 'p0', cardId: PAPER, regionIndex: 1, pay: false }) // index 1 = forest
+    const idx = s.players.p0.placed.findIndex((p) => p.cardId === PAPER)
+    const vp0 = computeVP(s.players.p0)
+    for (let i = 0; i < 3; i++) s = applyAction(s, { type: 'rotatePlaced', player: 'p0', placedIndex: idx, delta: 1, pay: false })
+    const st = computeStats(s.players.p0)
+    expect(st.commerce).toBe(1)
+    expect(st.progress).toBe(1)
+    expect(computeVP(s.players.p0)).toBe(vp0 + 1) // +1 VP at level 3
   })
 })

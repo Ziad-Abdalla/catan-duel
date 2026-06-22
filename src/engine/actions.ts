@@ -85,7 +85,9 @@ export type Action =
   | { type: 'nextPhase' }
   | { type: 'endTurn' }
 
-/** Derived victory points: settlements (1) + cities (2) + building/hero VP + manual adjust. */
+/** Derived victory points: settlements (1) + cities (2) + building/hero VP + the Triumph marker
+ *  level (Era of Barbarians: the Triumph Card "indicates N victory points" — tracked on the plate;
+ *  the card itself carries none, so this never double-counts) + manual adjust. */
 export function computeVP(p: PlayerState): number {
   let vp = 0
   for (const pc of p.placed) {
@@ -96,7 +98,7 @@ export function computeVP(p: PlayerState): number {
     else if (c.category === 'city') vp += 2
     else vp += c.values?.victory_points ?? 0
   }
-  return vp + p.vpAdjust
+  return vp + (p.markers?.triumph ?? 0) + p.vpAdjust
 }
 
 export interface Stats {
@@ -924,10 +926,13 @@ function reduce(s: GameState, a: Action): GameState {
     case 'setMarker': {
       const level = Math.max(0, Math.min(9, a.level))
       const label = { triumph: 'Triumph', manifesto: 'Manifesto', publicFeeling: 'Public Feeling' }[a.marker]
+      // finalize so the Triumph level (which now contributes VP) refreshes the shown VP + eligibility.
       return logged(
-        withPlayer(s, a.player, (p) => {
-          p.markers = { ...(p.markers ?? {}), [a.marker]: level }
-        }),
+        finalize(
+          withPlayer(s, a.player, (p) => {
+            p.markers = { ...(p.markers ?? {}), [a.marker]: level }
+          }),
+        ),
         a.player,
         `${label} → level ${level}`,
       )

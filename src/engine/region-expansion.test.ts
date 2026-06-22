@@ -65,3 +65,13 @@ describe('attach-on-card (Bran/Judith/Metropolis)', () => {
     expect(computeVP(s.players.p0)).toBe(vpBefore + 2)
   })
 })
+
+describe('Triumph marker contributes VP (Era of Barbarians)', () => {
+  it('rotating the Triumph track raises victory points', () => {
+    let s = newGame({ seed: 5, enabledSets: ['barbarians'] })
+    const before = computeVP(s.players.p0)
+    s = applyAction(s, { type: 'setMarker', player: 'p0', marker: 'triumph', level: 2 })
+    expect(computeVP(s.players.p0)).toBe(before + 2)
+    expect(s.players.p0.victoryPoints).toBe(before + 2) // finalize() synced the shown VP
+  })
+})

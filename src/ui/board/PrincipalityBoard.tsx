@@ -1,4 +1,4 @@
-import { useState, type CSSProperties } from 'react'
+import { Fragment, useState, type CSSProperties } from 'react'
 import type { PlacedCard, PlayerId, RegionSlot } from '../../types'
 import { getCard, cardArt, regionExpansionOf, isRoadComplement, isForeignCard } from '../../data/cards'
 import { PieceArt } from './PieceArt'
@@ -42,8 +42,13 @@ export function PrincipalityBoard({
   // region-expansions live ON a region; road complements live ON a road slot — pull both out of the
   // settlement building sites and render them over their region tile / road slot respectively.
   const buildings = spine.filter(
-    (x) => !['settlement', 'city', 'road'].includes(x.card!.category) && !/^rexp-/.test(x.pc.slot ?? '') && !rcMatch(x.pc.slot),
+    (x) => !['settlement', 'city', 'road'].includes(x.card!.category) && !/^rexp-/.test(x.pc.slot ?? '') && !rcMatch(x.pc.slot) && !x.pc.attachedTo,
   )
+  // cards attached on top of another placed card (Bran→Temple, Judith→Church, Metropolis→city)
+  const attachedBySlot = new Map<string, (typeof all)[number][]>()
+  for (const x of spine) {
+    if (x.pc.attachedTo) attachedBySlot.set(x.pc.attachedTo, [...(attachedBySlot.get(x.pc.attachedTo) ?? []), x])
+  }
   const regionExpansions = new Map<number, (typeof all)[number]>()
   for (const x of spine) {
     const m = /^rexp-(\d+)$/.exec(x.pc.slot ?? '')
@@ -106,19 +111,26 @@ export function PrincipalityBoard({
       {/* spine: settlements on even columns, roads / empty road slots on odd */}
       {seats.map((s, j) => {
         const canCity = interactive && dragBuild === 'city' && s.card!.category === 'settlement'
+        const att = attachedBySlot.get(s.pc.slot ?? '')
         return (
-          <button
-            key={`seat${j}-${s.card!.id}`}
-            className={`pb-seat${interactive && s.card!.category === 'settlement' ? ' upgradable' : ''}${canCity ? ' droppable' : ''}`}
-            style={{ gridRow: 2, gridColumn: seatCol(j) }}
-            disabled={!interactive || s.card!.category !== 'settlement'}
-            title={s.card!.category === 'settlement' ? 'Upgrade to city' : 'City'}
-            onClick={() => dispatch({ type: 'upgradeCity', player, seat: j, pay: payCosts })}
-            onDragOver={canCity ? (e) => e.preventDefault() : undefined}
-            onDrop={canCity ? (e) => { e.preventDefault(); dispatch({ type: 'upgradeCity', player, seat: j, pay: payCosts }); playSfx('build'); clear() } : undefined}
-          >
-            <PieceArt card={s.card!} />
-          </button>
+          <Fragment key={`seat${j}-${s.card!.id}`}>
+            <button
+              className={`pb-seat${interactive && s.card!.category === 'settlement' ? ' upgradable' : ''}${canCity ? ' droppable' : ''}`}
+              style={{ gridRow: 2, gridColumn: seatCol(j) }}
+              disabled={!interactive || s.card!.category !== 'settlement'}
+              title={s.card!.category === 'settlement' ? 'Upgrade to city' : 'City'}
+              onClick={() => dispatch({ type: 'upgradeCity', player, seat: j, pay: payCosts })}
+              onDragOver={canCity ? (e) => e.preventDefault() : undefined}
+              onDrop={canCity ? (e) => { e.preventDefault(); dispatch({ type: 'upgradeCity', player, seat: j, pay: payCosts }); playSfx('build'); clear() } : undefined}
+            >
+              <PieceArt card={s.card!} />
+            </button>
+            {att && att.length > 0 && (
+              <div className="pb-attach pb-attach-seat" style={{ gridRow: 2, gridColumn: seatCol(j) }}>
+                {att.map((a) => <AttachBadge key={a.i} entry={a} player={player} interactive={interactive} />)}
+              </div>
+            )}
+          </Fragment>
         )
       })}
       {roads.map((r) => (
@@ -186,7 +198,7 @@ export function PrincipalityBoard({
               style={{ gridRow: row, gridColumn: seatCol(j), alignSelf: where === 'up' ? 'end' : 'start' }}
             >
               {Array.from({ length: cap }, (_, k) => slotName(j, where, k)).map((slot) => (
-                <Site key={slot} player={player} slot={slot} entry={cardForSlot(slot)} interactive={interactive} />
+                <Site key={slot} player={player} slot={slot} entry={cardForSlot(slot)} attached={attachedBySlot.get(slot)} interactive={interactive} />
               ))}
             </div>
           )
@@ -300,6 +312,24 @@ function RegionExpansionBadge({ player, entry, interactive }: { player: PlayerId
   )
 }
 
+/** A small card stacked on its host (Bran on Temple, Judith on Church, Metropolis on a city). */
+function AttachBadge({ player, entry, interactive }: { player: PlayerId; entry: PlacedEntry; interactive?: boolean }) {
+  const { openZoom, setDragRemove } = useUI()
+  const card = entry.card!
+  return (
+    <button
+      className="pb-attach-card"
+      title={`${card.name} — placed on its host; tap to read, drag to the build bar to remove`}
+      draggable={interactive}
+      onDragStart={interactive ? () => setDragRemove({ placedIndex: entry.i, player }) : undefined}
+      onDragEnd={interactive ? () => setDragRemove(null) : undefined}
+      onClick={() => openZoom({ cardId: card.id, from: 'play', player, placedIndex: entry.i })}
+    >
+      {cardArt(card.id) ? <img src={cardArt(card.id)} alt={card.name} /> : <span>{card.name}</span>}
+    </button>
+  )
+}
+
 /** A road slot's road-complement layer: hosts a placed complement (own or foreign) and accepts a
  *  dropped OWN road complement (Trading Post) on your own board. Foreign ones are placed via CardZoom. */
 function RoadComplementCell({
@@ -358,11 +388,13 @@ function Site({
   player,
   slot,
   entry,
+  attached,
   interactive,
 }: {
   player: PlayerId
   slot: string
   entry: { pc: PlacedCard; card: ReturnType<typeof getCard>; i: number } | undefined
+  attached?: PlacedEntry[]
   interactive?: boolean
 }) {
   const dispatch = useGame((s) => s.dispatch)
@@ -417,6 +449,11 @@ function Site({
           }}
         >
           {cardArt(entry.card!.id) ? <img src={cardArt(entry.card!.id)} alt={entry.card!.name} /> : <span>{entry.card!.name}</span>}
+        </div>
+      )}
+      {attached && attached.length > 0 && (
+        <div className="pb-attach pb-attach-site">
+          {attached.map((a) => <AttachBadge key={a.i} entry={a} player={player} interactive={interactive} />)}
         </div>
       )}
     </div>

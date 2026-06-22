@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { newGame } from './newGame'
-import { applyAction, resourceTotalOf } from './actions'
+import { applyAction, computeVP, resourceTotalOf } from './actions'
 
 const CLOTH = 'merchants-cloth-merchants-residence'
 
@@ -47,5 +47,21 @@ describe('region-expansion placement + rotation', () => {
     s = applyAction(s, { type: 'rotatePlaced', player: 'p0', placedIndex: idx, delta: 1, pay: true })
     expect(resourceTotalOf(s.players.p0, 'wool')).toBe(1) // spent 2 wool
     expect(s.players.p0.placed[idx].level).toBe(1)
+  })
+})
+
+describe('attach-on-card (Bran/Judith/Metropolis)', () => {
+  it('attachCard stacks a card on its host and both score together', () => {
+    let s = newGame({ seed: 3, enabledSets: ['intrigue'] })
+    s.players.p0.hand.push('intrigue-church', 'intrigue-bran-defender-of-the-temple')
+    s = applyAction(s, { type: 'playCard', player: 'p0', cardId: 'intrigue-church', slot: 's0-up', pay: false })
+    const vpBefore = computeVP(s.players.p0)
+    s = applyAction(s, { type: 'attachCard', player: 'p0', cardId: 'intrigue-bran-defender-of-the-temple', hostSlot: 's0-up', pay: false })
+    const bran = s.players.p0.placed.find((p) => p.cardId === 'intrigue-bran-defender-of-the-temple')
+    expect(bran).toBeDefined()
+    expect(bran!.attachedTo).toBe('s0-up')
+    expect(s.players.p0.hand).not.toContain('intrigue-bran-defender-of-the-temple')
+    // Bran carries the pair's 2 VP (Church is 0) → +2 over the pre-attach total
+    expect(computeVP(s.players.p0)).toBe(vpBefore + 2)
   })
 })

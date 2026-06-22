@@ -1,4 +1,4 @@
-import type { Card, Cost, ResourceType, SetId } from '../types'
+import type { Card, CardCategory, Cost, ResourceType, SetId } from '../types'
 import raw from './cards.json'
 
 /** The full card corpus (base + Era of Gold/Turmoil/Progress), read-only. */
@@ -56,6 +56,24 @@ export const ROAD_COMPLEMENT_IDS = new Set<string>([
   'barbarians-barbarian-stronghold',
 ])
 export const isRoadComplement = (id: string): boolean => ROAD_COMPLEMENT_IDS.has(id)
+
+/**
+ * ATTACH-ON-CARD — cards placed ON TOP OF another placed card: Bran on your Odin's Temple, Judith on
+ * your Church, the Commercial Metropolis upgrading a city. VP already sums correctly (the pair's
+ * total = both cards' victory_points), so this is the placement affordance + the visual stacking.
+ */
+export interface AttachDef {
+  hostName?: string
+  hostCategory?: CardCategory
+  label: string
+}
+export const ATTACHABLE: Record<string, AttachDef> = {
+  'intrigue-bran-defender-of-the-temple': { hostName: "Odin's Temple", label: "your Odin's Temple" },
+  'intrigue-judith-guardian-of-the-church': { hostName: 'Church', label: 'your Church' },
+  'merchants-commercial-metropolis': { hostCategory: 'city', label: 'a city' },
+}
+export const isAttachable = (id: string): boolean => id in ATTACHABLE
+export const attachableOf = (id: string): AttachDef | undefined => ATTACHABLE[id]
 
 /**
  * The base region Card for a produced resource (one per terrain) — used to render

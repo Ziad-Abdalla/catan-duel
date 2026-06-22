@@ -266,3 +266,11 @@
 .pb-rc-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .pb-rc-card span { font-size: 7px; color: #ece3cf; padding: 2px; display: block; line-height: 1.1; }
 .pb-rc-card.foreign { border-color: #c0524a; box-shadow: 0 0 7px rgba(192, 82, 74, 0.7); }
+
+/* --- Attach-on-card (Bran on Temple, Judith on Church, Metropolis on a city) --- */
+.pb-attach { z-index: 6; display: flex; gap: 1px; pointer-events: none; }
+.pb-attach-site { position: absolute; top: -6px; right: -6px; }
+.pb-attach-seat { align-self: start; justify-self: end; margin-top: -6px; }
+.pb-attach-card { pointer-events: auto; width: 26px; height: 36px; padding: 0; border: 1px solid var(--gold, #e0b341); border-radius: 4px; overflow: hidden; background: #2a2118; box-shadow: 0 2px 7px rgba(0, 0, 0, 0.6); cursor: pointer; transform: rotate(-6deg); }
+.pb-attach-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pb-attach-card span { font-size: 6px; color: #ece3cf; padding: 1px; display: block; line-height: 1.05; }

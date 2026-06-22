@@ -48,6 +48,7 @@ export type Action =
   | { type: 'placeLandscape'; player: PlayerId; regionIndex: number } // fill an empty landscape slot from the region stack
   | { type: 'playRegionExpansion'; player: PlayerId; cardId: string; regionIndex: number; pay?: boolean } // place a Residence/Border Fortress/Reiner/Triumph adjacent to a region
   | { type: 'rotatePlaced'; player: PlayerId; placedIndex: number; delta: 1 | -1; pay?: boolean } // rotate a placed region-expansion up/down a level (spends rotateCost when going up + pay)
+  | { type: 'attachCard'; player: PlayerId; cardId: string; hostSlot: string; pay?: boolean } // place a card ON another (Bran→Temple, Judith→Church, Metropolis→city)
   | { type: 'removePlaced'; player: PlayerId; placedIndex: number } // drag a placed road/building back off the board
   | { type: 'movePlaced'; player: PlayerId; placedIndex: number; slot: string } // relocate a placed piece to another slot (no remove)
   | { type: 'playForeign'; player: PlayerId; cardId: string; slot?: string; pay?: boolean } // build a FOREIGN card in the OPPONENT's principality (Red Light Tavern, Brigand Camp, Trading Station)
@@ -644,6 +645,22 @@ function reduce(s: GameState, a: Action): GameState {
         a.player,
         `Rotated ${getCard(pc.cardId)?.name ?? pc.cardId} → level ${next}${spend && spend.length ? ` (${fmtCost(spend)})` : ''}`,
       )
+    }
+
+    case 'attachCard': {
+      const pay = a.pay !== false
+      const card = getCard(a.cardId)
+      const cost = card?.cost ?? []
+      const name = card?.name ?? a.cardId
+      const out = finalize(
+        withPlayer(s, a.player, (p) => {
+          const i = p.hand.indexOf(a.cardId)
+          if (i >= 0) p.hand.splice(i, 1)
+          if (pay) spendCost(p, cost)
+          p.placed.push({ cardId: a.cardId, slot: `att-${a.hostSlot}`, attachedTo: a.hostSlot })
+        }),
+      )
+      return logged(out, a.player, `Placed ${name} on its host${pay && cost.length ? ` (${fmtCost(cost)})` : ''}`)
     }
 
     case 'removePlaced': {

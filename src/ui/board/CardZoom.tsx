@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { getCard, isForeignCard, isRegionExpansion, regionExpansionOf, isRoadComplement } from '../../data/cards'
+import { getCard, isForeignCard, isRegionExpansion, regionExpansionOf, isRoadComplement, isAttachable, attachableOf } from '../../data/cards'
 import type { ResourceType } from '../../types'
 import { CardView } from '../CardView'
 import { requirementMet } from '../../engine/requirements'
@@ -58,6 +58,7 @@ export function CardZoom() {
   const card = getCard(zoom.cardId)
   if (!card) return null
   const met = requirementMet(card, state, zoom.player)
+  const attachDef = isAttachable(zoom.cardId) ? attachableOf(zoom.cardId) : undefined
   const rexpDef = isRegionExpansion(zoom.cardId) ? regionExpansionOf(zoom.cardId) : undefined
   const rexpTerrain = rexpDef ? (rexpDef.resource === 'any' ? 'any' : TERRAIN_LABEL[rexpDef.resource]) : ''
   const hasCost = !!card.cost && card.cost.length > 0
@@ -97,6 +98,25 @@ export function CardZoom() {
     // road of the opponent; other foreign cards land in the foreign strip.
     const slot = isRoadComplement(zoom.cardId) ? `rc-${freeRoadSlot(foe)}` : undefined
     dispatch({ type: 'playForeign', player: zoom.player, cardId: zoom.cardId, slot, pay })
+    dispatch({ type: 'showcaseCard', player: zoom.player, cardId: zoom.cardId })
+    playSfx(cardSfx(zoom.cardId), zoom.cardId)
+    closeZoom()
+  }
+  // attach-on-card (Bran→Temple, Judith→Church, Metropolis→city): find the host's slot.
+  const attachHostSlot = (): string | undefined => {
+    const def = attachableOf(zoom.cardId)
+    if (!def) return undefined
+    const host = state.players[zoom.player].placed.find((pc) => {
+      const c = getCard(pc.cardId)
+      if (!c) return false
+      return def.hostCategory ? c.category === def.hostCategory : !!def.hostName && c.name.toLowerCase().includes(def.hostName.toLowerCase())
+    })
+    return host?.slot
+  }
+  const attachToHost = (pay: boolean) => {
+    const hs = attachHostSlot()
+    if (!hs) { closeZoom(); return }
+    dispatch({ type: 'attachCard', player: zoom.player, cardId: zoom.cardId, hostSlot: hs, pay })
     dispatch({ type: 'showcaseCard', player: zoom.player, cardId: zoom.cardId })
     playSfx(cardSfx(zoom.cardId), zoom.cardId)
     closeZoom()
@@ -211,6 +231,16 @@ export function CardZoom() {
                     </button>
                   )}
                   <p className="cz-hint">A road complement — placed on one of your own roads (or drag the card onto a road slot). It works with the two regions adjacent to that road.</p>
+                </>
+              ) : attachDef ? (
+                <>
+                  <button className="cz-btn cz-play" disabled={!attachHostSlot()} onClick={() => attachToHost(false)}>Place on {attachDef.label}</button>
+                  {hasCost && (
+                    <button className="cz-btn" disabled={!attachHostSlot()} onClick={() => attachToHost(true)} title="Place it and spend its cost from your regions">
+                      Place &amp; pay cost
+                    </button>
+                  )}
+                  <p className="cz-hint">{attachHostSlot() ? `Placed on top of ${attachDef.label}; they score and are removed together.` : `Build ${attachDef.label} first to place this on it.`}</p>
                 </>
               ) : (
                 <>

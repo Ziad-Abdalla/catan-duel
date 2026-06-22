@@ -21,6 +21,7 @@ export function CentralWall() {
 
   const addFlight = useUI((s) => s.addFlight)
   const openStackBrowse = useUI((s) => s.openStackBrowse)
+  const openRegionBrowse = useUI((s) => s.openRegionBrowse)
   const revealedRoll = useUI((s) => s.revealedRoll)
 
   // the roll result is "written" in the wall only once the felt dice have settled
@@ -107,6 +108,26 @@ export function CentralWall() {
         })}
         {/* The event deck still drives the event die, but it isn't interactive, so it
             shows no card here (keeps the wall clean — per owner request). */}
+        {/* the landscape (region) stack — search it (Scout) and reshuffle */}
+        <div className="cardstack-wrap">
+          <button
+            className="cardstack cs-set-base"
+            disabled={state.regionStack.length === 0 || over}
+            title={`Search the landscape stack (${state.regionStack.length}) — Scout`}
+            onClick={openRegionBrowse}
+          >
+            <span className="cs-face">🏞</span>
+            <span className="cs-count">{state.regionStack.length}</span>
+          </button>
+          <button
+            className="cs-peek"
+            disabled={state.regionStack.length === 0}
+            title="Look through / search the landscape stack"
+            onClick={openRegionBrowse}
+          >
+            🔍
+          </button>
+        </div>
         <button
           className="cardstack cs-discard"
           disabled={state.discard.length === 0 || over}

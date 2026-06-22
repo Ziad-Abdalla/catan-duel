@@ -106,6 +106,10 @@ interface UIState {
   stackBrowse: number | null
   openStackBrowse: (i: number) => void
   closeStackBrowse: () => void
+  /** Whether the region/landscape-stack browser is open (search it, take a region, reshuffle). */
+  regionBrowse: boolean
+  openRegionBrowse: () => void
+  closeRegionBrowse: () => void
   /** Whether the discard-pile browser is open (look through it, take any card). */
   discardOpen: boolean
   setDiscardOpen: (v: boolean) => void
@@ -161,6 +165,9 @@ export const useUI = create<UIState>((set) => ({
   stackBrowse: null,
   openStackBrowse: (i) => set({ stackBrowse: i }),
   closeStackBrowse: () => set({ stackBrowse: null }),
+  regionBrowse: false,
+  openRegionBrowse: () => set({ regionBrowse: true }),
+  closeRegionBrowse: () => set({ regionBrowse: false }),
   discardOpen: false,
   setDiscardOpen: (discardOpen) => set({ discardOpen }),
   negativeCue: null,

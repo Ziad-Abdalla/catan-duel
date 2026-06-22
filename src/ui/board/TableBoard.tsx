@@ -12,6 +12,7 @@ import { FlightLayer } from './FlightLayer'
 import { DiceLayer } from './DiceLayer'
 import { CardZoom } from './CardZoom'
 import { StackBrowser } from './StackBrowser'
+import { RegionStackBrowser } from './RegionStackBrowser'
 import { DiscardBrowser } from './DiscardBrowser'
 import { ResolutionPanel } from './ResolutionPanel'
 import { AuditLog } from './AuditLog'
@@ -81,6 +82,7 @@ export function TableBoard({ mode, setMode, fixedBottom }: { mode: AppMode; setM
       <DiceLayer />
       <CardZoom />
       <StackBrowser />
+      <RegionStackBrowser />
       <DiscardBrowser />
       <ResolutionPanel />
       <AuditLog />

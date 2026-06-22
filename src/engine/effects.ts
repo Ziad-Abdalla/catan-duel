@@ -20,6 +20,7 @@ export type QuickAction =
   | { kind: 'give'; count: number; label: string } // owner gives N of a chosen resource to opponent
   | { kind: 'setDie'; event?: EventFace; label: string } // focus the dice-override widget
   | { kind: 'grant'; label: string } // focus the card-grant widget
+  | { kind: 'regions'; label: string } // open the landscape (region) stack browser (Scout)
   | { kind: 'vp'; who: Who; delta: number; label: string }
   | { kind: 'stat'; who: Who; stat: Stat; delta: number; label: string }
   | { kind: 'advantage'; token: AdvantageToken; label: string } // focus advantage assignment
@@ -33,7 +34,7 @@ export interface EffectStep {
 const opp = (p: PlayerId): PlayerId => (p === 'p0' ? 'p1' : 'p0')
 
 /** Kinds that need the panel to focus a widget rather than dispatch immediately. */
-export const FOCUS_KINDS = new Set(['setDie', 'grant', 'advantage'])
+export const FOCUS_KINDS = new Set(['setDie', 'grant', 'advantage', 'regions'])
 
 /**
  * Convert a QuickAction into concrete engine Actions. For resource-choice kinds a
@@ -122,7 +123,7 @@ export const EFFECTS: Record<string, EffectStep[]> = {
   'gold-mint': [{ text: 'Once per turn: trade 1 gold for 1 other resource of choice.', quick: [{ kind: 'gainFixed', who: 'owner', resource: 'gold', count: -1, label: 'Spend 1 gold' }, gain(1, 'Gain 1 of choice'), { kind: 'used', key: 'gold-mint', label: 'Mark Mint used this turn' }] }],
 
   // ===== card manipulation =====
-  'base-scout': [{ text: 'Take 2 cards from the region card stack, then reshuffle it. Use Draw Region in play, or the toolkit.' }],
+  'base-scout': [{ text: 'Search the landscape (region) card stack, take 2 of your choice into your open landscape slots, then reshuffle it.', quick: [{ kind: 'regions', label: '🔍 Search the landscape stack' }] }],
   'base-relocation': [{ text: 'Exchange 2 of your own regions or 2 expansion cards (stored resources stay; placement rules apply). Resolve by hand on the board.' }],
   'progress-relocation': [{ text: 'Exchange 2 of your own regions or 2 expansion cards (stored resources stay; placement rules apply). Resolve by hand on the board.' }],
   'progress-library': [{ text: 'Immediately choose a card from a draw stack.', quick: [{ kind: 'grant', label: 'Choose a card' }] }],

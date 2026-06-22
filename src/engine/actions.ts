@@ -56,6 +56,9 @@ export type Action =
   | { type: 'shuffleStack'; stackIndex: number } // shuffle one draw stack in place (seeded → sync-safe)
   | { type: 'takeFromStack'; player: PlayerId; stackIndex: number; cardId?: string; position?: number } // search/take a card into hand (top by default)
   | { type: 'putToStack'; player: PlayerId; cardId: string; stackIndex: number; position?: 'top' | 'bottom' } // place a hand card onto a stack
+  // region (landscape) stack manipulation — the Scout's "search the landscapes, then reshuffle" verbs
+  | { type: 'shuffleRegionStack' } // shuffle the region/landscape stack in place (seeded → sync-safe)
+  | { type: 'takeRegionFromStack'; player: PlayerId; cardId?: string; position?: number } // search the landscape stack, place a CHOSEN region into the first empty slot (top by default); secret-safe log
   // events
   | { type: 'resolveBrigand' } // apply the Brigand event: anyone over 7 loses all gold + wool, logged
   // misc
@@ -875,6 +878,30 @@ function reduce(s: GameState, a: Action): GameState {
         i === a.stackIndex ? (pos === 'top' ? [...x, a.cardId] : [a.cardId, ...x]) : x,
       )
       return logged({ ...out, drawStacks }, a.player, `Put ${getCard(a.cardId)?.name ?? a.cardId} on ${pos} of stack ${a.stackIndex + 1}`)
+    }
+
+    case 'shuffleRegionStack': {
+      if (s.regionStack.length < 2) return s
+      const regionStack = shuffle(s.regionStack, makeRng((s.seq + 1) ^ 0x6e9a))
+      return logged({ ...s, regionStack }, s.activePlayer, 'Reshuffled the landscape stack')
+    }
+
+    case 'takeRegionFromStack': {
+      if (s.regionStack.length === 0) return s
+      // the chosen landscape: by id (last match), else explicit position, else the top
+      const idx = a.cardId != null ? s.regionStack.lastIndexOf(a.cardId) : a.position != null ? a.position : s.regionStack.length - 1
+      if (idx < 0 || idx >= s.regionStack.length) return s
+      // place into the player's FIRST empty landscape slot (mirrors placeLandscape's fill);
+      // no open slot → no-op (you can't keep a landscape with nowhere to set it).
+      const slotIndex = s.players[a.player].regions.findIndex((r) => r.empty)
+      if (slotIndex < 0) return s
+      const id = s.regionStack[idx]
+      const regionStack = [...s.regionStack.slice(0, idx), ...s.regionStack.slice(idx + 1)]
+      const out = withPlayer(s, a.player, (p) => {
+        p.regions = p.regions.map((r, i) => (i === slotIndex ? makeRegionSlot(id) : r))
+      })
+      // secret-safe: do NOT reveal WHICH landscape was taken (a hidden search, like a face-down draw).
+      return logged({ ...out, regionStack }, a.player, 'Searched the landscape stack and took a region')
     }
 
     case 'resolveBrigand': {

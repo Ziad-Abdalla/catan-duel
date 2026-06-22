@@ -407,6 +407,7 @@ export function ResolutionPanel() {
   const resolve = useUI((s) => s.resolve)
   const close = useUI((s) => s.closeResolve)
   const fireEventFx = useUI((s) => s.fireEventFx)
+  const openRegionBrowse = useUI((s) => s.openRegionBrowse)
   const state = useGame((s) => s.state)
   const dispatch = useGame((s) => s.dispatch)
   const undo = useGame((s) => s.undo)
@@ -438,6 +439,12 @@ export function ResolutionPanel() {
   }
 
   const onFocus = (qa: QuickAction) => {
+    // 'regions' opens the standalone landscape-stack browser (Scout) instead of an in-panel widget
+    if (qa.kind === 'regions') {
+      openRegionBrowse()
+      playSfx('ui')
+      return
+    }
     const key: FocusKey = qa.kind === 'setDie' ? 'dice' : qa.kind === 'grant' ? 'cards' : 'advantages'
     if (qa.kind === 'setDie' && 'event' in qa && qa.event) setPresetEvent(qa.event)
     setFocus(key)

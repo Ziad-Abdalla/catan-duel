@@ -327,3 +327,37 @@ describe('phase & turn flow', () => {
     expect(s.turn).toBe(2)
   })
 })
+
+describe('region (landscape) stack search — Scout', () => {
+  it('takeRegionFromStack places a CHOSEN region into the first empty landscape slot and removes it from the stack', () => {
+    // a freshly built settlement opens 2 empty landscape slots
+    let s = applyAction(fresh(), { type: 'buildPiece', player: 'p0', piece: 'settlement' })
+    const openIdx = s.players.p0.regions.findIndex((r) => r.empty)
+    const beforeLen = s.regionStack.length
+    // choose the BOTTOM of the stack (not the top) to prove "of your choice"
+    const chosenId = s.regionStack[0]
+    s = applyAction(s, { type: 'takeRegionFromStack', player: 'p0', position: 0 })
+    expect(s.regionStack).toHaveLength(beforeLen - 1)
+    expect(s.regionStack).not.toContain(chosenId)
+    expect(s.players.p0.regions[openIdx].empty).toBeFalsy()
+    expect(s.players.p0.regions[openIdx].cardId).toBe(chosenId)
+  })
+
+  it('takeRegionFromStack is a no-op when the player has no open landscape slot', () => {
+    const s0 = fresh() // starting principality has no empty slots
+    expect(s0.players.p0.regions.some((r) => r.empty)).toBe(false)
+    const s1 = applyAction(s0, { type: 'takeRegionFromStack', player: 'p0' })
+    expect(s1.regionStack).toEqual(s0.regionStack)
+    expect(s1.players.p0.regions).toEqual(s0.players.p0.regions)
+  })
+
+  it('shuffleRegionStack reorders the stack deterministically while keeping the same multiset', () => {
+    const s0 = fresh()
+    const s1 = applyAction(s0, { type: 'shuffleRegionStack' })
+    // same cards, (very likely) different order — seeded so it is reproducible
+    expect([...s1.regionStack].sort()).toEqual([...s0.regionStack].sort())
+    expect(s1.regionStack).not.toEqual(s0.regionStack)
+    const s2 = applyAction(s0, { type: 'shuffleRegionStack' })
+    expect(s2.regionStack).toEqual(s1.regionStack) // deterministic for the same seq
+  })
+})

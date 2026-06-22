@@ -109,11 +109,13 @@ Owner chose: full real mechanics · apply rulebook-stated values now + flag unkn
 - **Live e2e probe** (`e2e/aod-placements.spec.ts`) drives every new surface, asserting clean render.
 - Gate: tsc + 208 unit tests + the e2e probe + production build all green.
 
-### STILL NEEDS PHYSICAL-CARD DATA (flagged `unclear` in cards.json — never fabricated)
-Per-level Residence/Border-Fortress commerce & strength; exact Triumph level→VP (used identity,
-max 3); costs for Lighthouse, Herold, Gero, Olaf, Wolfgang, Pilgrimage Site, Great Thingstead;
-Judith/Bran skill-vs-commerce; Master Merchants' Alliance commerce; White Raven point values;
-Triumph/Castle copy counts (set to 2 from the rulebook index — confirm).
+### PHYSICAL-CARD DATA — RESOLVED (2026-06-22, commits 79a462b + d85a79c)
+All `unclear` flags on the 3 AoD sets are cleared. Read off high-res PDF page renders + the owner's
+physical cards: corrected costs (Pilgrimage ore+gold, Odin's Fountain brick+ore+gold, Great Thingstead
+2 lumber+2 grain+2 wool, Olaf grain+wool, White Raven lumber+grain); points (Judith 2 skill+2 VP,
+Godfrey strength-only, Marie 1 strength+1 skill, Master Merchants' Alliance 1 VP); name Hergild;
+Triumph/Castle copies 2 + Triumph level=VP; and the full per-level tables — Cloth commerce 0/1/2/3,
+Paper 0/1c/1c+1p/1c+1p+1VP, Border Fortress strength 0/1/2/4 — now scored live via PLACED_LEVEL_VALUES.
 
 ### OUT OF SCOPE (not requested this round)
 AI-opponent support for AoD (always a deferred follow-up); the 3 Age-of-Enlightenment sets.

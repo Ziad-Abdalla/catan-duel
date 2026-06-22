@@ -16,7 +16,28 @@ Music/SFX licenses: docs/superpowers/MUSIC_LICENSES.md, SFX_LICENSES.md (Kevin M
 - Music on lobby+gallery too; collapsed credits. (a25417d, then collapsed)
 - Prod build GREEN (vite build ✓), tsc 0, 195 unit tests green.
 
-## IN FLIGHT
+## STATUS UPDATE (HEAD 986a5a8) — primary goals DONE + green
+Full gate green: tsc 0, 195 unit, e2e exit 0, build ✓. Committed since b5ba612:
+manual play default · collapsible HUD · online name fix · 3D dice · per-type flourishes+SFX ·
+music everywhere (42 tracks, 30+min/era) + collapsed credits · deploy proven + docs/DEPLOY.md ·
+CARD ACCURACY pass1+pass2 = ~95 fixes, ZERO deferrals, large-trade-ship confirmed NO city req ·
+remove settlements/cities (drag to build bar) + demolish cue.
+Both card agents COMPLETE. Move-landscapes = swapRegions already (verify live).
+
+## REMAINING (batch 4 feature requests — secondary polish)
+- Active/one-shot ACTION cards: a unique "Play" button that resolves effect + AUTO-DISCARDS (not placed to principality). (ResolutionPanel + discardCard; classify via category 'action')
+- Region/landscape STACK: search through it + shuffle after (Scout + a RegionStackBrowser; generalize StackBrowser; uiStore regionBrowse; wire base-scout effect). play 'page' sfx.
+- Add+remove cards ON existing buildings (heroes on chapel/odins-temple/court) — all types, everywhere; some work — make uniform.
+- Show MULTIPLE hand cards to opponent (extend ShowcasePopup to a set).
+- Standalone die-roll usable on opponent's turn w/o ending turn (verify/extend DiceTool in ResolutionPanel).
+- Audit-log accuracy ALL actions: show a stack SEARCH (chose a card, not top-draw) WITHOUT revealing which; chronological, readable, secret-safe. (engine logged() in actions.ts)
+- Animations/SFX "absolutely everywhere" audit, Hearthstone/Yu-Gi-Oh card-play impact (enlarge+glow→fly→land). Card placement FLIGHT via addFlight.
+- Settlement ICON unsuitable → improve (CenterArt Settlement() SVG / PieceArt); general icon polish.
+- Multi-era play: verify mixed eras (costs/effects/music 'duel') in playtest.
+- PLAYTEST: chromium installed; two-context online + hotseat playthrough; watch console; fix bugs.
+- FINAL: full gate + PUSH origin (owner asked, no AI signature).
+
+## IN FLIGHT (both now COMPLETE)
 - BACKGROUND AGENT (af7f79f98890bef09) applying HIGH-confidence card-data corrections to src/data/cards.json from the 10 audit docs. Will write docs/superpowers/CARD_CORRECTIONS_APPLIED.md. ⚠️ DO NOT edit cards.json until it reports. After it lands: verify json valid + tsc + vitest; then OWNER WANTS NO DEFERRALS — dispatch a 2nd-pass agent to resolve EVERY remaining/uncertain card (cost/requires/rules/name) using the official Rivals for Catan wiki + high-res image re-analysis, for ALL of them.
 
 ## NEXT (priority order)
@@ -29,6 +50,13 @@ Music/SFX licenses: docs/superpowers/MUSIC_LICENSES.md, SFX_LICENSES.md (Kevin M
 7. D5 large-trade-ship "requires City" — UNVERIFIED by rulebook; confirm via wiki in the 2nd-pass card agent, then apply or drop.
 8. PROACTIVE bug hunt: Playwright playthrough (hotseat + online two-context), watch console errors, screenshot key states; fix found bugs.
 9. WRAP: full gate green (tsc, vitest, e2e, build); space check (public/audio ~181MB — acceptable, reused shared tracks); clean temp; update this handoff + memory; commit logically; PUSH to origin (owner asked) — no AI signature.
+
+## More owner notes (batch 3)
+- MULTI-ERA: players may enable several eras at once — ensure card effects/costs/UI/music ('duel' pool) all handle mixed-era games; test it in the playtest.
+- ANIMATION refs for polish: Hearthstone / Yu-Gi-Oh style — card play should feel impactful (enlarge+glow, fly to board, satisfying land, hover lift). Build on cardFx.ts per-type flourishes.
+- Credits: collapsed <details> in gallery footer ONLY; never on gameplay page (confirmed acceptable).
+- Card pass 2 agent (a7a2220a91f664150) running: resolves ALL deferred (intrigue/sage/merchant-guild costs, phantom action-card costs, pirate costs, gold-cache, prince/princess requires bug, large-trade-ship requires-city via wiki). Verify + commit when it lands.
+- e2e: chromium now installed; `npm run e2e` runs (UI-flow incl. new HUD-collapse test).
 
 ## Verify commands
 cd ~/projects/catan-duel && npx tsc --noEmit && npx vitest run && npm run build && npm run e2e

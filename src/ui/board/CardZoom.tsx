@@ -71,6 +71,17 @@ export function CardZoom() {
     playSfx(cardSfx(zoom.cardId), zoom.cardId) // one thematic cue per play, varied per card
     closeZoom()
   }
+  // Active (one-shot) cards — neutral & attack actions, events — aren't placed on the
+  // board: you play them for their effect, the opponent sees what you played, then the
+  // card is discarded. One button does the whole ritual (showcase → thematic cue →
+  // open the resolve toolkit → discard), so the right SFX/animation fire every time.
+  const playActive = () => {
+    dispatch({ type: 'showcaseCard', player: zoom.player, cardId: zoom.cardId })
+    playSfx(cardSfx(zoom.cardId), zoom.cardId)
+    openResolve({ player: zoom.player, from: 'hand', cardId: zoom.cardId })
+    dispatch({ type: 'discardCard', player: zoom.player, from: 'hand', cardId: zoom.cardId })
+    closeZoom()
+  }
   // Foreign cards (Red Light Tavern, Brigand Camp, Trading Station…) are built in the
   // OPPONENT's principality and affect them — the engine adds them to the opponent's
   // placed cards with `owner` set so they score for nobody.
@@ -143,6 +154,11 @@ export function CardZoom() {
                     </button>
                   )}
                   <p className="cz-hint">A foreign card — it is built in your opponent’s principality and affects them.</p>
+                </>
+              ) : card.category === 'action' || card.category === 'event' ? (
+                <>
+                  <button className="cz-btn cz-play" onClick={playActive} title="Show your opponent, fire its effect, then it auto-discards">▶ Play card</button>
+                  <p className="cz-hint">Active cards are played for their effect (the toolkit opens), then discarded.</p>
                 </>
               ) : (
                 <>

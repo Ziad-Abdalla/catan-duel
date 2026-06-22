@@ -705,7 +705,7 @@
     "cost": [
       {
         "resource": "wool",
-        "count": 1
+        "count": 2
       },
       {
         "resource": "grain",
@@ -733,7 +733,20 @@
     "category": "hero-or-unit",
     "tag": "Unit \u2013 Hero",
     "name": "Siglind",
-    "cost": [],
+    "cost": [
+      {
+        "resource": "wool",
+        "count": 2
+      },
+      {
+        "resource": "grain",
+        "count": 1
+      },
+      {
+        "resource": "ore",
+        "count": 1
+      }
+    ],
     "values": {
       "strength": 2,
       "skill": 3
@@ -979,7 +992,7 @@
     "id": "gold-gold-cache",
     "set": "gold",
     "category": "building",
-    "tag": "Building",
+    "tag": "Extraordinary Site",
     "name": "GOLD CACHE",
     "cost": [
       {
@@ -1641,12 +1654,12 @@
     "name": "Large Festival Hall",
     "cost": [
       {
-        "resource": "gold",
-        "count": 2
+        "resource": "grain",
+        "count": 3
       },
       {
         "resource": "ore",
-        "count": 2
+        "count": 3
       },
       {
         "resource": "brick",
@@ -1869,11 +1882,11 @@
     "cost": [
       {
         "resource": "wool",
-        "count": 1
+        "count": 2
       },
       {
         "resource": "ore",
-        "count": 1
+        "count": 2
       },
       {
         "resource": "brick",
@@ -1899,11 +1912,11 @@
     "cost": [
       {
         "resource": "lumber",
-        "count": 1
+        "count": 2
       },
       {
         "resource": "grain",
-        "count": 1
+        "count": 2
       },
       {
         "resource": "brick",
@@ -1961,7 +1974,7 @@
     "cost": [
       {
         "resource": "wool",
-        "count": 1
+        "count": 2
       },
       {
         "resource": "brick",
@@ -1991,7 +2004,7 @@
     "cost": [
       {
         "resource": "brick",
-        "count": 1
+        "count": 2
       },
       {
         "resource": "wool",
@@ -2043,15 +2056,15 @@
     "cost": [
       {
         "resource": "lumber",
-        "count": 2
+        "count": 3
       },
       {
         "resource": "brick",
-        "count": 1
+        "count": 2
       },
       {
         "resource": "wool",
-        "count": 1
+        "count": 2
       }
     ],
     "values": {
@@ -2700,7 +2713,7 @@
       "commerce": 1,
       "requires": "City"
     },
-    "rules_text": "Place above or below a pasture region. Rotate up through levels for more commerce; at higher levels gain 2 wool. Requires: City.",
+    "rules_text": "Place adjacent to a pasture region. For 2 wool from the adjacent pasture region, you may rotate the Residence to the next higher level. Requires: City.",
     "image": "merchants-cloth-merchants-residence.webp",
     "copies": 1,
     "confidence": "medium"
@@ -2720,7 +2733,7 @@
       "commerce": 1,
       "requires": "City"
     },
-    "rules_text": "Place above or below a forest region. Rotate up through levels for more commerce; at higher levels gain 2 lumber. Requires: City.",
+    "rules_text": "Place adjacent to a forest region. For 2 lumber from the adjacent forest region, you may rotate the Residence to the next higher level. Requires: City.",
     "image": "merchants-paper-merchants-residence.webp",
     "copies": 1,
     "confidence": "medium"
@@ -2732,11 +2745,11 @@
     "name": "Trading Post",
     "cost": [
       {
-        "resource": "lumber",
+        "resource": "grain",
         "count": 1
       },
       {
-        "resource": "brick",
+        "resource": "wool",
         "count": 1
       }
     ],
@@ -2755,11 +2768,11 @@
     "name": "Brigand Camp",
     "cost": [
       {
-        "resource": "lumber",
+        "resource": "wool",
         "count": 1
       },
       {
-        "resource": "brick",
+        "resource": "grain",
         "count": 1
       }
     ],
@@ -2799,12 +2812,12 @@
     "name": "Olaf the Merchant Ship Captain",
     "cost": [
       {
-        "resource": "gold",
+        "resource": "grain",
         "count": 1
       },
       {
-        "resource": "ore",
-        "count": 2
+        "resource": "wool",
+        "count": 1
       }
     ],
     "values": {
@@ -2823,15 +2836,11 @@
     "name": "Pirate Ship",
     "cost": [
       {
+        "resource": "lumber",
+        "count": 1
+      },
+      {
         "resource": "wool",
-        "count": 1
-      },
-      {
-        "resource": "grain",
-        "count": 1
-      },
-      {
-        "resource": "ore",
         "count": 1
       }
     ],
@@ -2848,12 +2857,16 @@
     "name": "Commercial Metropolis",
     "cost": [
       {
-        "resource": "brick",
-        "count": 2
+        "resource": "lumber",
+        "count": 1
       },
       {
-        "resource": "ore",
-        "count": 2
+        "resource": "brick",
+        "count": 1
+      },
+      {
+        "resource": "wool",
+        "count": 1
       }
     ],
     "values": {
@@ -2897,15 +2910,15 @@
     "tag": "Face-up Expansion",
     "cost": [
       {
-        "resource": "gold",
-        "count": 2
-      },
-      {
-        "resource": "brick",
+        "resource": "grain",
         "count": 1
       },
       {
-        "resource": "ore",
+        "resource": "wool",
+        "count": 1
+      },
+      {
+        "resource": "brick",
         "count": 1
       }
     ],
@@ -2979,15 +2992,15 @@
     "name": "Master Merchants' Alliance",
     "cost": [
       {
+        "resource": "grain",
+        "count": 1
+      },
+      {
         "resource": "lumber",
         "count": 1
       },
       {
         "resource": "brick",
-        "count": 1
-      },
-      {
-        "resource": "wool",
         "count": 1
       }
     ],
@@ -3139,12 +3152,12 @@
         "count": 1
       },
       {
-        "resource": "brick",
+        "resource": "grain",
         "count": 1
       }
     ],
     "values": {
-      "skill": 2
+      "skill": 1
     },
     "rules_text": "1x during your turn: Pay 1 gold and roll the dice. On 1-2: gain nothing. On 3-5: gain 1 resource. On 6: gain 2 resources.",
     "image": "barbarians-white-raven-tavern.webp",
@@ -3203,10 +3216,18 @@
     "id": "barbarians-arad-the-strategist",
     "set": "barbarians",
     "category": "hero-or-unit",
-    "name": "Arad the Strategist",
+    "name": "Arnd the Strategist",
     "cost": [
       {
         "resource": "grain",
+        "count": 1
+      },
+      {
+        "resource": "wool",
+        "count": 1
+      },
+      {
+        "resource": "ore",
         "count": 1
       }
     ],
@@ -3284,12 +3305,17 @@
         "count": 1
       },
       {
-        "resource": "brick",
+        "resource": "wool",
+        "count": 1
+      },
+      {
+        "resource": "ore",
         "count": 1
       }
     ],
     "values": {
-      "requires": "City"
+      "requires": "City",
+      "strength": 2
     },
     "rules_text": "Each ship in the settlement/city where the Caravel is placed counts double in case of a Barbarian Attack\u2014except for the Caravel itself. Requires: City.",
     "image": "barbarians-caravel.webp",
@@ -3303,11 +3329,11 @@
     "name": "Marie the Shieldmaiden",
     "cost": [
       {
-        "resource": "brick",
+        "resource": "wool",
         "count": 1
       },
       {
-        "resource": "ore",
+        "resource": "lumber",
         "count": 1
       }
     ],
@@ -3324,11 +3350,15 @@
     "name": "Secret Brotherhood",
     "cost": [
       {
+        "resource": "wool",
+        "count": 1
+      },
+      {
         "resource": "lumber",
         "count": 1
       },
       {
-        "resource": "grain",
+        "resource": "gold",
         "count": 1
       }
     ],
@@ -3344,6 +3374,10 @@
     "category": "building",
     "name": "Bailwick",
     "cost": [
+      {
+        "resource": "wool",
+        "count": 2
+      },
       {
         "resource": "lumber",
         "count": 1
@@ -3388,11 +3422,15 @@
     "name": "Arsenal",
     "cost": [
       {
-        "resource": "brick",
-        "count": 2
+        "resource": "wool",
+        "count": 1
       },
       {
-        "resource": "ore",
+        "resource": "lumber",
+        "count": 1
+      },
+      {
+        "resource": "brick",
         "count": 1
       }
     ],
@@ -3409,7 +3447,7 @@
     "name": "Siegfried, Vanquisher of the Barbarians",
     "cost": [],
     "values": {
-      "requires": "Caft and at least 2 heroes."
+      "requires": "Castle and at least 2 heroes."
     },
     "rules_text": "Take 1 or 2 resources of your choice or rotate your Triumph Card to the next level. Requires: Castle and at least 2 heroes.",
     "image": "barbarians-siegfried-vanquisher-of-the-barbarians.webp",
@@ -3544,7 +3582,7 @@
     "id": "explorers-zheng-he",
     "set": "explorers",
     "category": "hero-or-unit",
-    "name": "Zheng He",
+    "name": "Haidao Chang",
     "cost": [
       {
         "resource": "grain",
@@ -3567,7 +3605,7 @@
     "id": "explorers-cinmarone",
     "set": "explorers",
     "category": "hero-or-unit",
-    "name": "Cinmarone",
+    "name": "Cimmarone",
     "cost": [
       {
         "resource": "grain",
@@ -3654,7 +3692,7 @@
     ],
     "values": {
       "commerce": 4,
-      "requires": "Place on the city adjacent to the Explorer Harbor. Requires: At least 2 level 3 lands."
+      "requires": "Place on the city adjacent to the Explorer Harbor. Requires: At least 6 discovered sea cards or at least 2 level-3 islands."
     },
     "rules_text": "Place on city adjacent to Explorer Harbor. Worth 4 victory points total. Requires: 6+ discovered sea cards or 2+ level 3 islands.",
     "image": "explorers-explorer-metropolis.webp",
@@ -3695,7 +3733,7 @@
         "count": 1
       },
       {
-        "resource": "gold",
+        "resource": "grain",
         "count": 1
       }
     ],
@@ -3815,7 +3853,7 @@
     "name": "Broadside",
     "cost": [],
     "values": {
-      "requires": "At least 2 common points"
+      "requires": "At least 2 cannon points"
     },
     "rules_text": "Opponent rotates 1 island card to next lower level or loses 1 explorer ship\u2014you choose. Requires: At least 2 cannon points.",
     "image": "explorers-broadside.webp",
@@ -3857,7 +3895,7 @@
     "name": "Ambassador",
     "cost": [],
     "values": {
-      "requires": "Requires: You have leveled the Bland of the Burds, the Bland of the Scholars, or the Bland of the Merchants another time"
+      "requires": "You have rotated the respective card at least to level 1."
     },
     "rules_text": "Gain advantage of discovering Island of Bards, Island of Scholars, or Island of Merchants another time. Requires: Card rotated to level 1 or higher.",
     "image": "explorers-ambassador.webp",
@@ -3871,7 +3909,7 @@
     "name": "Friendship Between Peoples",
     "cost": [],
     "values": {},
-    "rules_text": "If you receive more resources than you can store, lose excess resources.",
+    "rules_text": "Each player receives any 1 resource of his choice for each Island card he has rotated at least to the next higher level.",
     "image": "explorers-friendship-between-peoples.webp",
     "copies": 2,
     "confidence": "high"
@@ -4009,7 +4047,7 @@
     "id": "sages-manifest-of-humane-conduct",
     "set": "sages",
     "category": "building",
-    "name": "Manifest of Humane Conduct",
+    "name": "Manifesto of Humane Conduct",
     "tag": "Face-up Expansion",
     "cost": [
       {
@@ -4432,11 +4470,11 @@
     "name": "Mercenaries",
     "cost": [
       {
-        "resource": "wool",
+        "resource": "ore",
         "count": 1
       },
       {
-        "resource": "ore",
+        "resource": "gold",
         "count": 1
       }
     ],
@@ -4486,15 +4524,7 @@
     "name": "Thieves' Hideout",
     "cost": [
       {
-        "resource": "lumber",
-        "count": 1
-      },
-      {
-        "resource": "brick",
-        "count": 1
-      },
-      {
-        "resource": "ore",
+        "resource": "wool",
         "count": 1
       }
     ],
@@ -4525,8 +4555,8 @@
       }
     ],
     "values": {
-      "victory_points": 1,
-      "requires": "Not having a Princess."
+      "requires": "Not having a Princess.",
+      "strength": 1
     },
     "rules_text": "1x during your turn: For 1 gold, retrieve 1 Artwork from the discard pile. Cannot be taken or enticed away. Requires: Not having a Princess.",
     "image": "prosperity-prince.webp",
@@ -4554,8 +4584,8 @@
       }
     ],
     "values": {
-      "victory_points": 1,
-      "requires": "Not having a Princess."
+      "requires": "Not having a Princess.",
+      "skill": 1
     },
     "rules_text": "1x during your turn: For 1 gold, retrieve 1 Artwork from the discard pile. Cannot be taken or enticed away. Requires: Not having a Prince.",
     "image": "prosperity-princess.webp",
@@ -4568,6 +4598,10 @@
     "category": "building",
     "name": "Aqueduct",
     "cost": [
+      {
+        "resource": "lumber",
+        "count": 2
+      },
       {
         "resource": "brick",
         "count": 2
@@ -4590,8 +4624,12 @@
     "name": "Hospital",
     "cost": [
       {
-        "resource": "lumber",
+        "resource": "wool",
         "count": 2
+      },
+      {
+        "resource": "lumber",
+        "count": 1
       },
       {
         "resource": "ore",
@@ -4613,8 +4651,12 @@
     "name": "Theater",
     "cost": [
       {
-        "resource": "lumber",
+        "resource": "wool",
         "count": 2
+      },
+      {
+        "resource": "lumber",
+        "count": 1
       },
       {
         "resource": "brick",
@@ -4682,7 +4724,7 @@
       },
       {
         "resource": "ore",
-        "count": 1
+        "count": 2
       }
     ],
     "values": {

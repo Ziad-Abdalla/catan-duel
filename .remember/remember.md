@@ -1,76 +1,36 @@
-# Catan Duel — marathon handoff (2026-06-22)
+# Catan Duel — session close 2026-06-22
 
-Working in `catan-duel` at `/home/abdalla/projects/catan-duel`. Goal (/goal active): most
-polished complete version; playable by anyone FREE with no Radmin/repo (web/app); add
-animations + SFX + music everywhere; fix card-data accuracy across all eras; proactively
-find bugs; rigorous test; then PUSH (owner asked). No AI signature on commits.
+Working in `catan-duel` at `/home/abdalla/projects/catan-duel`. In sync with origin/master
+(HEAD `b300f29`). Gate GREEN: tsc 0 · 214 unit tests · e2e exit 0 (9 specs) · build ✓.
 
-Plan + recon: docs/superpowers/specs/2026-06-22-marathon-plan.md ; docs/superpowers/recon/*.md
-Music/SFX licenses: docs/superpowers/MUSIC_LICENSES.md, SFX_LICENSES.md (Kevin MacLeod CC-BY → credit is in the GALLERY footer collapsed <details>, never on the gameplay page).
+## What this session delivered (all committed + pushed)
+- **Manual play by default** — engine never auto-deducts; Pay chip removed; Brigand is a manual prompt.
+- **Collapsible HUD** (corner handle, persisted); **online name fix** (entered name writes to seat + syncs).
+- **3D dice** (perspective, multi-axis tumble, falls + bounces + contact shadow).
+- **Per-card-type placement flourishes** (buildings rise, ships rock, heroes flash, attacks shudder,
+  actions shimmer), era-tinted — fire on the manual drag-to-board. **Active cards** get a one-tap Play
+  (showcase → effect → auto-discard). **Settlement/city removal** (drag to build bar) + demolish cue.
+- **SFX everywhere** — thematic per-card cues incl. CC0 ship/drums/mystic/remove/page, volume-normalised.
+- **Music everywhere** — each era a fitting 30+ min looping soundtrack (42 tracks), on board/lobby/gallery.
+  Credits collapsed in the gallery only (Kevin MacLeod CC-BY + CC0 SFX). Licenses: docs/superpowers/*_LICENSES.md.
+- **Card accuracy** — ~95 image-verified fixes across all eras (2 passes, zero deferrals); reconciled
+  field-by-field with the friend's rulebook pass on merge.
+- **MERGED the friend's AoD work** (origin/master, 13 commits): placement on roads/regions, attach heroes
+  onto Temple/Church/city, Residence rotation, rulebook data + new engine/tests. Both efforts combined, green.
+- **Region/landscape stack** — search + reshuffle browser (🔍 on the central wall) + working **Scout**
+  (secret-safe log). Move landscapes = swap (already worked).
+- **Audit log** already records resource +/- and transfers, and stack searches without revealing the pick.
+- **Free deploy, no Radmin/repo for players**: `npm run party:deploy` → one free PartyKit URL. Docs:
+  `PLAY-FOR-EVERYONE.html` + `docs/DEPLOY.md`. Auto-deploy CI: `.github/workflows/deploy.yml` (set
+  PARTYKIT_LOGIN+PARTYKIT_TOKEN secrets once). DEPLOY is done by the OWNER'S FRIEND (non-flagged GitHub
+  account) — owner's account is GitHub-flagged (appeal submitted by owner; flag also 404s public repos).
 
-## DONE + committed (HEAD chain after b5ba612)
-- Manual play default (no auto-pay), Pay chip removed, Brigand manual prompt. (dd02fc2)
-- Collapsible HUD (corner handle, persisted). Online lobby NAME now applies+syncs (renamePlayer on connect/hello/seat-slide). e2e updated.
-- 3D dice (perspective+multi-axis+shadow). Per-card-type placement flourishes (cardFx.ts + cardfx.css), era-tinted. (f954c64)
-- Richer thematic SFX cues wired (cardSound.ts: ship/drums/mystic; remove cue on removePlaced). New CC0 SFX + 24 new BGM tracks (era pools ≥30min) from agents. (f954c64)
-- Music on lobby+gallery too; collapsed credits. (a25417d, then collapsed)
-- Prod build GREEN (vite build ✓), tsc 0, 195 unit tests green.
+## Optional future polish (NOT blocking; core game complete)
+- Card "flight" hand→board (currently the placement flourish animates the card into its spot).
+- Show MULTIPLE hand cards to opponent at once (showcase is one at a time).
+- Settlement icon redraw (CenterArt Settlement() SVG) — needs visual iteration.
 
-## STATUS UPDATE 2 (HEAD 7323272) — MERGED with friend's AoD work + PUSHED
-origin/master had 13 "AoD" commits (placement features: cards on roads/regions, attach
-heroes onto Temple/Church/city, Residence rotation, rulebook data + new tests). MERGED
-field-by-field (cards.json: 93 ours/94 theirs/8 image-resolved) + integrated my seat-removal,
-active-card Play, flourish. Gate GREEN: tsc 0, 211 tests, build ✓. PUSHED 16d8ae4 + auto-deploy
-workflow 7323272. Deploy HTML opened for owner (PLAY-FOR-EVERYONE.html). Auto-deploy =
-.github/workflows/deploy.yml (owner sets PARTYKIT_LOGIN+PARTYKIT_TOKEN secrets once).
-Friend's merge RESOLVED these backlog items: place on opp roads/regions, attach on existing
-buildings, move landscapes (swap). REMAINING: region-stack search+shuffle/Scout (agent
-a66ad8c431da5ed75 BUILDING now), audit-log accuracy (resource tracking + secret-safe stack
-search), show-multiple-cards to opponent, settlement icon, Hearthstone-style card-play flight,
-two-context live playtest. Verify region agent → commit → push, then those.
-
-## STATUS UPDATE 1 (HEAD 986a5a8) — primary goals DONE + green
-Full gate green: tsc 0, 195 unit, e2e exit 0, build ✓. Committed since b5ba612:
-manual play default · collapsible HUD · online name fix · 3D dice · per-type flourishes+SFX ·
-music everywhere (42 tracks, 30+min/era) + collapsed credits · deploy proven + docs/DEPLOY.md ·
-CARD ACCURACY pass1+pass2 = ~95 fixes, ZERO deferrals, large-trade-ship confirmed NO city req ·
-remove settlements/cities (drag to build bar) + demolish cue.
-Both card agents COMPLETE. Move-landscapes = swapRegions already (verify live).
-
-## REMAINING (batch 4 feature requests — secondary polish)
-- Active/one-shot ACTION cards: a unique "Play" button that resolves effect + AUTO-DISCARDS (not placed to principality). (ResolutionPanel + discardCard; classify via category 'action')
-- Region/landscape STACK: search through it + shuffle after (Scout + a RegionStackBrowser; generalize StackBrowser; uiStore regionBrowse; wire base-scout effect). play 'page' sfx.
-- Add+remove cards ON existing buildings (heroes on chapel/odins-temple/court) — all types, everywhere; some work — make uniform.
-- Show MULTIPLE hand cards to opponent (extend ShowcasePopup to a set).
-- Standalone die-roll usable on opponent's turn w/o ending turn (verify/extend DiceTool in ResolutionPanel).
-- Audit-log accuracy ALL actions: show a stack SEARCH (chose a card, not top-draw) WITHOUT revealing which; chronological, readable, secret-safe. (engine logged() in actions.ts)
-- Animations/SFX "absolutely everywhere" audit, Hearthstone/Yu-Gi-Oh card-play impact (enlarge+glow→fly→land). Card placement FLIGHT via addFlight.
-- Settlement ICON unsuitable → improve (CenterArt Settlement() SVG / PieceArt); general icon polish.
-- Multi-era play: verify mixed eras (costs/effects/music 'duel') in playtest.
-- PLAYTEST: chromium installed; two-context online + hotseat playthrough; watch console; fix bugs.
-- FINAL: full gate + PUSH origin (owner asked, no AI signature).
-
-## IN FLIGHT (both now COMPLETE)
-- BACKGROUND AGENT (af7f79f98890bef09) applying HIGH-confidence card-data corrections to src/data/cards.json from the 10 audit docs. Will write docs/superpowers/CARD_CORRECTIONS_APPLIED.md. ⚠️ DO NOT edit cards.json until it reports. After it lands: verify json valid + tsc + vitest; then OWNER WANTS NO DEFERRALS — dispatch a 2nd-pass agent to resolve EVERY remaining/uncertain card (cost/requires/rules/name) using the official Rivals for Catan wiki + high-res image re-analysis, for ALL of them.
-
-## NEXT (priority order)
-1. DEPLOY PROOF (must-hit): `npm run build` (done) → run the dist artifact via `npx partykit dev` (serves dist) → Playwright TWO browser contexts: create room in A, join in B, verify moves sync + names + refresh-resync. Write docs/DEPLOY.md (owner runs `npm run party:deploy` once — browser GitHub/Cloudflare login, no token present → owner-gated final step → permanent *.partykit.dev URL, free). PartyKit deploy is free on own Cloudflare acct; budget ≤£10 OK.
-2. Card corrections: land agent + 2nd full pass (above). Re-run unit tests (some cost-asserting tests may need review — verify, don't force).
-3. Audit-log accuracy (all actions): show when a player SEARCHED a stack + picked a specific card (not top-draw) WITHOUT revealing which card; chronological, readable, secret-safe. Engine logged() in actions.ts.
-4. Feature gaps (several owner-requested): remove settlements/cities (pb-seat → setDragRemove/removePlaced); add+remove cards ON existing buildings (heroes on chapel/temple/court) all types; move landscape into empty slot (swapRegions); browse REGION stack + Scout search (generalize StackBrowser, regionBrowse state, take2+reshuffle); foreign placement drop targets on opponent board; standalone die-roll tool usable on opponent turn w/o ending turn (DiceTool in ResolutionPanel — verify/extend); show MULTIPLE hand cards to opponent (extend ShowcasePopup). Recon: docs/superpowers/recon/01-build-place-move.md.
-5. Icons/UI polish: proper SETTLEMENT icon (current unsuitable); general symbol/icon polish. (PieceArt.tsx / CenterArt)
-6. Subtle animations more broadly (region disc rotate easing, VP pulse, card placement flight via addFlight). Recon 02-dice-animations.md.
-7. D5 large-trade-ship "requires City" — UNVERIFIED by rulebook; confirm via wiki in the 2nd-pass card agent, then apply or drop.
-8. PROACTIVE bug hunt: Playwright playthrough (hotseat + online two-context), watch console errors, screenshot key states; fix found bugs.
-9. WRAP: full gate green (tsc, vitest, e2e, build); space check (public/audio ~181MB — acceptable, reused shared tracks); clean temp; update this handoff + memory; commit logically; PUSH to origin (owner asked) — no AI signature.
-
-## More owner notes (batch 3)
-- MULTI-ERA: players may enable several eras at once — ensure card effects/costs/UI/music ('duel' pool) all handle mixed-era games; test it in the playtest.
-- ANIMATION refs for polish: Hearthstone / Yu-Gi-Oh style — card play should feel impactful (enlarge+glow, fly to board, satisfying land, hover lift). Build on cardFx.ts per-type flourishes.
-- Credits: collapsed <details> in gallery footer ONLY; never on gameplay page (confirmed acceptable).
-- Card pass 2 agent (a7a2220a91f664150) running: resolves ALL deferred (intrigue/sage/merchant-guild costs, phantom action-card costs, pirate costs, gold-cache, prince/princess requires bug, large-trade-ship requires-city via wiki). Verify + commit when it lands.
-- e2e: chromium now installed; `npm run e2e` runs (UI-flow incl. new HUD-collapse test).
-
-## Verify commands
+## Verify
 cd ~/projects/catan-duel && npx tsc --noEmit && npx vitest run && npm run build && npm run e2e
-Run dev: npm run dev (5173). Online relay local: npx partykit dev.
+Local: npm run dev (5173). Online relay local: npm run party. Deploy: npm run party:deploy.
+Repo hygiene: node_modules/dist/.partykit/e2e artifacts all gitignored. public/audio ~181MB = the era soundtracks (intended).

@@ -6,6 +6,7 @@ import { TableBoard } from './ui/board/TableBoard'
 import { Lobby } from './ui/net/Lobby'
 import { useGame } from './store/gameStore'
 import type { AppMode } from './ui/board/TableHud'
+import { AmbientMusic } from './ui/board/AmbientMusic'
 import './app.css'
 
 const SETS: { id: SetId | 'all'; label: string }[] = [
@@ -33,6 +34,7 @@ export function App() {
   if (mode === 'online') {
     return (
       <div className="lobby-screen">
+        <AmbientMusic />
         <nav className="mode-tabs floating">
           <button className="mode-tab" onClick={() => setMode('local')}>Hotseat</button>
           <button className="mode-tab active">Online</button>
@@ -45,6 +47,7 @@ export function App() {
 
   return (
     <div className="app">
+      <AmbientMusic />
       <header className="app-header">
         <h1 className="app-title">Catan&nbsp;Duel</h1>
         <p className="app-sub">The Rivals for Catan</p>
@@ -76,6 +79,8 @@ export function App() {
 
       <footer className="app-foot">
         Card text &amp; art © Catan GmbH — transcribed from official sources for private play.
+        <br />
+        Music by Kevin MacLeod (incompetech.com), licensed under CC BY 4.0. Sound effects CC0 (OpenGameArt).
       </footer>
     </div>
   )

@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Catan Duel — put it online for everyone (free)</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; line-height: 1.55;
+    max-width: 760px; margin: 0 auto; padding: 28px 20px 80px; color: #1c1710; background: #f6efe0; }
+  h1 { font-size: 1.6rem; margin: 0 0 4px; }
+  .sub { color: #6b5d44; margin: 0 0 24px; }
+  .card { background: #fffdf7; border: 1px solid #e3d6b8; border-radius: 12px; padding: 18px 20px;
+    margin: 16px 0; box-shadow: 0 2px 8px rgba(0,0,0,.05); }
+  .step { display: flex; gap: 14px; align-items: flex-start; margin: 14px 0; }
+  .num { flex: none; width: 30px; height: 30px; border-radius: 50%; background: #b8862b; color: #fff;
+    display: grid; place-items: center; font-weight: 700; }
+  code, pre { background: #efe6cf; border-radius: 6px; font-family: ui-monospace, Menlo, Consolas, monospace; }
+  code { padding: 1px 6px; }
+  pre { padding: 12px 14px; overflow-x: auto; border: 1px solid #e3d6b8; }
+  .ok { color: #2f7d32; font-weight: 600; }
+  .note { font-size: .92rem; color: #6b5d44; }
+  a { color: #9a6b16; }
+</style>
+</head>
+<body>
+  <h1>🎲 Put Catan Duel online for everyone</h1>
+  <p class="sub">No Radmin, no repo, free. Friends just open a link in any browser. ~5 minutes, once.</p>
+
+  <div class="card">
+    <strong>What you get:</strong> one permanent web address (e.g.
+    <code>https://catan-duel.&lt;you&gt;.partykit.dev</code>) that hosts the game <em>and</em> the
+    multiplayer server together. Anyone you send it to can play — phone or laptop, nothing to install.
+    A 2-player game costs <strong>£0</strong> (well inside the free tier).
+  </div>
+
+  <h2>Do this once</h2>
+
+  <div class="step"><div class="num">1</div><div>
+    Open a terminal in the project folder, then install (first time only):
+    <pre>npm install</pre>
+  </div></div>
+
+  <div class="step"><div class="num">2</div><div>
+    Build the game:
+    <pre>npm run build</pre>
+    <span class="note">Already verified working — you should see <span class="ok">✓ built</span>.</span>
+  </div></div>
+
+  <div class="step"><div class="num">3</div><div>
+    Deploy (this is the one step only you can do — it logs into <em>your</em> free account):
+    <pre>npm run party:deploy</pre>
+    A browser window opens to sign in with <strong>GitHub</strong> (free). Approve it. When it finishes
+    it prints your permanent URL — copy it.
+  </div></div>
+
+  <div class="step"><div class="num">4</div><div>
+    <strong>Send that URL to your friends.</strong> Both open it → <strong>Online</strong> tab → type the
+    same room code + your names → play. Names now show on the board.
+  </div></div>
+
+  <h2>Check it works (30 seconds)</h2>
+  <div class="card">
+    Open the URL in <strong>two browser windows</strong> (or one normal + one private/incognito). In one,
+    go Online and note the room code. In the other, enter the same code. Make a move in one window — it
+    should appear in the other. <span class="ok">That confirms anyone can play.</span>
+  </div>
+
+  <h2>Ship an update later</h2>
+  <pre>npm run build &amp;&amp; npm run party:deploy</pre>
+  <p class="note">Same URL, updated game.</p>
+
+  <h2>Notes</h2>
+  <ul class="note">
+    <li>Local / same-house play still works with no deploy at all (<code>PLAY.bat</code> or
+      <code>npm run dev</code> → Hotseat on one screen).</li>
+    <li><strong>Why not itch.io?</strong> itch.io hosts static games only — it can’t run the multiplayer
+      server, so online play wouldn’t work there on its own. PartyKit hosts both in one free step. (You
+      could later host the page on itch.io and point it at a PartyKit relay, but it’s more setup for no gain.)</li>
+    <li>Everything else — the game, sounds, music, animations, card data — is already built and tested.
+      Step 3’s login is the only thing that needs you.</li>
+  </ul>
+</body>
+</html>

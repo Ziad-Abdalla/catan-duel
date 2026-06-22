@@ -4,9 +4,16 @@ A digital, **hands-on** table for the two-player *Catan: The Duel / Rivals for C
 state, does the maths, dice and shuffling, and adds atmosphere — but it never enforces the rules:
 both players dictate the flow, exactly like the cards in front of you (a "trust-based" sandbox).
 
-Plays the whole basic game plus the **Gold / Turmoil / Innovation** eras on **one screen** (both
-principalities + the central row), with fitting sounds for every card and event, shuffled medieval
-background music, and a clean, minimal UI.
+Plays the whole basic game plus **all nine theme eras** (Gold, Turmoil, Innovation, Intrigue,
+Merchants, Barbarians, Explorers, Sages, Prosperity — mix as many as you like) on **one screen**
+(both principalities + the central row), with fitting sounds for every card type and event, a
+fitting 30-minute soundtrack per era, and a clean, minimal UI whose top bar folds away to a
+corner handle so nothing covers the board.
+
+Payment is fully **manual**: building, upgrading and playing never auto-spend — you rotate your own
+region discs, exactly like the table. Drag a card onto the board to place it (its sound + a fitting
+flourish fire on the drop); drag a piece to the build bar to remove it; play an active card with one
+tap that shows your opponent, fires its effect, and discards it.
 
 > Personal project for private play by owners of the physical game. Not affiliated with or endorsed
 > by the publisher. Do not redistribute the publisher's card art.
@@ -59,16 +66,20 @@ client-side and deterministic, so the relay is just a message bus.
   `PLAY-ONLINE.html` for the full walk-through.
 - **Manual:** `npm run party` + `npm run dev`, both open the dev URL and join the same room code from
   the **Online** tab. (LAN / VPN IPs use plain `ws` automatically.)
-- **Public:** `npm run party:deploy`, set `VITE_PARTYKIT_HOST` to the deployed URL, build, host `dist/`.
+- **Public (easiest for friends — no Radmin, no repo, free):** `npm run build && npm run party:deploy`.
+  PartyKit serves the built game **and** the relay from one free Cloudflare URL, so friends just open a
+  link in any browser. Full walk-through in **[`docs/DEPLOY.md`](docs/DEPLOY.md)**.
 
 ## Audio
 
-- **Sound effects** are synthesized live (no files) — a fitting cue per card/event (build, ship→water,
-  hero→flourish, attack→menace, trade→coin, festival, invention, harvest, action card). One sound per
-  action; nothing layers.
-- **Background music** is a shuffled playlist of bundled **CC0 (public-domain)** medieval tracks
-  (`public/audio/bgm-*.mp3`) that cycle and reshuffle; a victory track plays on the win screen
-  (`public/audio/victory.mp3`), with a synth fanfare fallback.
+- **Sound effects** are a fitting cue per card type/event — recorded CC0 samples (ship, war drums,
+  mystic chime, demolish, coins, build, page-flip…) with a live synth fallback, all volume-normalised
+  and driven by the SFX slider. One sound per action; nothing layers.
+- **Background music** gives each era its own fitting ~30-minute shuffled, looping soundtrack
+  (`public/audio/bgm-*.mp3`); two or more eras play a blended "duel" mix. A victory track plays on the
+  win screen. Tracks are CC0 (archive.org) plus **CC-BY Kevin MacLeod (incompetech.com)** — the required
+  attribution lives in a collapsed "Credits & licenses" note in the card gallery (never over gameplay).
+  Full attributions: `docs/superpowers/MUSIC_LICENSES.md` and `SFX_LICENSES.md`.
 - **Controls:** everything is on by default; lower or mute SFX/music from **⚙ Setup → Sound** or the
   mute button. To swap a track, replace the file in `public/audio/` (see `docs/quality-2026-06-19/ASSETS.html`
   for curated royalty-free sources).

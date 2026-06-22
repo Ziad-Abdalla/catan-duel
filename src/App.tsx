@@ -78,9 +78,13 @@ export function App() {
       </main>
 
       <footer className="app-foot">
-        Card text &amp; art © Catan GmbH — transcribed from official sources for private play.
-        <br />
-        Music by Kevin MacLeod (incompetech.com), licensed under CC BY 4.0. Sound effects CC0 (OpenGameArt).
+        <details className="app-credits">
+          <summary>Credits &amp; licenses</summary>
+          Card text &amp; art © Catan GmbH — transcribed from official sources for private play.
+          <br />
+          Music by Kevin MacLeod (incompetech.com), licensed under CC BY 4.0.
+          Sound effects CC0 (OpenGameArt).
+        </details>
       </footer>
     </div>
   )

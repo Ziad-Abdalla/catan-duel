@@ -16,7 +16,20 @@ Music/SFX licenses: docs/superpowers/MUSIC_LICENSES.md, SFX_LICENSES.md (Kevin M
 - Music on lobby+gallery too; collapsed credits. (a25417d, then collapsed)
 - Prod build GREEN (vite build ✓), tsc 0, 195 unit tests green.
 
-## STATUS UPDATE (HEAD 986a5a8) — primary goals DONE + green
+## STATUS UPDATE 2 (HEAD 7323272) — MERGED with friend's AoD work + PUSHED
+origin/master had 13 "AoD" commits (placement features: cards on roads/regions, attach
+heroes onto Temple/Church/city, Residence rotation, rulebook data + new tests). MERGED
+field-by-field (cards.json: 93 ours/94 theirs/8 image-resolved) + integrated my seat-removal,
+active-card Play, flourish. Gate GREEN: tsc 0, 211 tests, build ✓. PUSHED 16d8ae4 + auto-deploy
+workflow 7323272. Deploy HTML opened for owner (PLAY-FOR-EVERYONE.html). Auto-deploy =
+.github/workflows/deploy.yml (owner sets PARTYKIT_LOGIN+PARTYKIT_TOKEN secrets once).
+Friend's merge RESOLVED these backlog items: place on opp roads/regions, attach on existing
+buildings, move landscapes (swap). REMAINING: region-stack search+shuffle/Scout (agent
+a66ad8c431da5ed75 BUILDING now), audit-log accuracy (resource tracking + secret-safe stack
+search), show-multiple-cards to opponent, settlement icon, Hearthstone-style card-play flight,
+two-context live playtest. Verify region agent → commit → push, then those.
+
+## STATUS UPDATE 1 (HEAD 986a5a8) — primary goals DONE + green
 Full gate green: tsc 0, 195 unit, e2e exit 0, build ✓. Committed since b5ba612:
 manual play default · collapsible HUD · online name fix · 3D dice · per-type flourishes+SFX ·
 music everywhere (42 tracks, 30+min/era) + collapsed credits · deploy proven + docs/DEPLOY.md ·

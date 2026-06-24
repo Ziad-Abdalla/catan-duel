@@ -38,3 +38,19 @@ export function makeClientId(): string {
 export function normalizeRoom(code: string): string {
   return code.trim().toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 32) || 'lobby'
 }
+
+/**
+ * Derive a deterministic game seed from the room code so BOTH clients build a
+ * byte-identical `newGame` from t=0 (same regions, deck order, event deck) instead
+ * of each starting from an independent random seed. Same room → same seed; this is
+ * the root fix for "our games look different / regions mismatched" online.
+ * Plain FNV-1a 32-bit hash → an unsigned int.
+ */
+export function seedFromRoom(room: string): number {
+  let h = 0x811c9dc5
+  for (let i = 0; i < room.length; i++) {
+    h ^= room.charCodeAt(i)
+    h = Math.imul(h, 0x01000193)
+  }
+  return h >>> 0
+}

@@ -26,6 +26,14 @@ doc written by a read-only audit agent. Implementation reads these, never re-run
 | E | Audio expansion + volume | E-audio.md | DONE — defaults −20%; crossfade polish; adding tracks = +45MB download decision |
 
 ## Deferred / backlog (noted, not silently skipped)
+- **Deeper sync hardening** (A-regions-and-sync.md §2.4): the headline bugs (matching regions /
+  mismatched versions) are fixed by the room-derived shared seed + the reconvergence gate (clients
+  now build identical games and always converge — `src/net/reconverge.test.ts`). NOT yet done, lower
+  risk to defer because turn-based play rarely triggers them: (a) concurrent shared-zone edits
+  (both draw/discard in one tick) still resolve to one lineage — both clients agree, but one edit can
+  be dropped; (b) global `seq` could be a Lamport/vector clock; (c) `undo` still force-broadcasts a
+  wholesale reset that can clobber a peer's in-flight own-seat edit. These are deck-level concurrency
+  refinements, not the owner's reported symptom.
 - **AI-sim event effects + reseat** (`src/ai/sim/events.ts`): many theme events resolve as `default: no-op`
   in the self-play simulator, and the sim still cycles Barbarian Attack / Insurrection to the bottom
   (its deck uses the OPPOSITE top/bottom orientation from the engine, so its `seatYule` is intentionally

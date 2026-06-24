@@ -11,6 +11,7 @@ import { applyAction, mergeSnapshots, type Action } from '../engine/actions'
 import { makeRng, type Rng } from '../engine/rng'
 import { rollDice } from '../engine/dice'
 import type { ConnStatus, NetMessage, Transport } from '../net/transport'
+import { seedFromRoom } from '../net/transport'
 
 function freshSeed(): number {
   return Math.floor(Math.random() * 1_000_000_000)
@@ -102,15 +103,13 @@ export const useGame = create<GameStore>((set, get) => {
         // peer's snapshot can never clobber our local resources (vanishing-token fix).
         set((s) => {
           const merged = mergeSnapshots(s.state, m.state)
-          // Echo back only when our merge carries strictly-newer MONOTONIC state
-          // (higher global seq or per-seat version) than the sender had. Log length
-          // is deliberately excluded so equal-length/divergent logs can't cause an
-          // infinite rebroadcast ping-pong; seq/seatSeq are a converging join.
-          const contributed =
-            merged.seq > m.state.seq ||
-            merged.seatSeq.p0 > (m.state.seatSeq?.p0 ?? 0) ||
-            merged.seatSeq.p1 > (m.state.seatSeq?.p1 ?? 0)
-          if (contributed) broadcast(merged)
+          // Echo back whenever our merge differs from the snapshot the sender had — NOT only
+          // when it's monotonically newer. The merge is a commutative, idempotent join (see
+          // mergeSnapshots), so this converges in one extra round-trip and reaches a fixed
+          // point (merged === incoming ⇒ no rebroadcast ⇒ no ping-pong). The old monotonic
+          // gate could leave two clients permanently diverged at equal seq/seatSeq — the
+          // "our versions are oddly mismatched" bug.
+          if (JSON.stringify(merged) !== JSON.stringify(m.state)) broadcast(merged)
           return { state: merged }
         })
         break
@@ -189,7 +188,12 @@ export const useGame = create<GameStore>((set, get) => {
         tp.onMessage(handle),
         tp.onStatus((status) => set({ status })),
       ]
-      set({ online: true, room: tp.room, mySeat: seat, myName: name, status: 'connecting', peers: {} })
+      // Build the SAME starting game both clients will share, derived deterministically from
+      // the room code — so neither side starts on an independent random game (the root fix for
+      // "our regions/decks look different online"). A late joiner still gets the existing
+      // occupant's in-progress state via the forced sync reply below, which overrides this.
+      const shared = start({ seed: seedFromRoom(tp.room), enabledSets: get().state.enabledSets })
+      set({ ...shared, history: [], online: true, room: tp.room, mySeat: seat, myName: name, status: 'connecting', peers: {} })
       tp.connect()
       // announce + pull current game from whoever's already in the room
       tp.send({ t: 'hello', from: tp.id, name, seat })

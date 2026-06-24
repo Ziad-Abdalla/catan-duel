@@ -1084,10 +1084,7 @@
     "flavor_text": "Money can't buy you happiness. But taking it away from others can.",
     "image": "p07_c1.png",
     "copies": 2,
-    "confidence": "high",
-    "unclear": [
-      "<MISSING>"
-    ]
+    "confidence": "high"
   },
   {
     "id": "gold-moneylender",
@@ -2478,6 +2475,7 @@
     "set": "intrigue",
     "category": "building",
     "name": "Church",
+    "tag": "Face-up Expansion",
     "cost": [
       {
         "resource": "brick",
@@ -2501,6 +2499,7 @@
     "set": "intrigue",
     "category": "building",
     "name": "Odin's Temple",
+    "tag": "Face-up Expansion",
     "cost": [
       {
         "resource": "lumber",
@@ -3681,7 +3680,7 @@
     ],
     "values": {
       "commerce": 4,
-      "requires": "Place on the city adjacent to the Explorer Harbor. Requires: At least 6 discovered sea cards or at least 2 level-3 islands."
+      "requires": "6 discovered sea cards or 2 level-3 islands"
     },
     "rules_text": "Place on city adjacent to Explorer Harbor. Worth 4 victory points total. Requires: 6+ discovered sea cards or 2+ level 3 islands.",
     "image": "explorers-explorer-metropolis.webp",
@@ -3777,7 +3776,7 @@
     "values": {},
     "rules_text": "1x per turn: Trade any 1 resource for 1 lumber or 1 wool.",
     "image": "explorers-shipyard.webp",
-    "copies": 3,
+    "copies": 2,
     "confidence": "medium"
   },
   {
@@ -4073,7 +4072,7 @@
     },
     "rules_text": "Rotate to next level: Pay 1 lumber, 2 gold, 3 owls. For 2 of those owls, you may place 1 action attack card on the discard pile. Requires: City.",
     "image": "sages-manifest-of-humane-conduct.webp",
-    "copies": 3,
+    "copies": 2,
     "confidence": "low"
   },
   {
@@ -4350,18 +4349,6 @@
     "confidence": "medium"
   },
   {
-    "id": "sages-unknown",
-    "set": "sages",
-    "category": "building",
-    "name": "Unknown",
-    "cost": [],
-    "values": {},
-    "rules_text": "",
-    "image": "sages-unknown.webp",
-    "copies": 1,
-    "confidence": "low"
-  },
-  {
     "id": "sages-famine",
     "set": "sages",
     "category": "event",
@@ -4536,7 +4523,7 @@
     },
     "rules_text": "1x during your turn: For 1 gold, retrieve 1 Artwork from the discard pile. Cannot be taken or enticed away. Requires: Not having a Princess.",
     "image": "prosperity-prince.webp",
-    "copies": 2,
+    "copies": 1,
     "confidence": "low"
   },
   {
@@ -4565,7 +4552,7 @@
     },
     "rules_text": "1x during your turn: For 1 gold, retrieve 1 Artwork from the discard pile. Cannot be taken or enticed away. Requires: Not having a Prince.",
     "image": "prosperity-princess.webp",
-    "copies": 2,
+    "copies": 1,
     "confidence": "low"
   },
   {
@@ -4708,7 +4695,7 @@
     },
     "rules_text": "(1) If event Celebration is rolled, receive 1 star. (2) A building costing 6+ resources costs 1 resource less. Can only build 1 Builders' Hut.",
     "image": "prosperity-builders-hut.webp",
-    "copies": 3,
+    "copies": 2,
     "confidence": "medium"
   },
   {
@@ -4819,18 +4806,6 @@
     },
     "rules_text": "Building a city costs you only 1 ore and 2 grain. Requires: Aqueduct.",
     "image": "prosperity-prosperity.webp",
-    "copies": 1,
-    "confidence": "high"
-  },
-  {
-    "id": "prosperity-card-back",
-    "set": "prosperity",
-    "category": "building",
-    "name": "Card Back",
-    "cost": [],
-    "values": {},
-    "rules_text": "",
-    "image": "prosperity-card-back.webp",
     "copies": 1,
     "confidence": "high"
   },

@@ -38,6 +38,11 @@ describe('Board renders', () => {
     expect(tiles).toBe(12)
   })
 
+  it('shows an upright production (dice-roll) number on each region', () => {
+    const nums = html.split('class="rt-num"').length - 1
+    expect(nums).toBe(12) // one per region tile, readable regardless of tile rotation
+  })
+
   it('lays out two principality boards (spine + corner regions)', () => {
     const boards = html.split('data-player=').length - 1
     expect(boards).toBe(2)

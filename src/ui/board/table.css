@@ -9,7 +9,7 @@
   /* region tile edge — the master unit the whole board scales from. Tuned bigger than the
      old cramped fit; the table can run a touch past one screen (it scrolls by wheel/snap,
      scrollbars are hidden). The width guard keeps a 5-column principality from overflowing. */
-  --reg-base: clamp(64px, min(16.5vh, 13.5vw), 210px);
+  --reg-base: clamp(72px, min(18vh, 15vw), 230px);
   --reg: var(--reg-base);
   --cols: 5; /* fallback; PrincipalityBoard sets the real 2N+1 per board */
   --seat: calc(var(--reg) * 0.86);
@@ -28,17 +28,19 @@
   overflow-x: hidden;
 }
 /* the table itself scrolls by wheel / snap — NO visible scrollbar (clean, no ugly "scroll wheels") */
-.felt-scroll, .deckwall, .build-row { scrollbar-width: none; }
-.felt-scroll::-webkit-scrollbar, .deckwall::-webkit-scrollbar, .build-row::-webkit-scrollbar { width: 0; height: 0; display: none; }
-/* modal/overflow lists keep a slim, unobtrusive bar so you know they scroll */
-.audit-list, .sb-cards, .cardzoom, .rl-body {
+.felt-scroll, .build-row { scrollbar-width: none; }
+.felt-scroll::-webkit-scrollbar, .build-row::-webkit-scrollbar { width: 0; height: 0; display: none; }
+/* modal/overflow lists + the deck wall keep a slim, unobtrusive bar so you know they scroll.
+   (The deck wall grows one+ stacks per enabled theme; with many themes on it must be scrollable
+   and the bar tells you so — otherwise stacks scroll off invisibly.) */
+.audit-list, .sb-cards, .cardzoom, .rl-body, .deckwall {
   scrollbar-width: thin;
   scrollbar-color: rgba(243, 215, 154, 0.35) transparent;
 }
 .audit-list::-webkit-scrollbar, .sb-cards::-webkit-scrollbar,
-.cardzoom::-webkit-scrollbar, .rl-body::-webkit-scrollbar { width: 7px; height: 7px; }
+.cardzoom::-webkit-scrollbar, .rl-body::-webkit-scrollbar, .deckwall::-webkit-scrollbar { width: 7px; height: 7px; }
 .audit-list::-webkit-scrollbar-thumb, .sb-cards::-webkit-scrollbar-thumb,
-.cardzoom::-webkit-scrollbar-thumb, .rl-body::-webkit-scrollbar-thumb { background: rgba(243, 215, 154, 0.28); border-radius: 99px; }
+.cardzoom::-webkit-scrollbar-thumb, .rl-body::-webkit-scrollbar-thumb, .deckwall::-webkit-scrollbar-thumb { background: rgba(243, 215, 154, 0.28); border-radius: 99px; }
 /* the cool, dim room the felt table sits in — fixed, so it doesn't pan.
  * Layered: a deep teal-to-near-black room, a warm hearth glow low-centre, and a
  * tactile fractal-noise grain over the top so it never reads as flat/plain. */
@@ -753,7 +755,9 @@
   display: flex;
   gap: clamp(4px, 0.5vw, 8px);
   align-items: center;
-  justify-content: center;
+  /* `safe center` centres when the stacks fit but falls back to flex-start when they overflow,
+     so the leading stacks stay reachable by scroll (plain `center` clips/strands them). */
+  justify-content: safe center;
   flex: 1 1 0;
   min-width: 0;
   overflow-x: auto;
@@ -785,7 +789,7 @@
   --back-hi: #c0413c;
   position: relative;
   flex: none;
-  width: clamp(38px, 3.4vw, 54px);
+  width: clamp(28px, 3vw, 54px); /* lower floor so more theme stacks fit before scrolling */
   aspect-ratio: 5 / 7;
   border-radius: 7px;
   border: 1px solid rgba(0, 0, 0, 0.5);
@@ -933,10 +937,10 @@
 /* ===== hand ===== */
 .hand-fan {
   display: flex; justify-content: center; align-items: flex-end;
-  gap: 0; height: clamp(56px, 7vh, 104px); padding-bottom: 2px;
+  gap: 0; height: clamp(64px, 8vh, 116px); padding-bottom: 2px;
 }
 .hand-card {
-  width: clamp(64px, 6.2vw, 112px); margin: 0 clamp(-16px, -0.8vw, -10px); cursor: pointer;
+  width: clamp(72px, 7vw, 124px); margin: 0 clamp(-16px, -0.8vw, -10px); cursor: pointer;
   transition: transform 0.16s var(--ease-spring), margin 0.16s ease;
   transform-origin: bottom center;
   filter: drop-shadow(0 7px 11px rgba(0, 0, 0, 0.45));

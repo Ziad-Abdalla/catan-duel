@@ -1,6 +1,6 @@
 import { Fragment, useState, type CSSProperties } from 'react'
 import type { PlacedCard, PlayerId, RegionSlot } from '../../types'
-import { getCard, cardArt, regionExpansionOf, isRoadComplement, isForeignCard } from '../../data/cards'
+import { getCard, cardArt, regionExpansionOf } from '../../data/cards'
 import { PieceArt } from './PieceArt'
 import { RegionTile } from './RegionTile'
 import { useGame } from '../../store/gameStore'
@@ -270,8 +270,10 @@ function RegionCell({
   const { dragCardId, selectedCardId, payCosts, clear } = useUI()
   const [over, setOver] = useState(false)
   const armedId = interactive && !region.empty ? dragCardId || selectedCardId : null
-  const def = armedId ? regionExpansionOf(armedId) : undefined
-  const matches = !!def && !expansion && (def.resource === 'any' || def.resource === region.resource)
+  // Trust-based sandbox: ANY card can be placed on ANY region slot — no terrain match and no
+  // region-expansion-only restriction (owner request). The engine stores it at rexp-<index>
+  // regardless of card type; rotating expansions still get their rotate control via the badge.
+  const matches = !!armedId && !expansion
   const place = (cardId: string) => {
     if (!cardId) return
     dispatch({ type: 'playRegionExpansion', player, cardId, regionIndex: index, pay: payCosts })
@@ -364,8 +366,9 @@ function RoadComplementCell({
   const { dragCardId, selectedCardId, payCosts, clear, openZoom, setDragRemove } = useUI()
   const [over, setOver] = useState(false)
   const armedId = interactive && !entry ? dragCardId || selectedCardId : null
-  // only your OWN (non-foreign) road complement can be dropped on your own road
-  const armed = !!armedId && isRoadComplement(armedId) && !isForeignCard(armedId)
+  // Trust-based sandbox: ANY card can be dropped on a road slot (owner request), not just the
+  // four road complements. The engine accepts any id at slot rc-<index>.
+  const armed = !!armedId
   const place = (cardId: string) => {
     if (!cardId) return
     dispatch({ type: 'playCard', player, cardId, slot: `rc-${index}`, pay: payCosts })

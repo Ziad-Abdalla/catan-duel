@@ -234,6 +234,11 @@ export function RegionTile({
       </div>
       <div className="rt-nameplate">
         {grip}
+        {region.number != null && (
+          <span className="rt-num" title={`Production number ${region.number} — rolls on a ${region.number}`}>
+            {region.number}
+          </span>
+        )}
         <span className="rt-name">{card.name}</span>
         <span className={`rt-count r-${region.resource}`}>{region.stored}<i>/3</i></span>
       </div>

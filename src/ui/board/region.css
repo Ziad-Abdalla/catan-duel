@@ -192,6 +192,25 @@
 }
 .rt-count i { font-style: normal; font-size: 0.66em; opacity: 0.7; margin-left: 1px; }
 
+/* the region's printed production (dice-roll) number — upright on the nameplate so it stays
+   readable no matter how the tile is rotated to store resources */
+.rt-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: clamp(15px, 2vh, 22px);
+  height: clamp(15px, 2vh, 22px);
+  font-family: var(--font-head);
+  font-weight: 800;
+  font-size: clamp(10px, 1.5vh, 16px);
+  color: #f6ecd0;
+  background: radial-gradient(circle at 35% 30%, #6c4a1c, #3a2710);
+  border: 1px solid rgba(246, 236, 208, 0.55);
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+  flex: none;
+}
+
 /* this region just produced (its number matched the roll) */
 .rtile.produces .rt-card {
   box-shadow: 0 0 0 3px var(--gold), 0 0 22px 2px rgba(200, 146, 42, 0.6), 0 9px 12px rgba(0, 0, 0, 0.5);
@@ -253,10 +272,10 @@
 .pb-rexp-card { width: 34px; height: 48px; padding: 0; border: 1px solid rgba(0, 0, 0, 0.55); border-radius: 4px; overflow: hidden; background: #2a2118; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5); cursor: pointer; }
 .pb-rexp-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .pb-rexp-card span { font-size: 7px; color: #ece3cf; padding: 2px; display: block; line-height: 1.1; }
-.pb-rexp-rot { display: flex; align-items: center; gap: 2px; background: rgba(20, 16, 12, 0.82); border-radius: 9px; padding: 1px 3px; }
-.pb-rexp-btn { width: 16px; height: 16px; line-height: 1; padding: 0; border: none; border-radius: 50%; background: #4a3c28; color: #ece3cf; cursor: pointer; font-size: 12px; }
-.pb-rexp-btn:hover { background: #6b5836; }
-.pb-rexp-lvl { font-size: 10px; color: #f0d9a0; font-weight: 700; min-width: 16px; text-align: center; }
+.pb-rexp-rot { display: flex; align-items: center; gap: 3px; background: rgba(20, 16, 12, 0.9); border: 1px solid rgba(240, 217, 160, 0.45); border-radius: 11px; padding: 2px 4px; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5); }
+.pb-rexp-btn { width: 22px; height: 22px; line-height: 1; padding: 0; border: none; border-radius: 50%; background: #5a4830; color: #f6ecd0; cursor: pointer; font-size: 15px; font-weight: 700; }
+.pb-rexp-btn:hover { background: #7d6740; }
+.pb-rexp-lvl { font-size: 12px; color: #f0d9a0; font-weight: 800; min-width: 20px; text-align: center; }
 
 /* --- Road complements (Trading Post / foreign Brigand Camp, Red Light Tavern, Stronghold) --- */
 .pb-rc { position: relative; align-self: center; justify-self: center; display: flex; align-items: center; justify-content: center; min-height: 28px; z-index: 5; }

@@ -1,36 +1,37 @@
-# Catan Duel — session close 2026-06-22
+# Catan Duel — session close 2026-06-25
 
-Working in `catan-duel` at `/home/abdalla/projects/catan-duel`. In sync with origin/master
-(HEAD `b300f29`). Gate GREEN: tsc 0 · 214 unit tests · e2e exit 0 (9 specs) · build ✓.
+Working in `catan-duel` at `/home/abdalla/projects/catan-duel`. **PUSHED to origin/master,
+HEAD `21d32d3`.** Gate: tsc 0 · **240 unit ✓** · `npm run build` ✓ · **8/9 e2e ✓**.
+- The 1 e2e miss is `ai-playthrough.spec` timing out at the 420s cap (full-game click-through,
+  slow on this WSL machine). Its logic is covered green by `playthrough.test.ts` /
+  `analysis.test.ts` — not a regression. Bump the per-test timeout if you want it green in CI.
 
-## What this session delivered (all committed + pushed)
-- **Manual play by default** — engine never auto-deducts; Pay chip removed; Brigand is a manual prompt.
-- **Collapsible HUD** (corner handle, persisted); **online name fix** (entered name writes to seat + syncs).
-- **3D dice** (perspective, multi-axis tumble, falls + bounces + contact shadow).
-- **Per-card-type placement flourishes** (buildings rise, ships rock, heroes flash, attacks shudder,
-  actions shimmer), era-tinted — fire on the manual drag-to-board. **Active cards** get a one-tap Play
-  (showcase → effect → auto-discard). **Settlement/city removal** (drag to build bar) + demolish cue.
-- **SFX everywhere** — thematic per-card cues incl. CC0 ship/drums/mystic/remove/page, volume-normalised.
-- **Music everywhere** — each era a fitting 30+ min looping soundtrack (42 tracks), on board/lobby/gallery.
-  Credits collapsed in the gallery only (Kevin MacLeod CC-BY + CC0 SFX). Licenses: docs/superpowers/*_LICENSES.md.
-- **Card accuracy** — ~95 image-verified fixes across all eras (2 passes, zero deferrals); reconciled
-  field-by-field with the friend's rulebook pass on merge.
-- **MERGED the friend's AoD work** (origin/master, 13 commits): placement on roads/regions, attach heroes
-  onto Temple/Church/city, Residence rotation, rulebook data + new engine/tests. Both efforts combined, green.
-- **Region/landscape stack** — search + reshuffle browser (🔍 on the central wall) + working **Scout**
-  (secret-safe log). Move landscapes = swap (already worked).
-- **Audit log** already records resource +/- and transfers, and stack searches without revealing the pick.
-- **Free deploy, no Radmin/repo for players**: `npm run party:deploy` → one free PartyKit URL. Docs:
-  `PLAY-FOR-EVERYONE.html` + `docs/DEPLOY.md`. Auto-deploy CI: `.github/workflows/deploy.yml` (set
-  PARTYKIT_LOGIN+PARTYKIT_TOKEN secrets once). DEPLOY is done by the OWNER'S FRIEND (non-flagged GitHub
-  account) — owner's account is GitHub-flagged (appeal submitted by owner; flag also 404s public repos).
+## What shipped this session (owner live-playtest fix batch — 5 commits)
+Deep audit first → `docs/goal-2026-06-24-fixes/INDEX.md` (+ A–E findings + backlog). READ IT
+before re-touching any of these areas.
+1. `183d101` Face-up supply: Church + Odin's Temple → Face-up Expansion (13 total); 5 copy-count
+   fixes; removed junk cards `sages-unknown`, `prosperity-card-back`. (`src/data/corpus.test.ts`)
+2. `6a19ff0` Event pile browser (`EventDeckBrowser`) + data-driven `Card.reseat`: Yule reshuffle,
+   Barbarian Attack + Insurrection tuck under the top 4. (`src/engine/reseat.test.ts`)
+   NOTE: the AI-sim deck uses the OPPOSITE orientation (.shift()=top), so its mirror `seatYule`
+   is INTENTIONAL — don't "fix" it.
+3. `6b50262` Sandbox UX: place ANY card on any region/road; upright production die-number on each
+   region nameplate; ~12% bigger cards; deck-wall scrollbar reachable; bigger rotate control.
+4. `b56b67e` Multiplayer desync ROOT FIX: `seedFromRoom()` (both clients build an identical game) +
+   reconvergence gate (rebroadcast on content diff; the join converges in one round-trip).
+   (`src/net/reconverge.test.ts`) — this is the "matching regions" + "mismatched versions" fix.
+5. `21d32d3` Audio: −20% defaults + one-time ×0.8 migration; fade/duck (no hard cuts); rebalanced
+   the 3 thin era playlists 9→11. (`src/audio/prefs.test.ts`)
 
-## Optional future polish (NOT blocking; core game complete)
-- Card "flight" hand→board (currently the placement flourish animates the card into its spot).
-- Show MULTIPLE hand cards to opponent at once (showcase is one at a time).
-- Settlement icon redraw (CenterArt Settlement() SVG) — needs visual iteration.
+## NEXT (backlog — see docs INDEX "Deferred / backlog")
+- Deeper sync hardening (concurrent deck-edit data-loss, Lamport clock, `undo` peer-clobber).
+- Bundle ~15-20 NEW music tracks (owner approved scope) — needs reliable CC0/CC-BY files the owner
+  can audition; incompetech direct URLs returned HTML this session. Owner drops files in
+  `public/audio/bgm-43..N.mp3` → wire `ERA_TRACKS` + `MUSIC_LICENSES.md`.
+- 4 `unclear[]` card point-values need physical-card confirmation (esp. `turmoil-large-festival-hall`).
+- `res-*.wav` gather SFX (synth fallback only).
 
-## Verify
-cd ~/projects/catan-duel && npx tsc --noEmit && npx vitest run && npm run build && npm run e2e
-Local: npm run dev (5173). Online relay local: npm run party. Deploy: npm run party:deploy.
-Repo hygiene: node_modules/dist/.partykit/e2e artifacts all gitignored. public/audio ~181MB = the era soundtracks (intended).
+## To play online (servers left RUNNING this session)
+Relay `npm run party` (1999) + game `npm run dev` (5173) are up; Radmin IP `26.79.157.209` matches
+`.env.development.local`. Owner's one Windows action: `PLAY-ONLINE.bat` → press `1`. Friend joins
+`http://26.79.157.209:5173`. Procedure in `AI-HANDOUT.md`. ⚠️ `git pull --rebase` before any push.

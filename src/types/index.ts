@@ -72,6 +72,10 @@ export interface Card {
   region_resource?: ResourceType
   region_number?: number | null
   note?: string
+  /** Where this EVENT card returns to the event deck after it resolves. Absent = bottom (default).
+   *  'underTopN' (with n) = tucked under the top n cards (Barbarian Attack, Insurrection).
+   *  'yule' = reshuffle the deck and re-seat with 3 cards below it (the festival/Yule card). */
+  reseat?: { mode: 'bottom' | 'underTopN' | 'yule'; n?: number }
   // provenance
   confidence?: 'high' | 'medium' | 'low'
   unclear?: string[]

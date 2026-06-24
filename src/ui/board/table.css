@@ -1094,6 +1094,16 @@
 .cardstack.cs-discard:disabled { opacity: 0.4; cursor: default; }
 .cardstack.cs-discard .cs-face { font-size: 22px; color: #e7d6a8; }
 
+/* the event pile in the deck wall (look through it, draw the top card) */
+.cardstack.cs-event {
+  background: linear-gradient(160deg, #2c2440, #1a1530);
+  border: 1px solid rgba(196, 173, 240, 0.5);
+  cursor: pointer;
+}
+.cardstack.cs-event:not(:disabled):hover { border-color: rgba(196, 173, 240, 0.9); transform: translateY(-2px); }
+.cardstack.cs-event:disabled { opacity: 0.4; cursor: default; }
+.cardstack.cs-event .cs-face { font-size: 22px; color: #d7c8f3; }
+
 /* subtle negative flash when a player loses an advantage */
 .player-plate.cued-negative { animation: plate-negative 0.9s ease; }
 @keyframes plate-negative {

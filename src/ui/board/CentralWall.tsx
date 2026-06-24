@@ -22,6 +22,7 @@ export function CentralWall() {
   const addFlight = useUI((s) => s.addFlight)
   const openStackBrowse = useUI((s) => s.openStackBrowse)
   const openRegionBrowse = useUI((s) => s.openRegionBrowse)
+  const openEventBrowse = useUI((s) => s.openEventBrowse)
   const revealedRoll = useUI((s) => s.revealedRoll)
 
   // the roll result is "written" in the wall only once the felt dice have settled
@@ -106,8 +107,26 @@ export function CentralWall() {
             </div>
           )
         })}
-        {/* The event deck still drives the event die, but it isn't interactive, so it
-            shows no card here (keeps the wall clean — per owner request). */}
+        {/* the event pile — look through it and draw the top card (count badge = cards left) */}
+        <div className="cardstack-wrap">
+          <button
+            className="cardstack cs-event"
+            disabled={state.eventDeck.length === 0}
+            title={`Event pile (${state.eventDeck.length}) — look through it and draw the top card`}
+            onClick={openEventBrowse}
+          >
+            <span className="cs-face">⚄</span>
+            <span className="cs-count">{state.eventDeck.length}</span>
+          </button>
+          <button
+            className="cs-peek"
+            disabled={state.eventDeck.length === 0}
+            title="Look through the event pile"
+            onClick={openEventBrowse}
+          >
+            🔍
+          </button>
+        </div>
         {/* the landscape (region) stack — search it (Scout) and reshuffle */}
         <div className="cardstack-wrap">
           <button

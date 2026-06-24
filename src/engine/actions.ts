@@ -14,11 +14,41 @@ import type { EventFace } from './dice'
 export const YULE_ID = 'base-yule'
 export const YULE_FROM_BOTTOM = 3
 
+// Engine deck orientation: `drawEvent` does eventDeck.pop(), so the END of the array is the
+// TOP of the deck and index 0 is the BOTTOM. (The AI sim in ai/sim/events.ts uses the OPPOSITE
+// convention — it draws with .shift(), so its mirror-image seatYule there is intentional, not a bug.)
+
 /** Put Yule the right distance from the bottom (index 0 = bottom); deterministic. */
 export function seatYule(deck: string[]): string[] {
   const out = deck.filter((id) => id !== YULE_ID)
   out.splice(Math.min(YULE_FROM_BOTTOM, out.length), 0, YULE_ID)
   return out
+}
+
+/**
+ * Return a resolved event card to the deck per its `reseat` rule (data-driven from the card).
+ * `deck` is the deck with the drawn card already removed. `reshuffle` is supplied by the caller
+ * (seeded) so online clients stay in sync on the Yule reshuffle.
+ *  · bottom (default) → index 0 (the bottom).
+ *  · underTopN        → tucked under the top n cards (n cards remain above it) — e.g. Barbarian
+ *                       Attack / Insurrection's "under the top 4".
+ *  · yule             → reshuffle, then re-seat with 3 cards below it.
+ */
+export function reseatEventDeck(
+  deck: string[],
+  id: string,
+  reseat: { mode: 'bottom' | 'underTopN' | 'yule'; n?: number } | undefined,
+  reshuffle: (d: string[]) => string[],
+): string[] {
+  const mode = reseat?.mode ?? 'bottom'
+  if (mode === 'yule') return seatYule(reshuffle(deck))
+  if (mode === 'underTopN') {
+    const n = reseat?.n ?? 4
+    const out = [...deck]
+    out.splice(Math.max(0, out.length - n), 0, id) // end = top, so length-n leaves n cards above it
+    return out
+  }
+  return [id, ...deck] // bottom
 }
 
 export type AdvantageToken = 'hero' | 'trade'
@@ -809,14 +839,12 @@ function reduce(s: GameState, a: Action): GameState {
       // `revealedEvent` is part of the synced snapshot, so the pop-up appears on
       // BOTH screens simultaneously.
       const nonce = (s.eventNonce ?? 0) + 1
-      if (id === YULE_ID) {
-        // Yule/festival: reshuffle the rest and re-seat Yule 4th from the bottom.
-        // Deterministic (seeded by seq) so both online clients stay in sync.
-        const reshuffled = shuffle(eventDeck, makeRng((s.seq + 1) ^ 0x59c1e))
-        return logged({ ...s, eventDeck: seatYule(reshuffled), revealedEvent: id, eventNonce: nonce }, s.activePlayer, `Event: ${name}`)
-      }
-      eventDeck.unshift(id) // other events cycle to the bottom after resolving
-      return logged({ ...s, eventDeck, revealedEvent: id, eventNonce: nonce }, s.activePlayer, `Event: ${name}`)
+      // Return the card per its data-driven reseat rule: Yule reshuffles + re-seats; Barbarian
+      // Attack / Insurrection tuck under the top 4; everything else cycles to the bottom. The Yule
+      // reshuffle is seeded by seq so both online clients derive the same order.
+      const reshuffle = (d: string[]) => shuffle(d, makeRng((s.seq + 1) ^ 0x59c1e))
+      const reseated = reseatEventDeck(eventDeck, id, getCard(id)?.reseat, reshuffle)
+      return logged({ ...s, eventDeck: reseated, revealedEvent: id, eventNonce: nonce }, s.activePlayer, `Event: ${name}`)
     }
 
     case 'dismissEvent':

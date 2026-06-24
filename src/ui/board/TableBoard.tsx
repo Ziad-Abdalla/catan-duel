@@ -14,6 +14,7 @@ import { CardZoom } from './CardZoom'
 import { StackBrowser } from './StackBrowser'
 import { RegionStackBrowser } from './RegionStackBrowser'
 import { DiscardBrowser } from './DiscardBrowser'
+import { EventDeckBrowser } from './EventDeckBrowser'
 import { ResolutionPanel } from './ResolutionPanel'
 import { AuditLog } from './AuditLog'
 import { AdvantageAudio } from './AdvantageAudio'
@@ -84,6 +85,7 @@ export function TableBoard({ mode, setMode, fixedBottom }: { mode: AppMode; setM
       <StackBrowser />
       <RegionStackBrowser />
       <DiscardBrowser />
+      <EventDeckBrowser />
       <ResolutionPanel />
       <AuditLog />
       <EventPopup />

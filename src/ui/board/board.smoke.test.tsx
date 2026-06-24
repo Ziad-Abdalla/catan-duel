@@ -29,6 +29,7 @@ describe('Board renders', () => {
     expect(html).toContain('End turn') // turn control (phases removed — free manual play)
     expect(html).toContain('cardstack') // the deck wall
     expect(html).toContain('cs-peek') // peek/search a draw stack
+    expect(html).toContain('cs-event') // the browsable event pile (with count badge)
     expect(html).toContain('Strength') // advantage token post
   })
 

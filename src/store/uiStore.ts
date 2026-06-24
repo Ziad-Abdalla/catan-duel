@@ -113,6 +113,10 @@ interface UIState {
   /** Whether the discard-pile browser is open (look through it, take any card). */
   discardOpen: boolean
   setDiscardOpen: (v: boolean) => void
+  /** Whether the event-deck browser is open (look through the event pile, draw the top card). */
+  eventBrowse: boolean
+  openEventBrowse: () => void
+  closeEventBrowse: () => void
   /** A player briefly flashed with a negative cue (e.g. just lost an advantage). */
   negativeCue: PlayerId | null
   flashNegative: (player: PlayerId) => void
@@ -170,6 +174,9 @@ export const useUI = create<UIState>((set) => ({
   closeRegionBrowse: () => set({ regionBrowse: false }),
   discardOpen: false,
   setDiscardOpen: (discardOpen) => set({ discardOpen }),
+  eventBrowse: false,
+  openEventBrowse: () => set({ eventBrowse: true }),
+  closeEventBrowse: () => set({ eventBrowse: false }),
   negativeCue: null,
   flashNegative: (player) => {
     set({ negativeCue: player })

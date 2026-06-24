@@ -25,6 +25,15 @@ doc written by a read-only audit agent. Implementation reads these, never re-run
 | D | Sandbox placement/rotation/sizing/layout | D-sandbox-ux.md | DONE — all restrictions are UI-only (engine already permissive); deck wall scrollbar hidden |
 | E | Audio expansion + volume | E-audio.md | DONE — defaults −20%; crossfade polish; adding tracks = +45MB download decision |
 
+## Deferred / backlog (noted, not silently skipped)
+- **AI-sim event effects + reseat** (`src/ai/sim/events.ts`): many theme events resolve as `default: no-op`
+  in the self-play simulator, and the sim still cycles Barbarian Attack / Insurrection to the bottom
+  (its deck uses the OPPOSITE top/bottom orientation from the engine, so its `seatYule` is intentionally
+  mirrored — NOT a bug). This is AI-quality only; it does not affect the human/live game, which is the
+  owner's reported scope. The engine (live) path is fixed + tested in `src/engine/reseat.test.ts`.
+- **Card point-values needing physical confirmation** (C-card-data.md FOCUS 3): 4 `unclear[]` cards
+  (esp. `turmoil-large-festival-hall`).
+
 ## Reused prior research (do NOT re-run)
 - docs/goal-2026-06-21-expansion-themes/rules-work/*.md — barbarians, explorers, intrigue, merchants, prosperity, sages rules text
 - docs/goal-2026-06-19/06-official-rules-research.md — base/gold/turmoil/progress

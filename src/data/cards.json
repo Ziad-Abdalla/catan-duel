@@ -860,6 +860,9 @@
     "flavor_text": "",
     "image": "p05_c4.png",
     "copies": 1,
+    "reseat": {
+      "mode": "yule"
+    },
     "confidence": "high",
     "unclear": []
   },
@@ -3531,6 +3534,10 @@
     "rules_text": "A player with fewer units than their VP from cities/Metropolises/city-expansions discards 2 resources. A player with more units and at least 1 city receives 2 resources (or may rotate their Triumph Card up). Then place this card under the top 4 event cards.",
     "image": "barbarians-barbarian-attack.webp",
     "copies": 3,
+    "reseat": {
+      "mode": "underTopN",
+      "n": 4
+    },
     "confidence": "low"
   },
   {
@@ -4819,6 +4826,10 @@
     "rules_text": "Each player must place 1 building costing at least 2 resources under a matching draw stack. Then place this card under the 4 topmost event card stack cards.",
     "image": "prosperity-insurrection.webp",
     "copies": 2,
+    "reseat": {
+      "mode": "underTopN",
+      "n": 4
+    },
     "confidence": "high"
   },
   {

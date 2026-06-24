@@ -41,6 +41,15 @@ doc written by a read-only audit agent. Implementation reads these, never re-run
   owner's reported scope. The engine (live) path is fixed + tested in `src/engine/reseat.test.ts`.
 - **Card point-values needing physical confirmation** (C-card-data.md FOCUS 3): 4 `unclear[]` cards
   (esp. `turmoil-large-festival-hall`).
+- **New music TRACK FILES (~15-20) not added this session.** Done in code: −20% defaults + one-time
+  ×0.8 turn-down, fade-in/out + duck-not-cut victory (no more hard cuts), and rebalanced the three
+  thinnest era playlists (turmoil/progress/barbarians 9→11 distinct) from the existing 42 tracks.
+  NOT done: bundling new mp3s — incompetech direct URLs returned HTML not audio, and tracks can't be
+  auditioned here, so dumping ~45 MB of unverified files into the (already 181 MB, flagged-account)
+  repo was the wrong call. Path to add: owner drops files in `public/audio/bgm-43..N.mp3` (or approves
+  verified CC0/CC-BY URLs) → wire into `ERA_TRACKS` + `MUSIC_LICENSES.md`. Sourcing shortlist in E-audio.md §2.
+- **res-*.wav gather SFX** (E-audio.md §3.7): the 6 per-resource gather cues use synth fallback (no
+  recorded samples). Adding real CC0 recordings is a polish opportunity.
 
 ## Reused prior research (do NOT re-run)
 - docs/goal-2026-06-21-expansion-themes/rules-work/*.md — barbarians, explorers, intrigue, merchants, prosperity, sages rules text

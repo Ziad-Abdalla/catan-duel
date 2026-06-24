@@ -57,7 +57,10 @@ function fanfare() {
 /** Loop the celebration music — owner mp3 if present, else the synth fanfare. */
 export function playVictoryMusic(): void {
   stopVictoryMusic() // never stack two celebrations (fixes "victory sound stuck on replay")
-  stopAmbient() // duck the background bed while the fanfare plays
+  // Duck the background bed under the fanfare (don't hard-stop it) so the celebration glides in
+  // and the music is still there when it ends.
+  ducked = true
+  if (ambEl && !ambEl.paused) ramp(ambEl, bedVolume(), 600)
   if (isMuted()) return
   if (typeof Audio !== 'undefined') {
     try {
@@ -113,12 +116,12 @@ export type MusicEra =
 const ERA_TRACKS: Record<MusicEra, number[]> = {
   base: [0, 3, 2, 13, 17, 4, 18, 19, 20, 21, 24, 37], // village/folk: tavern dance, calm folk, minstrels
   gold: [1, 7, 8, 14, 9, 15, 25, 26, 27, 35], // wealthy/merchant grandeur: courtly, stately, regal processions
-  turmoil: [5, 6, 10, 12, 4, 29, 30, 31, 32], // tense/political: dark, conspiratorial, ominous
-  progress: [9, 11, 15, 16, 2, 34, 41, 26, 38], // hopeful/building: bright baroque, heroic, uplifting
+  turmoil: [5, 6, 10, 12, 4, 29, 30, 31, 32, 33, 35], // tense/political: dark, conspiratorial, ominous
+  progress: [9, 11, 15, 16, 2, 34, 41, 26, 38, 39, 40], // hopeful/building: bright baroque, heroic, uplifting
   duel: [5, 12, 6, 11, 1, 0, 35, 41, 33, 18], // full-game epic mix
   intrigue: [5, 10, 12, 6, 4, 28, 29, 30, 23, 32], // mysterious/courtly: lute, hidden agenda, ossuary
   merchants: [1, 7, 8, 14, 9, 22, 20, 25, 37, 26, 18], // bustling market/trade: lively courtly, feasts
-  barbarians: [5, 12, 6, 10, 1, 33, 36, 32, 35], // martial/ominous: crusade, volatile, driving
+  barbarians: [5, 12, 6, 10, 1, 33, 36, 32, 35, 30, 31], // martial/ominous: crusade, volatile, driving
   explorers: [8, 14, 1, 9, 17, 18, 23, 41, 21, 35], // seafaring/adventurous: expansive, dramatic overture
   sages: [11, 16, 2, 9, 3, 38, 39, 40, 28, 31], // mystical/scholarly: meditative, calm, contemplative
   prosperity: [2, 9, 11, 15, 16, 34, 26, 40, 20, 35, 21], // triumphant/abundant: bright, peaceful, regal
@@ -129,6 +132,32 @@ let currentEra: MusicEra = 'base'
 let pool: number[] = ERA_TRACKS.base // the current era's track indices
 let order: number[] = []
 let pos = 0
+let ducked = false // ambient bed lowered under the victory fanfare
+
+// Smoothly ramp an element's volume instead of cutting — removes the jarring hard-cut
+// between tracks / on era change / on stop, so the bed glides ("better everywhere").
+const FADE_MS = 900
+let rampTimer: ReturnType<typeof setInterval> | null = null
+function ramp(el: HTMLAudioElement, to: number, ms = FADE_MS, onDone?: () => void): void {
+  if (rampTimer) clearInterval(rampTimer)
+  const from = el.volume
+  const steps = Math.max(1, Math.round(ms / 40))
+  let i = 0
+  rampTimer = setInterval(() => {
+    i++
+    el.volume = Math.max(0, Math.min(1, from + (to - from) * (i / steps)))
+    if (i >= steps) {
+      if (rampTimer) clearInterval(rampTimer)
+      rampTimer = null
+      onDone?.()
+    }
+  }, 40)
+}
+/** The bed's target volume right now (ducked under victory, else the player's setting). */
+function bedVolume(): number {
+  const v = getAudio().musicVol
+  return ducked ? Math.min(v, 0.08) : v
+}
 
 function reshuffle(): void {
   order = pool.map((_, i) => i)
@@ -142,10 +171,13 @@ function reshuffle(): void {
 function startTrack(): void {
   if (!ambEl) return
   ambEl.src = `${import.meta.env.BASE_URL}${ALL[pool[order[pos]]]}`
-  ambEl.volume = getAudio().musicVol
-  void ambEl.play().catch(() => {
-    /* missing file / autoplay still blocked → stays silent until the next gesture */
-  })
+  ambEl.volume = 0 // fade in from silence so a new track never cuts in abruptly
+  void ambEl
+    .play()
+    .then(() => ambEl && ramp(ambEl, bedVolume()))
+    .catch(() => {
+      /* missing file / autoplay still blocked → stays silent until the next gesture */
+    })
 }
 
 function advance(): void {
@@ -167,34 +199,38 @@ export function playAmbient(era?: MusicEra): void {
     ambEl.loop = false
     ambEl.onended = advance
   }
-  ambEl.volume = p.musicVol
   if (era && era !== currentEra) {
-    // era changed → swap to that era's mood and start a fresh track
+    // era changed → fade the current mood out, then start the new era's fresh track (which
+    // fades in), so switching sets mid-game glides instead of cutting.
     currentEra = era
     pool = ERA_TRACKS[era] ?? ERA_TRACKS.base
-    reshuffle()
-    startTrack()
+    const go = () => { reshuffle(); startTrack() }
+    if (ambEl.src && !ambEl.paused) ramp(ambEl, 0, FADE_MS, go)
+    else go()
     return
   }
   if (!ambEl.src) {
     reshuffle()
     startTrack()
   } else {
-    void ambEl.play().catch(() => {}) // resume where it left off
+    const el = ambEl
+    void el.play().then(() => ramp(el, bedVolume())).catch(() => {}) // resume + ease back up
   }
 }
 
 export function stopAmbient(): void {
+  if (!ambEl) return
+  const el = ambEl
   try {
-    ambEl?.pause()
+    ramp(el, 0, 500, () => { try { el.pause() } catch { /* ignore */ } })
   } catch {
-    /* ignore */
+    try { el.pause() } catch { /* ignore */ }
   }
 }
 
 /** Live volume change without interrupting the current track. */
 export function setAmbientVolume(v: number): void {
-  if (ambEl) ambEl.volume = v
+  if (ambEl) ambEl.volume = ducked ? Math.min(v, 0.08) : v
 }
 
 /** Stop whatever victory music is playing (safe to call anytime). */
@@ -211,6 +247,8 @@ export function stopVictoryMusic(): void {
   } catch {
     /* ignore */
   }
-  // bring the background bed back once the celebration ends
-  playAmbient()
+  // un-duck and bring the background bed back up once the celebration ends
+  ducked = false
+  if (ambEl && !ambEl.paused) ramp(ambEl, bedVolume(), 800)
+  else playAmbient()
 }
